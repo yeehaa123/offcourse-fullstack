@@ -9,7 +9,6 @@
                     [:div.layout-topbar topbar]
                     [:div.layout-content content]]))
 
-
 (defn main []
   (let [this (r/current-component)
         children (r/children this)]
