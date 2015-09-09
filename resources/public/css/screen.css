@@ -108,11 +108,7 @@ textarea {
   height: auto; }
 
 .layout-topbar {
-  display: flex;
-  height: 5.9375rem;
-  justify-content: space-between;
-  flex-direction: row;
-  padding: 1.875rem; }
+  height: 5.9375rem; }
 
 .app-is-introduction.app-is-learn {
   background-color: #E5CF39; }
@@ -349,6 +345,12 @@ textarea {
 
 .btn.btn-is-active:hover {
   color: #FFFFFF; }
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+  padding: 1.875rem; }
 
 .map {
   width: 100%;

@@ -1,5 +1,10 @@
-(ns offcourse.views.containers.main)
+(ns offcourse.views.containers.main
+  (:require [reagent.core :as r]
+            [reagent.session :as session]))
 
 (defn main []
-  [:section
-   [:h1 "To Be Continued Tomorrow..."]])
+  (let [this (r/current-component)
+        [topbar content] (r/children this)]
+    [:section
+     [:div.layout-topbar topbar]
+     [:div.layout-content content]]))

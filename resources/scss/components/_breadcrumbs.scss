@@ -21,13 +21,19 @@
 .layout-topbar .btn:hover {
   color: $red;
 }
-
-
 .btn.btn-is-active {
+
   background-color: $baseColor;
   color: $inverseColor;
 }
 
 .btn.btn-is-active:hover{
   color: $inverseColor;
+}
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+  padding: $baseUnit;
 }

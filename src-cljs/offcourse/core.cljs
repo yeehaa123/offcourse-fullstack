@@ -10,18 +10,14 @@
   (:import goog.History))
 
 
-(def pages
-  {:home #(views/home-page (actions/get-mode))})
-
-(defn page []
-  [(pages (actions/get-page))])
+(defn page [] (views/home-page))
 
 ;; -------------------------
 ;; Routes
 (secretary/set-config! :prefix "#")
 
 (secretary/defroute "/" []
-  (actions/set-page! :home))
+  (actions/set-text! "Hello World"))
 
 ;; -------------------------
 ;; History
