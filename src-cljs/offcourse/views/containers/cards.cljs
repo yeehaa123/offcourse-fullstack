@@ -1,6 +1,8 @@
-(ns offcourse.views.containers.cards)
+(ns offcourse.views.containers.cards
+  (:require [reagent.session :as session]
+            [offcourse.views.components.card :refer [card]]))
 
 (defn cards []
+  (let [collection (session/get :collection)]
   [:section.cards
-   [:section.card
-    [:h1.title "A Demain..."]]])
+   (for [item collection] ^{:key (item :goal)}[card item])]))
