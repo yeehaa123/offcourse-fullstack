@@ -2,7 +2,7 @@
   (:require [reagent.core :as r]
             [reagent.session :as session]
             [offcourse.actions.index :as actions]
-            [offcourse.views.css-helpers :as css]))
+            [offcourse.helpers.css :as css]))
 
 (defn app []
   (let [this (r/current-component)

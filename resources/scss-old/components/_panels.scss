@@ -9,12 +9,17 @@
   background-color: $baseColor;
 }
 
+
 .panel_main {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   background-color: $inverseColor;
   padding: $baseUnit $baseUnit 0 $baseUnit;
+
+  hgroup {
+    margin-bottom: $twoThirdUnit;
+  }
 
   .editable {
     border: rem-calc(1px) dotted $inverseColor;

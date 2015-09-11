@@ -1,6 +1,7 @@
 .breadcrumbs {
   display: block;
 }
+
 .layout-topbar .btn {
   display: inline-block;
   font-family: NittyNormal;
@@ -20,8 +21,8 @@
 .layout-topbar .btn:hover {
   color: $red;
 }
-
 .btn.btn-is-active {
+
   background-color: $baseColor;
   color: $inverseColor;
 }
@@ -32,7 +33,6 @@
 
 .topbar {
   display: flex;
-  width: 100%;
   justify-content: space-between;
   flex-direction: row;
   padding: $baseUnit;

@@ -1,5 +1,5 @@
 (ns offcourse.views.containers.sidebar
-  (:require [offcourse.views.css-helpers :as css]
+  (:require [offcourse.helpers.css :as css]
             [offcourse.actions.index :as actions]))
 
 (defn textbar [text handler]

@@ -10,7 +10,7 @@
             [markdown.core :refer [md->html]])
   (:import goog.History))
 
-(def courses [{:goal "Become a Frontend Ninja"
+(def raw-courses [{:goal "Become a Frontend Ninja"
                :checkpoints [{:task "Install React"
                               :completed true
                               :url "http://facebook.com"}
@@ -49,6 +49,15 @@
                              {:task "Do it All"
                               :completed true
                               :url "http://facebook.com"}]}])
+
+(defn index-course [course index]
+  (let [checkpoints (map-indexed #(assoc %2 :id %1) (course :checkpoints))]
+    (assoc course :id index :checkpoints checkpoints)))
+
+(defn indexed-courses [courses]
+  (map-indexed #(index-course %2 %1) courses))
+
+(def courses (indexed-courses raw-courses))
 
 (defn hook-browser-navigation! []
   (doto (History.)

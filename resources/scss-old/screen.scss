@@ -9,6 +9,7 @@ $sidebarWidth: 14 * $baseUnit;
 $cardWidth: 14 * $baseUnit;
 $imageHeight: ($cardWidth / 12) * 7;
 
+
 @import 'colors';
 @import 'typography';
 @import 'base';
@@ -20,6 +21,7 @@ $imageHeight: ($cardWidth / 12) * 7;
 @import 'components/stack';
 @import 'components/buttons';
 @import 'components/tables';
+@import 'components/panels';
 @import 'components/cards';
 @import 'components/breadcrumbs';
 @import 'components/maps';

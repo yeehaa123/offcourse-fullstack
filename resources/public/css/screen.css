@@ -1,9 +1,11 @@
 @font-face {
   font-family: NittyNormal;
+  font-weight: 300;
   src: url("../fonts/NN.woff") format("woff"); }
 
 @font-face {
   font-family: NittyBold;
+  font-weight: 500;
   src: url("../fonts/NB.woff") format("woff"); }
 
 * {
@@ -108,7 +110,11 @@ textarea {
   height: auto; }
 
 .layout-topbar {
-  height: 5.9375rem; }
+  display: flex;
+  width: 100%;
+  height: 5.9375rem;
+  justify-content: space-between;
+  flex-direction: row; }
 
 .app-is-introduction.app-is-learn {
   background-color: #E5CF39; }
@@ -234,55 +240,14 @@ textarea {
     text-align: center;
     width: 50%; }
 
-.panel {
-  display: flex;
-  flex-direction: column;
-  color: #000000; }
-
-.panel_header {
-  height: 15.3125rem;
-  background-color: #000000; }
-
-.panel_main {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  background-color: #FFFFFF;
-  padding: 1.875rem 1.875rem 0 1.875rem; }
-  .panel_main hgroup {
-    margin-bottom: 1.25rem; }
-  .panel_main .editable {
-    border: 0.0625rem dotted #FFFFFF;
-    padding: 3px;
-    margin: -5px; }
-  .panel_main section {
-    margin-bottom: 1.875rem; }
-    .panel_main section h1 {
-      padding: 0;
-      font-size: 1rem;
-      line-height: 1.375rem;
-      font-family: NittyBold;
-      margin-bottom: 0.625rem; }
-  .panel_main .meta p {
-    margin-bottom: 0; }
-  .panel_main .meta {
-    margin-bottom: 1.25rem; }
-
-.app-is-checkpoint .card .panel_header hgroup .title {
-  font-size: 1.25rem; }
-
-.app-is-resource .sidebar .panel_header hgroup .title {
-  font-size: 1.25rem; }
-
-.app-is-curate .sidebar .editable {
-  border: 0.0625rem dotted #E34D2F; }
-
 .cards {
   display: flex;
   align-items: flex-start;
   flex-direction: row;
   overflow-x: scroll;
   height: 100%; }
+  .cards .card {
+    margin-left: 1.875rem; }
 
 .cards:last-of-type::after {
   display: block;
@@ -295,27 +260,44 @@ textarea {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  margin: 1.875rem;
-  margin-right: 0;
-  margin-top: 0;
+  margin: 0;
   min-width: 26.25rem;
   max-width: 26.25rem;
   background-color: #FFFFFF;
   padding-bottom: 1.875rem; }
 
-.card .card_header {
+.card_section-map {
   height: 15.3125rem;
   background-color: #000000; }
 
-.card .card_container {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  flex: 1; }
+.card_section {
+  margin-bottom: 1.875rem;
+  padding-left: 1.875rem;
+  padding-right: 1.875rem; }
+  .card_section h1 {
+    padding: 0;
+    font-size: 1rem;
+    line-height: 1.375rem;
+    font-family: NittyBold;
+    margin-bottom: 0.625rem; }
 
-.card .card_nav {
+.card_section-map h1, .card_section-nav h1 {
+  display: none; }
+
+.card_section-title {
+  margin-top: 1.875rem; }
+
+.card_section-title, .card_section-meta {
+  margin-bottom: 1.25rem; }
+
+.card_section-title h1 {
+  font-weight: 500;
+  font-size: 1.75rem;
+  line-height: 1.875rem; }
+
+.card_section-nav {
   padding: 0 1.875rem; }
-  .card .card_nav button {
+  .card_section-nav button {
     margin-top: 0; }
 
 .breadcrumbs {
@@ -348,6 +330,7 @@ textarea {
 
 .topbar {
   display: flex;
+  width: 100%;
   justify-content: space-between;
   flex-direction: row;
   padding: 1.875rem; }

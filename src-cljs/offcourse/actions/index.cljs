@@ -17,5 +17,6 @@
 (defn fetch-docs! []
   (GET "/docs" {:handler #(session/put! :docs %)}))
 
-(defn check-done []
-  (.alert js/window "hi ha ho"))
+(defn check-done
+  ([id] (println id))
+  ([parentId id] (println parentId id)))
