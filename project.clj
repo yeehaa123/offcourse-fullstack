@@ -19,8 +19,6 @@
                  [bouncer "0.3.3"]
                  [prone "0.8.2"]
                  [org.clojure/tools.nrepl "0.2.10"]
-                 [org.webjars/bootstrap "3.3.5"]
-                 [org.webjars/jquery "2.1.4"]
                  [buddy "0.6.2"]
                  [migratus "0.8.4"]
                  [conman "0.1.7"]

@@ -33,6 +33,19 @@
                              {:task "Build an API"
                               :completed false
                               :url "http://facebook.com"}]}
+              {:goal "Acquire Street Cred for Bla"
+               :checkpoints [{:task "Install Node"
+                              :completed true
+                              :url "http://facebook.com"}
+                             {:task "Set up a Route"
+                              :completed false
+                              :url "http://facebook.com"}
+                             {:task "Add some Middleware"
+                              :completed false
+                              :url "http://facebook.com"}
+                             {:task "Build an API"
+                              :completed false
+                              :url "http://facebook.com"}]}
               {:goal "Make DevOps Your Thing"
                :checkpoints [{:task "Tame the Command Line"
                               :completed true

@@ -22,5 +22,5 @@
   (let [handlers (bind-handlers handlers (item :id))]
     [layout
      ^{:type :title} [:h1 (item :goal)]
-     ^{:type :list}  [todo-list (item :checkpoints) handlers]]))
+     ^{:type :list}  [todo-list (sort-by :id (item :checkpoints)) handlers]]))
 
