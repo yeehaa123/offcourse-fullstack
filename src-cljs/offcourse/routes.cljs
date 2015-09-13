@@ -5,4 +5,4 @@
 (secretary/set-config! :prefix "#")
 
 (secretary/defroute "/" []
-  (actions/set-text! "Hello World"))
+  (actions/toggle-mode!))

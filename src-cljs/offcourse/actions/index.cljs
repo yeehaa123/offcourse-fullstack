@@ -1,18 +1,16 @@
 (ns offcourse.actions.index
+  (:require-macros [cljs.core.async.macros :refer [go]])
   (:require [reagent.session :as session]
+            [offcourse.stores.appstate :as appstate]
+            [offcourse.services.api :as api]
+            [cljs.core.async :refer [chan <! >!]]
             [ajax.core :refer [GET POST]]))
 
 (defn set-mode! [mode]
-  (session/put! :mode mode))
+  (appstate/set-mode! mode))
 
 (defn toggle-mode! []
-  (let [current-mode (session/get :mode)]
-    (if (= current-mode :learn)
-      (set-mode! :curate)
-      (set-mode! :learn))))
-
-(defn set-text! [text]
-  (session/put! :text text))
+  (appstate/toggle-mode!))
 
 (defn fetch-docs! []
   (GET "/docs" {:handler #(session/put! :docs %)}))
@@ -36,7 +34,5 @@
   ([course-id checkpoint-id]
    (session/update-in! [:collection] toggle-done-courses course-id checkpoint-id)))
 
-
-
-
-
+(defn fetch-courses []
+    (api/courses))
