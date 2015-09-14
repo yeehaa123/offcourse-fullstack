@@ -11,4 +11,6 @@
 
 (defn sidebar []
   [:section {:class (css/classes "sidebar")}
-   [logo actions/toggle-mode!]])
+   [logo actions/toggle-mode!]
+   [:div
+    [:p.btn {:on-click #(actions/go-to :featured)} "HELLO"]]])

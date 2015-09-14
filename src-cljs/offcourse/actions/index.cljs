@@ -3,6 +3,7 @@
   (:require [reagent.session :as session]
             [offcourse.stores.appstate :as appstate]
             [offcourse.services.api :as api]
+            [offcourse.services.history :as history]
             [cljs.core.async :refer [chan <! >!]]
             [ajax.core :refer [GET POST]]))
 
@@ -36,3 +37,6 @@
 
 (defn fetch-courses []
     (api/courses))
+
+(defn go-to [location]
+  (history/nav! location))
