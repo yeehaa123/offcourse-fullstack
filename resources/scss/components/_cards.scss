@@ -25,9 +25,14 @@
   margin: 0;
   min-width: $cardWidth;
   max-width: $cardWidth;
-  background-color: $inverseColor;
   padding-bottom: $baseUnit;
 }
+
+.cards .card {
+  background-color: $inverseColor;
+}
+
+
 
 .card_section-map {
   height: $imageHeight;

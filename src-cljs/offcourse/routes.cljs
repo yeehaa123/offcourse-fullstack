@@ -1,8 +1,12 @@
 (ns offcourse.routes
   (:require [offcourse.actions.index :as actions]
-            [secretary.core :as secretary :include-macros true]))
+            [secretary.core :as secretary
+             :include-macros true
+             :refer-macros [defroute]]))
 
-(secretary/set-config! :prefix "#")
+(defroute "/" []
+  (actions/toggle-mode!))
 
-(secretary/defroute "/" []
+(defroute "/:name" {name :name}
+  (println name)
   (actions/toggle-mode!))

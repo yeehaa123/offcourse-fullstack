@@ -1,16 +1,30 @@
 (ns offcourse.views.containers.sidebar
   (:require [offcourse.helpers.css :as css]
+            [clojure.string :as string]
             [offcourse.actions.index :as actions]))
 
-(defn textbar [text handler]
-  [:button {:on-click handler :class (css/classes "textbar")} text])
+(defn textbar [text {on-click :on-click}]
+  [:button {:on-click on-click
+            :class (css/classes "textbar")} text])
 
-(defn logo [handler]
+(defn logo [handlers]
   [:section {:class (css/classes "logo")}
-   [textbar "_Offcourse" handler]])
+   [textbar "_Offcourse" handlers]])
+
+(defn home-route-button [route-name {on-click :on-click}]
+  [:li.btn.btn-inverse.browse
+   {:on-click #(on-click route-name)}
+   (string/capitalize (name route-name))])
+
+(defn home-route-buttons [route-names handlers]
+  [:nav.card
+   [:ul.card_section
+    (for [route-name route-names]
+      ^{:key route-name}[home-route-button route-name handlers])]])
 
 (defn sidebar []
   [:section {:class (css/classes "sidebar")}
-   [logo actions/toggle-mode!]
-   [:div
-    [:p.btn {:on-click #(actions/go-to :featured)} "HELLO"]]])
+   [logo {:on-click actions/toggle-mode!}]
+   [home-route-buttons
+    [:featured :latest :best]
+    {:on-click actions/go-to}]])
