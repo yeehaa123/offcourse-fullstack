@@ -14,14 +14,19 @@
   (collection/listen-for-changes)
   (listen-for-changes))
 
-(defn init []
-  (initialize-listeners))
-
 (defn set-mode! [mode]
   (session/put! :mode mode))
+
+(defn set-course-collections! [collections]
+  (session/put! :course-collections collections))
 
 (defn toggle-mode! []
   (let [current-mode (session/get :mode)]
     (if (= current-mode :learn)
       (set-mode! :curate)
       (set-mode! :learn))))
+
+(defn init []
+  (set-mode! :learn)
+  (set-course-collections! [:featured :popular :new])
+  (initialize-listeners))

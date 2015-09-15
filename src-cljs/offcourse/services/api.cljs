@@ -1,6 +1,7 @@
 (ns offcourse.services.api
   (:require-macros [cljs.core.async.macros :refer [go]])
-  (:require [cljs.core.async :refer [chan <! >!]]))
+  (:require [cljs.core.async :refer [chan <! >!]]
+            [offcourse.models.course :as course]))
 
 (def raw-courses [{:goal "Become a Frontend Ninja"
                :checkpoints [{:task "Install React"
@@ -64,7 +65,16 @@
 
 (def channel (chan))
 
-(defn courses []
-  (go
-    (>! channel (indexed-courses raw-courses))))
+(def courses (indexed-courses raw-courses))
 
+(defn get-courses [keyword]
+  (go
+    (case keyword
+      :new (>! channel (vector (first courses)))
+      :popular (>! channel (rest courses))
+      :featured (>! channel courses))))
+
+(defn get-course [id]
+  (go
+    (>! channel
+        [(course/find courses id)])))

@@ -14,4 +14,6 @@
   (go-loop []
     (let [api-data (<! api/channel)]
       (update-collection api-data)
-      (>! channel @collection))))
+      (>! channel @collection))
+    (recur)))
+

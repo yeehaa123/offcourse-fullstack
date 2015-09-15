@@ -12,6 +12,6 @@
 (defn init! []
   (appstate/init)
   (actions/fetch-docs!)
-  (actions/fetch-courses)
+  (actions/fetch-courses :featured)
   (history/init!)
   (mount-components))

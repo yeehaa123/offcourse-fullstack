@@ -1,30 +1,23 @@
 (ns offcourse.views.containers.sidebar
   (:require [offcourse.helpers.css :as css]
+            [offcourse.views.components.logo :refer [logo]]
+            [reagent.session :as session]
             [clojure.string :as string]
             [offcourse.actions.index :as actions]))
 
-(defn textbar [text {on-click :on-click}]
-  [:button {:on-click on-click
-            :class (css/classes "textbar")} text])
-
-(defn logo [handlers]
-  [:section {:class (css/classes "logo")}
-   [textbar "_Offcourse" handlers]])
-
-(defn home-route-button [route-name {on-click :on-click}]
+(defn collection-name-button [collection-name {on-click :on-click}]
   [:li.btn.btn-inverse.browse
-   {:on-click #(on-click route-name)}
-   (string/capitalize (name route-name))])
+   {:on-click #(on-click collection-name)}
+   (string/capitalize (name collection-name))])
 
-(defn home-route-buttons [route-names handlers]
+(defn collection-name-buttons [collection-names handlers]
   [:nav.card
    [:ul.card_section
-    (for [route-name route-names]
-      ^{:key route-name}[home-route-button route-name handlers])]])
+    (for [route-name collection-names]
+      ^{:key route-name}[collection-name-button route-name handlers])]])
 
 (defn sidebar []
-  [:section {:class (css/classes "sidebar")}
-   [logo {:on-click actions/toggle-mode!}]
-   [home-route-buttons
-    [:featured :latest :best]
-    {:on-click actions/go-to}]])
+  (let [collection-names (session/get :course-collections)]
+    [:section {:class (css/classes "sidebar")}
+     [logo {:on-click actions/toggle-mode!}]
+     [collection-name-buttons collection-names {:on-click actions/go-to!}]]))

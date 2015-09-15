@@ -29,15 +29,16 @@
   ;; dispatch on the token
   (secretary/dispatch! (get-token)))
 
-(declare history) 
+(declare history)
 
 (defn nav! [keyword]
   (let [token (str "/" (name keyword))]
     (.setToken history token)))
 
 (defn init! []
-  (defonce history (doto (make-history)
-                     (goog.events/listen EventType.NAVIGATE
-                                         ;; wrap in a fn to allow live reloading
-                                         #(handle-url-change %))
-                     (.setEnabled true))))
+  (defonce history
+    (doto (make-history)
+      (goog.events/listen EventType.NAVIGATE
+                          ;; wrap in a fn to allow live reloading
+                          #(handle-url-change %))
+      (.setEnabled true))))
