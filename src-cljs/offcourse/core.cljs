@@ -7,11 +7,12 @@
             [offcourse.actions.index :as actions]))
 
 (defn mount-components []
-  (reagent/render [#'views/home-page] (.querySelector js/document ".container")))
+  (reagent/render [#'views/home-page]
+                  (.querySelector js/document ".container")))
 
 (defn init! []
   (appstate/init)
   (actions/fetch-docs!)
-  (actions/fetch-courses :featured)
+  (actions/get-courses :featured)
   (history/init!)
   (mount-components))

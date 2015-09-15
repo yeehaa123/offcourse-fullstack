@@ -6,7 +6,9 @@
 
 (defn listen-for-changes []
   (go-loop []
-    (let [collection (<! collection/channel)]
+    (let [{collection-name :collection-name
+           collection :collection}(<! collection/channel)]
+      (session/put! :collection-name collection-name)
       (session/put! :collection collection))
     (recur)))
 
@@ -28,5 +30,6 @@
 
 (defn init []
   (set-mode! :learn)
+  (session/put! :collection-name :featured)
   (set-course-collections! [:featured :popular :new])
   (initialize-listeners))

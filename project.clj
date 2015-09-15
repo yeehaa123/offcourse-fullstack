@@ -76,7 +76,6 @@
                {:app
                 {:source-paths ["env/prod/cljs"]
                  :compiler {:optimizations :advanced :pretty-print false}}}} 
-             
              :aot :all}
    :dev           [:project/dev :profiles/dev]
    :test          [:project/test :profiles/test]
@@ -91,14 +90,13 @@
                    {:builds
                     {:app
                      {:compiler {:source-map true} :source-paths ["env/dev/cljs"]}}} 
-                  
+
                   :figwheel
                   {:http-server-root "public"
                    :server-port 3449
                    :nrepl-port 7002
                    :css-dirs ["resources/public/css"]
                    :ring-handler offcourse.handler/app}
-                  
                   :repl-options {:init-ns offcourse.core}
                   :injections [(require 'pjstadig.humane-test-output)
                                (pjstadig.humane-test-output/activate!)]

@@ -18,9 +18,16 @@
                     ^{:key index} [section child])
                     children)]))
 
+(defn browse-course-button [{on-click :on-click}]
+  [:div.btn.btn-inverse.browse
+   {:on-click #(on-click)} "Open"])
+
 (defn card [item handlers]
   (let [handlers (bind-handlers handlers (item :id))]
     [layout
-     ^{:type :title} [:h1 (item :goal)]
-     ^{:type :list}  [todo-list (sort-by :id (item :checkpoints)) handlers]]))
+     ^{:type :title}  [:h1 (item :goal)]
+     ^{:type :list}   [todo-list (sort-by :id (item :checkpoints)) handlers]
+     ^{:type :button} [browse-course-button {:on-click (handlers :go-to-course!)}]]))
+
+
 

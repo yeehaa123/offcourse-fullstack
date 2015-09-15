@@ -5,9 +5,13 @@
              :include-macros true
              :refer-macros [defroute]]))
 
-(defroute "/" []
-  (actions/toggle-mode!))
+
+(defroute "/courses/:id" {id :id}
+  (actions/get-course (js/parseInt id)))
 
 (defroute "/:name" {name :name}
   (let [keyword (keyword name)]
-    (actions/fetch-courses keyword)))
+    (actions/get-courses keyword)))
+
+(defroute "/" []
+  (actions/toggle-mode!))

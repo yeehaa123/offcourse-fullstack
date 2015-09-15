@@ -26,17 +26,17 @@
                              {:task "Build an API"
                               :completed false
                               :url "http://facebook.com"}]}
-              {:goal "Acquire Street Cred for Bla"
-               :checkpoints [{:task "Install Node"
-                              :completed true
-                              :url "http://facebook.com"}
-                             {:task "Set up a Route"
+              {:goal "Get More Street Cred"
+               :checkpoints [{:task "Talk Dirty with Reika"
                               :completed false
                               :url "http://facebook.com"}
-                             {:task "Add some Middleware"
+                             {:task "Pair with Greg"
                               :completed false
                               :url "http://facebook.com"}
-                             {:task "Build an API"
+                             {:task "Scheme with Charlotte"
+                              :completed false
+                              :url "http://facebook.com"}
+                             {:task "Brawl with Yeehaa"
                               :completed false
                               :url "http://facebook.com"}]}
               {:goal "Make DevOps Your Thing"
@@ -63,18 +63,23 @@
 (defn indexed-courses [courses]
   (map-indexed #(index-course %2 %1) courses))
 
-(def channel (chan))
+(def collection-channel (chan))
+(def model-channel (chan))
 
 (def courses (indexed-courses raw-courses))
 
 (defn get-courses [keyword]
   (go
     (case keyword
-      :new (>! channel (vector (first courses)))
-      :popular (>! channel (rest courses))
-      :featured (>! channel courses))))
+      :new (>! collection-channel {:collection-name :new
+                                   :data (vector (first courses))})
+      :popular (>! collection-channel {:collection-name :popular
+                                       :data (rest courses)})
+      :featured (>! collection-channel {:collection-name :featured
+                                        :data courses}))))
 
 (defn get-course [id]
-  (go
-    (>! channel
-        [(course/find courses id)])))
+  (let [course (course/find-course courses id)]
+    (go
+      (>! model-channel {:model-name  (course :goal)
+                         :data course}))))

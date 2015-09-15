@@ -35,8 +35,15 @@
   ([course-id checkpoint-id]
    (session/update-in! [:collection] toggle-done-courses course-id checkpoint-id)))
 
-(defn fetch-courses [keyword]
+(defn get-courses [keyword]
   (api/get-courses keyword))
+
+(defn get-course [id]
+  (api/get-course id))
 
 (defn go-to! [location]
   (history/nav! location))
+
+(defn go-to-course! [id]
+  (let [location (str "courses/" id)]
+    (go-to! location)))

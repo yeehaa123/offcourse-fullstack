@@ -5,6 +5,7 @@
 
 (defn cards []
   (let [collection (sort-by :id (session/get :collection))
-        handlers {:check-done actions/check-done}]
-  [:section.cards
-   (for [item collection] ^{:key (item :goal)}[card item handlers])]))
+        handlers {:check-done actions/check-done
+                  :go-to-course! actions/go-to-course!}]
+    [:section.cards
+     (for [item collection] ^{:key (item :goal)}[card item handlers])]))
