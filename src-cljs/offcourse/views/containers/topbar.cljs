@@ -4,7 +4,8 @@
             [clojure.string :as string]))
 
 (defn topbar []
-  (let [crumbs [(session/get :collection-name)]]
+  (let [crumbs (session/get-in [:viewmodel :topbar])]
+    (println crumbs)
     [:section.topbar
      [breadcrumbs crumbs]
      [:div.btn.btn-feedback "Feedback"]]))

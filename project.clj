@@ -69,13 +69,13 @@
   :profiles
   {:uberjar {:omit-source true
              :env {:production true}
-              :hooks [leiningen.cljsbuild]
-              :cljsbuild
-              {:jar true
-               :builds
-               {:app
-                {:source-paths ["env/prod/cljs"]
-                 :compiler {:optimizations :advanced :pretty-print false}}}} 
+             :hooks [leiningen.cljsbuild]
+             :cljsbuild
+             {:jar true
+              :builds
+              {:app
+               {:source-paths ["env/prod/cljs"]
+                :compiler {:optimizations :advanced :pretty-print false}}}} 
              :aot :all}
    :dev           [:project/dev :profiles/dev]
    :test          [:project/test :profiles/test]
@@ -86,10 +86,10 @@
                                  [lein-figwheel "0.3.9"]
                                  [mvxcvi/puget "0.8.1"]]
                   :plugins [[lein-figwheel "0.3.9"]]
-                   :cljsbuild
-                   {:builds
-                    {:app
-                     {:compiler {:source-map true} :source-paths ["env/dev/cljs"]}}} 
+                  :cljsbuild
+                  {:builds
+                   {:app
+                    {:compiler {:source-map true} :source-paths ["env/dev/cljs"]}}} 
 
                   :figwheel
                   {:http-server-root "public"
@@ -101,6 +101,8 @@
                   :injections [(require 'pjstadig.humane-test-output)
                                (pjstadig.humane-test-output/activate!)]
                   ;;when :nrepl-port is set the application starts the nREPL server on load
+                  :nrepl-middleware ["cider.nrepl/cider-middleware"
+                                     "refactor-nrepl.middleware/wrap-refactor"]
                   :env {:dev        true
                         :port       3000
                         :nrepl-port 7000}}

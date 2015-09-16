@@ -33,7 +33,7 @@
 (defn check-done
   ([id] (println id))
   ([course-id checkpoint-id]
-   (session/update-in! [:collection] toggle-done-courses course-id checkpoint-id)))
+   (session/update-in! [:viewmodel :main] toggle-done-courses course-id checkpoint-id)))
 
 (defn get-courses [keyword]
   (api/get-courses keyword))

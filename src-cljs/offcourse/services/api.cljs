@@ -63,23 +63,25 @@
 (defn indexed-courses [courses]
   (map-indexed #(index-course %2 %1) courses))
 
-(def collection-channel (chan))
-(def model-channel (chan))
+(def channel (chan))
 
 (def courses (indexed-courses raw-courses))
 
+(defn construct-response [keyword]
+  (let [response {:type :collection
+                  :name keyword}]
+  (case keyword
+    :new (assoc response :data (vector (first courses)))
+    :popular (assoc response :data (rest courses))
+    :featured (assoc response :data courses))))
+
 (defn get-courses [keyword]
   (go
-    (case keyword
-      :new (>! collection-channel {:collection-name :new
-                                   :data (vector (first courses))})
-      :popular (>! collection-channel {:collection-name :popular
-                                       :data (rest courses)})
-      :featured (>! collection-channel {:collection-name :featured
-                                        :data courses}))))
+    (>! channel (construct-response keyword))))
 
 (defn get-course [id]
   (let [course (course/find-course courses id)]
     (go
-      (>! model-channel {:model-name  (course :goal)
-                         :data course}))))
+      (>! channel {:type :item
+                   :name  (course :goal)
+                   :data course}))))

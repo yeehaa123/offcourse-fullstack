@@ -2,18 +2,19 @@
   (:require-macros [cljs.core.async.macros :refer [go go-loop]])
   (:require [reagent.session :as session]
             [cljs.core.async :refer [chan <! >!]]
-            [offcourse.stores.collection :as collection]))
+            [offcourse.stores.viewmodel :as viewmodel]))
 
 (defn listen-for-changes []
   (go-loop []
-    (let [{collection-name :collection-name
-           collection :collection}(<! collection/channel)]
-      (session/put! :collection-name collection-name)
-      (session/put! :collection collection))
+    (let [viewmodel (<! viewmodel/channel)]
+      (println viewmodel)
+      (session/put! :collection-name (viewmodel :collection-name))
+      (session/put! :collection (viewmodel :collection))
+      (session/put! :viewmodel viewmodel))
     (recur)))
 
 (defn initialize-listeners []
-  (collection/listen-for-changes)
+  (viewmodel/listen-for-changes)
   (listen-for-changes))
 
 (defn set-mode! [mode]
@@ -29,7 +30,7 @@
       (set-mode! :learn))))
 
 (defn init []
+  (session/put! :collection-name :none)
   (set-mode! :learn)
-  (session/put! :collection-name :featured)
   (set-course-collections! [:featured :popular :new])
   (initialize-listeners))

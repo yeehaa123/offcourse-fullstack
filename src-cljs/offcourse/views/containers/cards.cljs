@@ -4,7 +4,7 @@
             [offcourse.views.components.card :refer [card]]))
 
 (defn cards []
-  (let [collection (sort-by :id (session/get :collection))
+  (let [collection (sort-by :id (session/get-in [:viewmodel :main]))
         handlers {:check-done actions/check-done
                   :go-to-course! actions/go-to-course!}]
     [:section.cards
