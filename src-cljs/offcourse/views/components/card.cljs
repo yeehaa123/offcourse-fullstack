@@ -23,11 +23,16 @@
    {:on-click #(on-click)} "Open"])
 
 (defn card [item handlers]
-  (let [handlers (bind-handlers handlers (item :id))]
-    [layout
-     ^{:type :title}  [:h1 (item :goal)]
-     ^{:type :list}   [todo-list (sort-by :id (item :checkpoints)) handlers]
-     ^{:type :button} [browse-course-button {:on-click (handlers :go-to-course!)}]]))
+  (let [id (item :id)
+        type (item :type)
+        handlers (bind-handlers handlers id)]
+    (case type
+      :course     [layout
+                   ^{:type :title}  [:h1 (item :goal)]
+                   ^{:type :list}   [todo-list (sort-by :id (item :checkpoints)) handlers]
+                   ^{:type :button} [browse-course-button {:on-click (handlers :go-to-course!)}]]
+      :checkpoint [layout
+                   ^{:type :title}  [:h1 (item :task)]])))
 
 
 

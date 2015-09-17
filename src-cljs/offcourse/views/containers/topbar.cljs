@@ -1,10 +1,10 @@
 (ns offcourse.views.containers.topbar
-  (:require [reagent.session :as session]
+  (:require [offcourse.stores.viewmodel :as viewmodel]
             [offcourse.views.components.breadcrumbs :refer [breadcrumbs]]
             [clojure.string :as string]))
 
 (defn topbar []
-  (let [crumbs (session/get-in [:viewmodel :topbar])]
+  (let [crumbs @viewmodel/topbar]
     (println crumbs)
     [:section.topbar
      [breadcrumbs crumbs]

@@ -16,24 +16,10 @@
 (defn fetch-docs! []
   (GET "/docs" {:handler #(session/put! :docs %)}))
 
-(defn toggle-done-checkpoints [course id]
-  (let [checkpoints (course :checkpoints)
-        [checkpoint] (filter #(= (%1 :id) id) checkpoints)
-        checkpoint (update-in checkpoint [:completed] not)
-        checkpoints (remove #(= (%1 :id) id) checkpoints)]
-    (conj checkpoints checkpoint)))
 
-(defn toggle-done-courses [courses course-id checkpoint-id]
-  (let [[course _] (filter #(= (%1 :id) course-id) courses)
-        courses (remove #(= (%1 :id) course-id) courses)
-        checkpoints (toggle-done-checkpoints course checkpoint-id)
-        course (assoc course :checkpoints checkpoints)]
-   (conj courses course)))
+(defn check-done [course-id checkpoint-id]
+  (api/check-done course-id checkpoint-id))
 
-(defn check-done
-  ([id] (println id))
-  ([course-id checkpoint-id]
-   (session/update-in! [:viewmodel :main] toggle-done-courses course-id checkpoint-id)))
 
 (defn get-courses [keyword]
   (api/get-courses keyword))

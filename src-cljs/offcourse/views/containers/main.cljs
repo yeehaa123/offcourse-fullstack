@@ -1,6 +1,5 @@
 (ns offcourse.views.containers.main
-  (:require [reagent.core :as r]
-            [reagent.session :as session]))
+  (:require [reagent.core :as r]))
 
 (defn main-layout
   ([content] [:section
