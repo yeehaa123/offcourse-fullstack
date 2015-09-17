@@ -11,3 +11,7 @@
 
 (defn update-checkpoints [course checkpoints]
   (assoc course :checkpoints checkpoints))
+
+(defn update-course [courses course]
+  (let [courses (remove #(== (course :id) (:id %1)) courses)]
+    (conj courses (assoc course :type :course))))

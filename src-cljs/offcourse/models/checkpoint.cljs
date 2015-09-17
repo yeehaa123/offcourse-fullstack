@@ -13,3 +13,7 @@
   (-> checkpoints
       (find-checkpoint id)
       (update-in [:completed] not)))
+
+(defn update-checkpoints [checkpoints checkpoint]
+  (let [checkpoints (remove #(== (checkpoint :id) (:id %1)) checkpoints)]
+    (conj checkpoints checkpoint)))

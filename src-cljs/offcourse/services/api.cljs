@@ -83,20 +83,17 @@
 (defn get-course [id]
   (let [course (course/find-course @courses-store id)]
     (go
-      (>! channel {:type :course
+      (>! channel {:type :new
                    :name  (course :goal)
                    :data course}))))
 
 (defn check-done [course-id checkpoint-id]
   (let [course (course/find-course @courses-store course-id)
-        courses (course/remove-course @courses-store course-id)
         checkpoint (checkpoint/toggle-done (course :checkpoints) checkpoint-id)
-        checkpoints (checkpoint/remove-checkpoint (course :checkpoints) checkpoint-id)
-        checkpoints (checkpoint/add-checkpoint checkpoints checkpoint)
-        course (course/update-checkpoints course checkpoints)
-        courses (course/add-course courses course)]
-    (reset! courses-store courses)
+        checkpoints (checkpoint/update-checkpoints (course :checkpoints) checkpoint)
+        course (course/update-checkpoints course checkpoints)]
+    (swap! courses-store course/update-course course)
     (go
-      (>! channel {:type :course
+      (>! channel {:type :update
                    :name  (course :goal)
                    :data course}))))
