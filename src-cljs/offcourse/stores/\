@@ -6,8 +6,8 @@
             [cljs.core.async :refer [chan <! >!]]))
 
 (def viewmodel (r/atom {:cards nil
-                        :topbar nil
-                        :sidebar nil}))
+                         :topbar nil
+                         :sidebar nil}))
 
 (def channel (chan))
 
@@ -22,8 +22,8 @@
         in-cards (some #(= id %1) card-ids)]
     (cond
       (= in-cards) (do
-                     (swap! viewmodel update-in [:cards] update-course course)
-                     (swap! viewmodel assoc :sidebar course)))))
+                     (swap! viewmodel assoc :cards update-course :cards course
+                                            :sidebar course)))))
 
 (defn handle-item [name course]
   (do (swap! viewmodel assoc :cards (map #(assoc %1 :type :checkpoint) (course :checkpoints))

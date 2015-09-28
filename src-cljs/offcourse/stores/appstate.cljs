@@ -7,9 +7,6 @@
 (defn listen-for-changes []
   (go-loop []
     (let [viewmodel (<! viewmodel/channel)]
-      (println viewmodel)
-      (session/put! :collection-name (viewmodel :collection-name))
-      (session/put! :collection (viewmodel :collection))
       (session/put! :viewmodel viewmodel))
     (recur)))
 
@@ -30,7 +27,6 @@
       (set-mode! :learn))))
 
 (defn init []
-  (session/put! :collection-name :none)
   (set-mode! :learn)
   (set-course-collections! [:featured :popular :new])
   (initialize-listeners))

@@ -83,7 +83,7 @@
 (defn get-course [id]
   (let [course (course/find-course @courses-store id)]
     (go
-      (>! channel {:type :new
+      (>! channel {:type :item
                    :name  (course :goal)
                    :data course}))))
 
