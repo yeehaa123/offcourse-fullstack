@@ -22,17 +22,21 @@
   [:div.btn.btn-inverse.browse
    {:on-click #(on-click)} "Open"])
 
-(defn card [item handlers]
+(defn card [item handlers context]
   (let [id (item :id)
         type (item :type)
         handlers (bind-handlers handlers id)]
-    (case type
-      :course     [layout
-                   ^{:type :title}  [:h1 (item :goal)]
-                   ^{:type :list}   [todo-list (sort-by :id (item :checkpoints)) handlers]
-                   ^{:type :button} [browse-course-button {:on-click (handlers :go-to-course!)}]]
-      :checkpoint [layout
-                   ^{:type :title}  [:h1 (item :task)]])))
+    (cond
+      (and (= context :sidebar) (= type :course))
+           [layout
+            ^{:type :title}  [:h1 (item :goal)]
+            ^{:type :list}   [todo-list (sort-by :id (item :checkpoints)) handlers]]
+      (= type :course) [layout
+                         ^{:type :title}  [:h1 (item :goal)]
+                         ^{:type :list}   [todo-list (sort-by :id (item :checkpoints)) handlers]
+                         ^{:type :button} [browse-course-button {:on-click (handlers :go-to-course!)}]]
+      (= type :checkpoint) [layout
+                             ^{:type :title}  [:h1 (item :task)]])))
 
 
 

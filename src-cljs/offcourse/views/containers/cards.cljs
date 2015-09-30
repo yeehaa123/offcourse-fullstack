@@ -9,4 +9,4 @@
         handlers {:check-done actions/check-done
                   :go-to-course! actions/go-to-course!}]
     [:section.cards
-     (for [item collection] ^{:key (item :id)}[card item handlers])]))
+     (for [item collection] ^{:key (item :id)}[card item handlers :cards])]))

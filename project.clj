@@ -65,7 +65,6 @@
       :externs ["react/externs/react.js"]
       :optimizations :none
       :pretty-print true}}}}
-  
   :profiles
   {:uberjar {:omit-source true
              :env {:production true}

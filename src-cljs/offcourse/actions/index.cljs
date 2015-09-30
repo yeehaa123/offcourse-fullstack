@@ -20,7 +20,6 @@
 (defn check-done [course-id checkpoint-id]
   (api/check-done course-id checkpoint-id))
 
-
 (defn get-courses [keyword]
   (api/get-courses keyword))
 

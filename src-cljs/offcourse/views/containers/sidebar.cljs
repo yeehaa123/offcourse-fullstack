@@ -1,6 +1,9 @@
 (ns offcourse.views.containers.sidebar
   (:require [offcourse.helpers.css :as css]
+            [offcourse.stores.viewmodel :refer [viewmodel]]
             [offcourse.views.components.logo :refer [logo]]
+            [offcourse.views.components.card :refer [card]]
+            [offcourse.stores.appstate :refer [appstate]]
             [reagent.session :as session]
             [clojure.string :as string]
             [offcourse.actions.index :as actions]))
@@ -17,7 +20,12 @@
       ^{:key route-name}[course-collection-button route-name handlers])]])
 
 (defn sidebar []
-  (let [collection-names (session/get :course-collections)]
+  (let [collection-names (session/get :course-collections)
+        item (assoc (:sidebar @viewmodel) :type :course)
+        level (:level @appstate)]
     [:section {:class (css/classes "sidebar")}
-     [logo {:on-click actions/toggle-mode!}]
-     [course-collection-buttons collection-names {:on-click actions/go-to!}]]))
+     [logo {:on-click #(actions/go-to! "featured")}]
+     (case level
+       :collection [course-collection-buttons collection-names {:on-click actions/go-to!}]
+       :item [card item {:check-done actions/check-done} :sidebar]
+       nil)]))

@@ -12,23 +12,22 @@
 (def channel (chan))
 
 (defn handle-collection [name data]
-  (do (swap! viewmodel assoc :cards (map #(assoc %1 :type :course) data)
-                             :sidebar nil
-                             :topbar [name])))
+  (swap! viewmodel assoc :cards (map #(assoc %1 :type :course) data)
+         :sidebar nil
+         :topbar [name]))
 
 (defn handle-update [name course]
   (let [id (course :id)
-        card-ids (map #(%1 :id) (:cards viewmodel))
+        card-ids (map #(%1 :id) (:cards @viewmodel))
         in-cards (some #(= id %1) card-ids)]
-    (cond
-      (= in-cards) (do
-                     (swap! viewmodel update-in [:cards] update-course course)
-                     (swap! viewmodel assoc :sidebar course)))))
+    (if in-cards
+      (swap! viewmodel update-in [:cards] update-course course)
+      (swap! viewmodel assoc :sidebar course))))
 
 (defn handle-item [name course]
-  (do (swap! viewmodel assoc :cards (map #(assoc %1 :type :checkpoint) (course :checkpoints))
-                             :sidebar course
-                             :topbar [(course :goal)])))
+  (swap! viewmodel assoc :cards (map #(assoc %1 :type :checkpoint) (course :checkpoints))
+         :sidebar course
+         :topbar [(course :goal)]))
 
 (defn update-viewmodel [{type :type name :name data :data}]
   (case type
@@ -38,5 +37,7 @@
 
 (defn listen-for-changes []
   (go-loop []
-      (update-viewmodel (<! api/channel))
+    (let [{type :type :as changes} (<! api/channel)]
+      (update-viewmodel changes)
+      (>! channel type))
     (recur)))

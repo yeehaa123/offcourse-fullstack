@@ -1,13 +1,17 @@
 (ns offcourse.stores.appstate
   (:require-macros [cljs.core.async.macros :refer [go go-loop]])
   (:require [reagent.session :as session]
+            [reagent.core :as r]
             [cljs.core.async :refer [chan <! >!]]
             [offcourse.stores.viewmodel :as viewmodel]))
 
+(def appstate (r/atom {:level "unchanged"}))
+
 (defn listen-for-changes []
   (go-loop []
-    (let [viewmodel (<! viewmodel/channel)]
-      (session/put! :viewmodel viewmodel))
+    (let [msg (<! viewmodel/channel)]
+      (if-not (= msg :update)
+        (swap! appstate assoc :level msg)))
     (recur)))
 
 (defn initialize-listeners []
