@@ -32,12 +32,12 @@
   background-color: $inverseColor;
 }
 
-
-
-.card_section-map {
-  height: $imageHeight;
-  background-color: $baseColor;
+.sidebar .card {
+  background-color: $inverseColor;
+  justify-content: flex-start; 
+  height: 100%;
 }
+
 
 .card_section {
   margin-bottom: $baseUnit;
@@ -53,14 +53,25 @@
   }
 }
 
+.card_section-map {
+  height: $imageHeight;
+  padding: 0;
+
+  div {
+    width: 100%;
+    height: 100%;
+    background-color: $baseColor;
+  }
+
+  .complete {
+    background-color: $learnColor;
+  }
+}
+
 .card_section-map, .card_section-nav {
   h1 {
    display: none;
   }
-}
-
-.card_section-title {
-    margin-top: $baseUnit;
 }
 
 .card_section-title, .card_section-meta {

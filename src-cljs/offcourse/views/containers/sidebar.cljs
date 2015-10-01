@@ -14,8 +14,8 @@
    (string/capitalize (name collection-name))])
 
 (defn course-collection-buttons [collection-names handlers]
-  [:nav.card
-   [:ul.card_section
+  [:nav
+   [:ul
     (for [route-name collection-names]
       ^{:key route-name}[course-collection-button route-name handlers])]])
 

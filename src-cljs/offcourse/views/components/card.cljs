@@ -28,15 +28,18 @@
         handlers (bind-handlers handlers id)]
     (cond
       (and (= context :sidebar) (= type :course))
-           [layout
-            ^{:type :title}  [:h1 (item :goal)]
-            ^{:type :list}   [todo-list (sort-by :id (item :checkpoints)) handlers]]
-      (= type :course) [layout
-                         ^{:type :title}  [:h1 (item :goal)]
-                         ^{:type :list}   [todo-list (sort-by :id (item :checkpoints)) handlers]
-                         ^{:type :button} [browse-course-button {:on-click (handlers :go-to-course!)}]]
-      (= type :checkpoint) [layout
-                             ^{:type :title}  [:h1 (item :task)]])))
-
-
-
+        [layout
+        ^{:type :map}    [:div]
+        ^{:type :title}  [:h1 (item :goal)]
+        ^{:type :list}   [todo-list (sort-by :id (item :checkpoints)) handlers]]
+      (= type :course)
+        [layout
+        ^{:type :map}    [:div]
+        ^{:type :title}  [:h1 (item :goal)]
+        ^{:type :list}   [todo-list (sort-by :id (item :checkpoints)) handlers]
+        ^{:type :button} [browse-course-button {:on-click (handlers :go-to-course!)}]]
+      (= type :checkpoint)
+        [layout
+        ^{:type :map}    [:div {:class (if (:completed item) "complete" "incomplete")}]
+        ^{:type :title}  [:h1 (item :task)]
+        ^{:type :url}    [:p (item :url)]])))
