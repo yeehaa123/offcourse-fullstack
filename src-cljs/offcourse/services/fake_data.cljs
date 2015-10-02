@@ -53,11 +53,23 @@
                                   :completed true
                                   :url "http://facebook.com"}]}])
 
+(defn index-checkpoint [checkpoint index]
+  [index (assoc checkpoint :id index)])
+
+(defn index-checkpoints [checkpoints]
+  (->> checkpoints
+       (map-indexed #(index-checkpoint %2 (+ %1 100)))
+       (into {})))
+
 (defn index-course [course index]
-  (let [checkpoints (map-indexed #(assoc %2 :id (+ %1 100)) (course :checkpoints))]
-    (assoc course :id index :checkpoints checkpoints)))
+  (let [checkpoints (index-checkpoints (:checkpoints course))]
+    [index (assoc course :id index :checkpoints checkpoints)]))
 
 (defn indexed-courses [courses]
-  (map-indexed #(index-course %2 %1) courses))
+  (->> courses
+       (map-indexed #(index-course %2 %1))
+       (into {})))
 
-(def courses (indexed-courses raw-courses))
+(def courses
+  (->> raw-courses
+       indexed-courses))

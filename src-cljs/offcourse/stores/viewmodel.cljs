@@ -13,13 +13,13 @@
 
 (defn handle-collection [name data]
   (swap! viewmodel assoc :cards (map #(assoc %1 :type :course) data)
-         :sidebar nil
-         :topbar [name]))
+                         :sidebar nil
+                         :topbar [name]))
 
 (defn handle-item [name course]
-  (swap! viewmodel assoc :cards (map #(assoc %1 :type :checkpoint) (course :checkpoints))
-         :sidebar course
-         :topbar [(course :goal)]))
+    (swap! viewmodel assoc :cards (map #(assoc %1 :type :checkpoint) (vals (course :checkpoints)))
+           :sidebar course
+           :topbar [(course :goal)]))
 
 (defn handle-update [name course]
   (let [id (course :id)

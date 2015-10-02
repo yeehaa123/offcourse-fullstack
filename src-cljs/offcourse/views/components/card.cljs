@@ -32,17 +32,18 @@
         [layout
         ^{:type :map}    [:div]
         ^{:type :title}  [:h1 (item :goal)]
-        ^{:type :list}   [todo-list (sort-by :id (item :checkpoints)) handlers]]
+        ^{:type :list}   [todo-list (sort-by :id (vals (item :checkpoints))) handlers]]
 
       (= type :course)
         [layout
         ^{:type :map}    [:div]
         ^{:type :title}  [:h1 (item :goal)]
-        ^{:type :list}   [todo-list (sort-by :id (item :checkpoints)) handlers]
+        ^{:type :list}   [todo-list (sort-by :id (vals (item :checkpoints))) handlers]
         ^{:type :button} [browse-course-button {:on-click (handlers :go-to-course!)}]]
 
       (= type :checkpoint)
         [layout
         ^{:type :map}    [:div {:class (if (:completed item) "complete" "incomplete")}]
         ^{:type :title}  [:h1 (item :task)]
+        ^{:type :title}  [:h1 (item :title)]
         ^{:type :url}    [:p (item :url)]])))
