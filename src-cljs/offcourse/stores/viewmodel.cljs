@@ -2,7 +2,6 @@
   (:require-macros [cljs.core.async.macros :refer [go go-loop]])
   (:require [reagent.core :as r]
             [offcourse.services.api :as api]
-            [offcourse.models.course :refer [update-course]]
             [cljs.core.async :refer [chan <! >!]]))
 
 (def viewmodel (r/atom {:cards nil
@@ -20,6 +19,10 @@
     (swap! viewmodel assoc :cards (map #(assoc %1 :type :checkpoint) (vals (course :checkpoints)))
            :sidebar course
            :topbar [(course :goal)]))
+
+(defn update-course [courses course]
+  (let [courses (remove #(== (course :id) (:id %1)) courses)]
+    (conj courses (assoc course :type :course))))
 
 (defn handle-update [name course]
   (let [id (course :id)
