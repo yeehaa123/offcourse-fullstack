@@ -1,6 +1,5 @@
 (ns offcourse.views.containers.sidebar
   (:require [offcourse.helpers.css :as css]
-            [offcourse.stores.viewmodel :refer [viewmodel]]
             [offcourse.views.components.logo :refer [logo]]
             [offcourse.views.components.card :refer [card]]
             [offcourse.stores.appstate :refer [appstate]]
@@ -21,7 +20,7 @@
 
 (defn sidebar []
   (let [collection-names (session/get :course-collections)
-        item (assoc (:sidebar @viewmodel) :type :course)
+        item (assoc (:sidebar (:viewmodel @appstate)) :type :course)
         level (:level @appstate)]
     [:section {:class (css/classes "sidebar")}
      [logo {:on-click #(actions/go-to! "featured")}]

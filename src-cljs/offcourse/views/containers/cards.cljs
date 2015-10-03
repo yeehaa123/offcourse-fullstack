@@ -1,11 +1,11 @@
 (ns offcourse.views.containers.cards
   (:require [reagent.session :as session]
-            [offcourse.stores.viewmodel :refer [viewmodel]]
+            [offcourse.stores.appstate :refer [appstate]]
             [offcourse.actions.index :as actions]
             [offcourse.views.components.card :refer [card]]))
 
 (defn cards []
-  (let [collection (sort-by :id (:cards @viewmodel))
+  (let [collection (sort-by :id (:cards (:viewmodel @appstate)))
         handlers {:check-done actions/check-done
                   :go-to-course! actions/go-to-course!}]
     [:section.cards
