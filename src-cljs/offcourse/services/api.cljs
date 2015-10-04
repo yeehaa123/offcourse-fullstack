@@ -14,27 +14,25 @@
 
 (def courses-store (atom courses))
 
-(defn response [type name data]
-  {:type type
-   :name name
-   :data data})
+(defn send-response [type payload]
+  (go
+    (>! channel {:type type
+                 :payload payload})))
 
-(defn send-response [response]
-  (go (>! channel response)))
+(defn choose-collection [collection-name]
+  (let [courses (vec (vals @courses-store))]
+    (collection-name {:new (vector (first courses))
+                      :popular (rest courses)
+                      :featured courses})))
 
-(defn choose-response [courses keyword]
-  (case keyword
-    :new (response :collection keyword (vector (first courses)))
-    :popular (response :collection keyword (rest courses))
-    :featured (response :collection keyword courses)))
-
-(defn send-courses [keyword]
-  (send-response (choose-response (vec (vals @courses-store)) keyword)))
+(defn send-courses [collection-name]
+  (send-response :collection
+                 {:collection-name collection-name
+                  :courses (choose-collection collection-name)}))
 
 (defn send-course [id type]
-  (let [course (get @courses-store id)
-        response (response type (course :goal) course)]
-    (send-response response)))
+  (send-response type
+                 {:course (@courses-store id)}))
 
 (defn update-course! [id cb]
   (do
@@ -44,7 +42,8 @@
 (defn listen-for-resources []
   (go-loop []
     (let [[course-id resources] (<! resources-channel)]
-      (update-course! course-id (partial course/augment course-id resources)))
+      (update-course! course-id
+                      (partial course/augment course-id resources)))
     (recur)))
 
 (listen-for-resources)
@@ -57,22 +56,22 @@
     (>! resources-channel [id {100 {:title "This is Awesome!"}
                                101 {:title "Really Amazing!"}}])))
 
-(defn get-course [id]
+(defn get-course [{id :id}]
   (do
     (send-course id :item)
     (fetch-resources id)))
 
-(defn get-courses [keyword]
+(defn get-courses [{keyword :keyword}]
   (send-courses keyword))
 
-(defn toggle-done! [course-id checkpoint-id]
+(defn toggle-done! [{:keys [course-id checkpoint-id]}]
   (update-course! course-id
                   (partial course/toggle-done course-id checkpoint-id)))
 
-(defn update-goal! [course-id new-goal]
+(defn update-goal! [{:keys [course-id new-goal]}]
   (update-course! course-id
                   (partial course/update-goal course-id new-goal)))
 
-(defn update-task! [course-id checkpoint-id new-task]
+(defn update-task! [{:keys [course-id checkpoint-id new-task]}]
   (update-course! course-id
                   (partial course/update-task course-id checkpoint-id new-task)))

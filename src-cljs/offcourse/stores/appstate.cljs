@@ -15,21 +15,21 @@
                                        :sidebar {}
                                        :topbar {}}}))
 
-(defn handle-client-action [{type :type :as msg}]
+(defn handle-client-actions [{type :type payload :payload}]
   (case type
-    :go-to (history/nav! (:location msg))
-    :get-courses (api/get-courses (:keyword msg))
-    :get-course (api/get-course (:id msg))
-    :toggle-done (api/toggle-done! (:course-id msg) (:checkpoint-id msg))
+    :go-to (history/nav! payload)
+    :get-courses (api/get-courses payload)
+    :get-course (api/get-course payload)
+    :toggle-done (api/toggle-done! payload)
     :toggle-mode (model/toggle-mode! appstate)
-    :set-mode (model/set-mode! appstate (:mode msg))))
+    :set-mode (model/set-mode! appstate payload)))
 
-(defn handle-server-action [{type :type name :name data :data :as action}]
+(defn handle-api-actions [{type :type payload :payload}]
   (do
     (case type
-      :collection (viewmodel/refresh-courses appstate name data)
-      :item (viewmodel/refresh-course appstate name data)
-      :update (viewmodel/update-course appstate name data)))
+      :collection (viewmodel/refresh-courses appstate payload)
+      :item (viewmodel/refresh-course appstate payload)
+      :update (viewmodel/update-course appstate payload)))
     (model/update-level appstate type))
 
 (defn listen-for-actions []
@@ -37,8 +37,8 @@
     (let [channels [actions/channel api/channel]
           [action port] (alts! channels)]
       (cond
-        (= port actions/channel) (handle-client-action action)
-        (= port api/channel)     (handle-server-action action)))
+        (= port actions/channel) (handle-client-actions action)
+        (= port api/channel)     (handle-api-actions action)))
       (recur)))
 
 (defn init []

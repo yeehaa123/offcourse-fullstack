@@ -6,10 +6,11 @@
 
 (def channel (chan))
 
-(defn send-action [action payload]
+(defn send-action [type payload]
   (go
-    (let [msg (merge {:type action} payload)]
-      (>! channel msg))))
+    (let [action {:type type
+                  :payload payload}]
+      (>! channel action))))
 
 (defn set-mode! [mode]
   (send-action :set-mode {:mode mode}))

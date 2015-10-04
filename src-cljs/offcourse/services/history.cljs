@@ -31,8 +31,8 @@
 
 (declare history)
 
-(defn nav! [keyword]
-  (let [token (str "/" (name keyword))]
+(defn nav! [{location :location}]
+  (let [token (str "/" (name location))]
     (.setToken history token)))
 
 (defn init! []
