@@ -1,33 +1,38 @@
 (ns offcourse.actions.index
   (:require-macros [cljs.core.async.macros :refer [go]])
   (:require [reagent.session :as session]
-            [offcourse.stores.appstate :as appstate]
-            [offcourse.services.api :as api]
-            [offcourse.services.history :as history]
             [cljs.core.async :refer [chan <! >!]]
             [ajax.core :refer [GET POST]]))
 
+(def channel (chan))
+
+(defn send-action [action payload]
+  (go
+    (let [msg (merge {:type action} payload)]
+      (>! channel msg))))
+
 (defn set-mode! [mode]
-  (appstate/set-mode! mode))
+  (send-action :set-mode {:mode mode}))
 
 (defn toggle-mode! []
-  (appstate/toggle-mode!))
+  (send-action :toggle-mode))
 
 (defn fetch-docs! []
   (GET "/docs" {:handler #(session/put! :docs %)}))
 
-
 (defn check-done [course-id checkpoint-id]
-  (api/toggle-done! course-id checkpoint-id))
+  (send-action :toggle-done
+               {:course-id course-id
+                :checkpoint-id checkpoint-id}))
 
 (defn get-courses [keyword]
-  (api/get-courses keyword))
+  (send-action :get-courses {:keyword keyword}))
 
 (defn get-course [id]
-  (api/get-course id))
+  (send-action :get-course {:id id}))
 
 (defn go-to! [location]
-  (history/nav! location))
+  (send-action :go-to {:location location}))
 
 (defn go-to-course! [id]
   (let [location (str "courses/" id)]

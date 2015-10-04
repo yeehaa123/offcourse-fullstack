@@ -3,7 +3,6 @@
             [offcourse.views.components.logo :refer [logo]]
             [offcourse.views.components.card :refer [card]]
             [offcourse.stores.appstate :refer [appstate]]
-            [reagent.session :as session]
             [clojure.string :as string]
             [offcourse.actions.index :as actions]))
 
@@ -19,7 +18,7 @@
       ^{:key route-name}[course-collection-button route-name handlers])]])
 
 (defn sidebar []
-  (let [collection-names (session/get :course-collections)
+  (let [collection-names (:course-collections @appstate)
         item (assoc (:sidebar (:viewmodel @appstate)) :type :course)
         level (:level @appstate)]
     [:section {:class (css/classes "sidebar")}
