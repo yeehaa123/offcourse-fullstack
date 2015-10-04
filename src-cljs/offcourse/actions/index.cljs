@@ -27,15 +27,25 @@
                {:course-id course-id
                 :checkpoint-id checkpoint-id}))
 
-(defn get-courses [keyword]
-  (send-action :get-courses {:keyword keyword}))
+(defn get-courses [{collection-name :collection-name}]
+  (send-action :get-courses {:collection-name collection-name}))
 
 (defn get-course [id]
   (send-action :get-course {:id id}))
 
-(defn go-to! [location]
-  (send-action :go-to {:location location}))
+(defn get-checkpoint [course-id checkpoint-id]
+  (send-action :get-checkpoint {:course-id course-id
+                            :checkpoint-id checkpoint-id}))
 
-(defn go-to-course! [id]
-  (let [location (str "courses/" id)]
-    (go-to! location)))
+(defn go-to-collection [collection-name]
+  (send-action :go-to {:level :collection
+                       :collection-name collection-name}))
+
+(defn go-to-course [course-id]
+  (send-action :go-to {:level :course
+                       :course-id course-id}))
+
+(defn go-to-checkpoint [course-id checkpoint-id]
+  (send-action :go-to {:level :checkpoint
+                       :course-id course-id
+                       :checkpoint-id checkpoint-id}))

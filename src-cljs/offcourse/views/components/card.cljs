@@ -22,6 +22,10 @@
   [:div.btn.btn-inverse.browse
    {:on-click #(on-click)} "Open"])
 
+(defn browse-checkpoint-button [{on-click :on-click}]
+  [:div.btn.btn-inverse.browse
+   {:on-click #(on-click)} "Open"])
+
 (defn card [item handlers context]
   (let [id (item :id)
         type (item :type)
@@ -39,11 +43,12 @@
         ^{:type :map}    [:div]
         ^{:type :title}  [:h1 (item :goal)]
         ^{:type :list}   [todo-list (sort-by :id (vals (item :checkpoints))) handlers]
-        ^{:type :button} [browse-course-button {:on-click (handlers :go-to-course!)}]]
+        ^{:type :button} [browse-course-button {:on-click (handlers :go-to-course)}]]
 
       (= type :checkpoint)
         [layout
-        ^{:type :map}    [:div {:class (if (:completed item) "complete" "incomplete")}]
-        ^{:type :title}  [:h1 (item :task)]
-        ^{:type :title}  [:h1 (item :title)]
-        ^{:type :url}    [:p (item :url)]])))
+         ^{:type :map}    [:div {:class (if (:completed item) "complete" "incomplete")}]
+         ^{:type :title}  [:h1 (item :task)]
+         ^{:type :title}  [:h1 (item :title)]
+         ^{:type :url}    [:p (item :url)]
+         ^{:type :button} [browse-checkpoint-button {:on-click (:go-to-checkpoint handlers)}]])))

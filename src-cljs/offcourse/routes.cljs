@@ -5,13 +5,18 @@
              :include-macros true
              :refer-macros [defroute]]))
 
+(defroute "/courses/:course-id/checkpoints/:checkpoint-id" {course-id :course-id
+                                                            checkpoint-id :checkpoint-id}
+
+  (let [course-id (js/parseInt course-id)
+        checkpoint-id (js/parseInt checkpoint-id)]
+    (actions/get-checkpoint course-id checkpoint-id)))
 
 (defroute "/courses/:id" {id :id}
   (actions/get-course (js/parseInt id)))
 
-(defroute "/:name" {name :name}
-  (let [keyword (keyword name)]
-    (actions/get-courses keyword)))
+(defroute "/:collection-name" {collection-name :collection-name}
+  (actions/get-courses {:collection-name (keyword collection-name)}))
 
 (defroute "/" []
-  (actions/toggle-mode!))
+  (actions/get-courses {:collection-name :featured}))

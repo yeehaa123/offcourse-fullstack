@@ -26,13 +26,25 @@
     (js/console.log "Token set programmatically")
     ;; let's scroll to the top to simulate a navigation
     (js/window.scrollTo 0 0))
-  ;; dispatch on the token
   (secretary/dispatch! (get-token)))
 
 (declare history)
 
-(defn nav! [{location :location}]
-  (let [token (str "/" (name location))]
+
+(defn course-token [location-data]
+  (str "courses/" (:course-id location-data)))
+
+(defn checkpoint-token [location-data]
+  (str (course-token location-data) "/checkpoints/" (:checkpoint-id location-data)))
+
+(defn create-token [{level :level :as location-data}]
+  (case level
+    :collection (name (:collection-name location-data))
+    :course (course-token location-data)
+    :checkpoint (checkpoint-token location-data)))
+
+(defn nav! [location-data]
+  (let [token (str "/" (create-token location-data))]
     (.setToken history token)))
 
 (defn init! []

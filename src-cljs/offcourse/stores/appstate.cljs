@@ -20,11 +20,12 @@
     :go-to (history/nav! payload)
     :get-courses (api/get-courses payload)
     :get-course (api/get-course payload)
+    :get-checkpoint (api/get-checkpoint payload)
     :toggle-done (api/toggle-done! payload)
     :toggle-mode (model/toggle-mode! appstate)
     :set-mode (model/set-mode! appstate payload)))
 
-(defn handle-api-actions [{type :type payload :payload}]
+(defn handle-api-actions [{type :type payload :payload trigger :trigger}]
   (do
     (case type
       :refresh-courses (viewmodel/refresh-courses appstate payload)

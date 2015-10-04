@@ -55,13 +55,17 @@
     (>! resources-channel [id {100 {:title "This is Awesome!"}
                                101 {:title "Really Amazing!"}}])))
 
+
 (defn get-course [{id :id}]
   (do
     (send-course id :refresh-course)
     (fetch-resources id)))
 
-(defn get-courses [{keyword :keyword}]
-  (send-courses keyword))
+(defn get-checkpoint [{:keys [course-id checkpoint-id]}]
+  (println checkpoint-id))
+
+(defn get-courses [{collection-name :collection-name}]
+  (send-courses collection-name))
 
 (defn toggle-done! [{:keys [course-id checkpoint-id]}]
   (update-course! course-id
