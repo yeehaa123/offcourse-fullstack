@@ -6,11 +6,12 @@
 
 (def channel (chan))
 
-(defn send-action [type payload]
-  (go
-    (let [action {:type type
-                  :payload payload}]
-      (>! channel action))))
+(defn send-action
+  ([type](send-action type {}))
+  ([type payload](go
+                   (let [action {:type type
+                                 :payload payload}]
+                   (>! channel action)))))
 
 (defn set-mode! [mode]
   (send-action :set-mode {:mode mode}))
@@ -21,7 +22,7 @@
 (defn fetch-docs! []
   (GET "/docs" {:handler #(session/put! :docs %)}))
 
-(defn check-done [course-id checkpoint-id]
+(defn toggle-done [course-id checkpoint-id]
   (send-action :toggle-done
                {:course-id course-id
                 :checkpoint-id checkpoint-id}))

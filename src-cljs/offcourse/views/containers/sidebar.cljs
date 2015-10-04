@@ -21,9 +21,10 @@
   (let [collection-names (:course-collections @appstate)
         item (assoc (:sidebar (:viewmodel @appstate)) :type :course)
         level (:level @appstate)]
+    (println level)
     [:section {:class (css/classes "sidebar")}
      [logo {:on-click #(actions/go-to! "featured")}]
      (case level
-       :collection [course-collection-buttons collection-names {:on-click actions/go-to!}]
-       :item [card item {:check-done actions/check-done} :sidebar]
+       :refresh-courses [course-collection-buttons collection-names {:on-click actions/go-to!}]
+       :refresh-course [card item {:check-done actions/toggle-done} :sidebar]
        nil)]))

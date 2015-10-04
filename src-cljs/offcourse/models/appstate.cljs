@@ -4,7 +4,7 @@
   (if (= mode :learn) :curate :learn))
 
 (defn update-level [appstate type]
-  (if-not (= type :update)
+  (if-not (= type :update-course)
     (swap! appstate assoc :level type)))
 
 (defn set-course-collections! [appstate collections]

@@ -27,9 +27,9 @@
 (defn handle-api-actions [{type :type payload :payload}]
   (do
     (case type
-      :collection (viewmodel/refresh-courses appstate payload)
-      :item (viewmodel/refresh-course appstate payload)
-      :update (viewmodel/update-course appstate payload)))
+      :refresh-courses (viewmodel/refresh-courses appstate payload)
+      :refresh-course (viewmodel/refresh-course appstate payload)
+      :update-course (viewmodel/update-course appstate payload)))
     (model/update-level appstate type))
 
 (defn listen-for-actions []

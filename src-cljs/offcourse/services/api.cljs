@@ -5,7 +5,6 @@
             [offcourse.services.fake-data :refer [courses]]
             [offcourse.models.checkpoint :as checkpoint]))
 
-
 (def channel (chan))
 
 ;---------------PRIVATE API-------------------------------------------------------
@@ -26,7 +25,7 @@
                       :featured courses})))
 
 (defn send-courses [collection-name]
-  (send-response :collection
+  (send-response :refresh-courses
                  {:collection-name collection-name
                   :courses (choose-collection collection-name)}))
 
@@ -37,7 +36,7 @@
 (defn update-course! [id cb]
   (do
     (swap! courses-store #(cb %1))
-    (send-course id :update)))
+    (send-course id :update-course)))
 
 (defn listen-for-resources []
   (go-loop []
@@ -58,7 +57,7 @@
 
 (defn get-course [{id :id}]
   (do
-    (send-course id :item)
+    (send-course id :refresh-course)
     (fetch-resources id)))
 
 (defn get-courses [{keyword :keyword}]

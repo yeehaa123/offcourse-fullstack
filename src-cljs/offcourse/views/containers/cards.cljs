@@ -6,7 +6,7 @@
 
 (defn cards []
   (let [collection (sort-by :id (:cards (:viewmodel @appstate)))
-        handlers {:check-done actions/check-done
+        handlers {:check-done actions/toggle-done
                   :go-to-course! actions/go-to-course!}]
     [:section.cards
      (for [item collection] ^{:key (item :id)}[card item handlers :cards])]))
