@@ -38,6 +38,13 @@
         ^{:type :title}  [:h1 (item :goal)]
         ^{:type :list}   [todo-list (sort-by :id (vals (item :checkpoints))) handlers]]
 
+      (and (= context :sidebar) (= type :checkpoint))
+        [layout
+         ^{:type :map}    [:div {:class (if (:completed item) "complete" "incomplete")}]
+         ^{:type :title}  [:h1 (item :task)]
+         ^{:type :title}  [:h1 (item :title)]
+         ^{:type :url}    [:p (item :url)]]
+
       (= type :course)
         [layout
         ^{:type :map}    [:div]

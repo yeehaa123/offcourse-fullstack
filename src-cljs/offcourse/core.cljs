@@ -12,6 +12,4 @@
 
 (defn init! []
   (appstate/init)
-  (actions/fetch-docs!)
-  (history/init!)
   (mount-components))

@@ -7,10 +7,7 @@
 
 (defroute "/courses/:course-id/checkpoints/:checkpoint-id" {course-id :course-id
                                                             checkpoint-id :checkpoint-id}
-
-  (let [course-id (js/parseInt course-id)
-        checkpoint-id (js/parseInt checkpoint-id)]
-    (actions/get-checkpoint course-id checkpoint-id)))
+  (apply actions/get-checkpoint (map js/parseInt [course-id checkpoint-id])))
 
 (defroute "/courses/:id" {id :id}
   (actions/get-course (js/parseInt id)))

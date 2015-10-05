@@ -30,6 +30,7 @@
     (case type
       :refresh-courses (viewmodel/refresh-courses appstate payload)
       :refresh-course (viewmodel/refresh-course appstate payload)
+      :refresh-checkpoint (viewmodel/refresh-checkpoint appstate payload)
       :update-course (viewmodel/update-course appstate payload)))
     (model/update-level appstate type))
 
@@ -43,4 +44,6 @@
       (recur)))
 
 (defn init []
- (listen-for-actions))
+  (actions/fetch-docs!)
+  (history/init!)
+  (listen-for-actions))

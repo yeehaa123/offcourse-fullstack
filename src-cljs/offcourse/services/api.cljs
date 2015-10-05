@@ -33,6 +33,14 @@
   (send-response type
                  {:course (@courses-store id)}))
 
+(defn send-checkpoint [course-id checkpoint-id type]
+  (let [course (@courses-store course-id)
+        checkpoints (:checkpoints course)
+        checkpoint (assoc (checkpoints checkpoint-id)
+                          :course-id course-id
+                          :course-goal (course :goal))]
+    (send-response type {:checkpoint checkpoint})))
+
 (defn update-course! [id cb]
   (do
     (swap! courses-store #(cb %1))
@@ -55,14 +63,13 @@
     (>! resources-channel [id {100 {:title "This is Awesome!"}
                                101 {:title "Really Amazing!"}}])))
 
-
 (defn get-course [{id :id}]
   (do
     (send-course id :refresh-course)
     (fetch-resources id)))
 
 (defn get-checkpoint [{:keys [course-id checkpoint-id]}]
-  (println checkpoint-id))
+  (send-checkpoint course-id checkpoint-id :refresh-checkpoint))
 
 (defn get-courses [{collection-name :collection-name}]
   (send-courses collection-name))

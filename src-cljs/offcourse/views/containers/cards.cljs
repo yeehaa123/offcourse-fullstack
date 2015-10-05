@@ -8,6 +8,6 @@
   (let [collection (sort-by :id (:cards (:viewmodel @appstate)))
         handlers {:check-done actions/toggle-done
                   :go-to-course actions/go-to-course
-                  :go-to-checkpoint (partial actions/go-to-checkpoint 1)}]
+                  :go-to-checkpoint (partial actions/go-to-checkpoint 0)}]
     [:section.cards
      (for [item collection] ^{:key (item :id)}[card item handlers :cards])]))

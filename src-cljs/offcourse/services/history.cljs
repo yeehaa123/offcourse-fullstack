@@ -35,7 +35,8 @@
   (str "courses/" (:course-id location-data)))
 
 (defn checkpoint-token [location-data]
-  (str (course-token location-data) "/checkpoints/" (:checkpoint-id location-data)))
+  (str (course-token location-data)
+       "/checkpoints/" (:checkpoint-id location-data)))
 
 (defn create-token [{level :level :as location-data}]
   (case level

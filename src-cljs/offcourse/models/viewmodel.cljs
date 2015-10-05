@@ -7,6 +7,12 @@
 (defn refresh-viewmodel [appstate viewmodel]
   (swap! appstate assoc-in [:viewmodel] viewmodel))
 
+(defn refresh-checkpoint [appstate {checkpoint :checkpoint}]
+  (let [viewmodel {:cards nil
+                   :sidebar checkpoint
+                   :topbar [(checkpoint :course-goal) (checkpoint :task)]}]
+    (refresh-viewmodel appstate viewmodel)))
+
 (defn refresh-course [appstate {course :course}]
   (let [viewmodel {:cards (map #(assoc %1 :type :checkpoint) (vals (course :checkpoints)))
                    :sidebar course
