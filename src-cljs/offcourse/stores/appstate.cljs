@@ -4,6 +4,7 @@
             [offcourse.models.viewmodel :as viewmodel]
             [offcourse.models.appstate :as model]
             [offcourse.services.api :as api]
+            [offcourse.stores.data :as ds]
             [offcourse.services.history :as history]
             [offcourse.actions.index :as actions]
             [cljs.core.async :refer [chan alts! <! >!]]))
@@ -25,7 +26,7 @@
     :toggle-mode (model/toggle-mode! appstate)
     :set-mode (model/set-mode! appstate payload)))
 
-(defn handle-api-actions [{type :type payload :payload trigger :trigger}]
+(defn handle-ds-actions [{type :type payload :payload trigger :trigger}]
   (do
     (case type
       :refresh-courses (viewmodel/refresh-courses appstate payload)
@@ -36,11 +37,11 @@
 
 (defn listen-for-actions []
   (go-loop []
-    (let [channels [actions/channel api/channel]
+    (let [channels [actions/channel ds/channel]
           [action port] (alts! channels)]
       (cond
         (= port actions/channel) (handle-client-actions action)
-        (= port api/channel)     (handle-api-actions action)))
+        (= port ds/channel)     (handle-ds-actions action)))
       (recur)))
 
 (defn init []
