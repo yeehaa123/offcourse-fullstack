@@ -33,13 +33,21 @@
   (send-response type
                  {:course (@courses-store id)}))
 
-(defn send-checkpoint [course-id checkpoint-id type]
+(defn send-checkpoint [type course-id checkpoint-id]
   (let [course (@courses-store course-id)
         checkpoints (:checkpoints course)
         checkpoint (assoc (checkpoints checkpoint-id)
                           :course-id course-id
                           :course-goal (course :goal))]
-    (send-response type {:checkpoint checkpoint})))
+    (send-response type
+                   {:checkpoint checkpoint})))
+
+(defn update-checkpoint! [type course-id checkpoint-id cb]
+  (do
+    (swap! courses-store #(cb %1))
+    (case type
+      :refresh-checkpoint (send-checkpoint type course-id checkpoint-id)
+      :update-course (send-course course-id :update-course))))
 
 (defn update-course! [id cb]
   (do
@@ -48,28 +56,39 @@
 
 (defn listen-for-resources []
   (go-loop []
-    (let [[course-id resources] (<! resources-channel)]
-      (update-course! course-id
-                      (partial course/augment course-id resources)))
+    (let [[type course-id checkpoint-id resource] (<! resources-channel)]
+      (update-checkpoint! type
+                          course-id
+                          checkpoint-id
+                          (partial course/add-data-to-checkpoint course-id
+                                                                 checkpoint-id
+                                                                 resource)))
     (recur)))
 
 (listen-for-resources)
 
 ;--------------- PUBLIC API------------------------------------------------------
 
-(defn fetch-resources [id]
+(defn fetch-resource [type course-id checkpoint-id]
   (go
     (<! (timeout 1000))
-    (>! resources-channel [id {100 {:title "This is Awesome!"}
-                               101 {:title "Really Amazing!"}}])))
+    (>! resources-channel [type course-id checkpoint-id {:title "BlaBla"
+                                                         :url "http://facebook.com"}])))
 
-(defn get-course [{id :id}]
+(defn get-course [{course-id :id}]
   (do
-    (send-course id :refresh-course)
-    (fetch-resources id)))
+    (send-course course-id :refresh-course)
+    (let [course (@courses-store course-id)
+          checkpoints (vals (course :checkpoints))
+          checkpoint-ids (map :id checkpoints)
+          fetch-resource (partial fetch-resource :update-course course-id)]
+      (doseq [checkpoint-id checkpoint-ids]
+        (fetch-resource checkpoint-id)))))
 
 (defn get-checkpoint [{:keys [course-id checkpoint-id]}]
-  (send-checkpoint course-id checkpoint-id :refresh-checkpoint))
+  (do
+    (send-checkpoint :refresh-checkpoint course-id checkpoint-id)
+    (fetch-resource :refresh-checkpoint course-id checkpoint-id)))
 
 (defn get-courses [{collection-name :collection-name}]
   (send-courses collection-name))

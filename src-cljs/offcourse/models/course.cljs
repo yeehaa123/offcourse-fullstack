@@ -38,3 +38,6 @@
   (update [id :checkpoints]
           (fn [checkpoints] (augment-checkpoints checkpoints resources))
           courses))
+
+(defn add-data-to-checkpoint [course-id checkpoint-id resource courses]
+  (update-in courses [course-id :checkpoints checkpoint-id] #(into %1 resource)))
