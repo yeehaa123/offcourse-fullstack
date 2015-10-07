@@ -1,4 +1,5 @@
-(ns offcourse.models.viewmodel)
+(ns offcourse.models.viewmodel
+  (:require [offcourse.stores.courses :as ds]))
 
 (defn update-cards [courses course]
   (let [courses (remove #(== (course :id) (:id %1)) courses)]
@@ -7,28 +8,36 @@
 (defn refresh-viewmodel [appstate viewmodel]
   (swap! appstate assoc-in [:viewmodel] viewmodel))
 
-(defn refresh-checkpoint [appstate {checkpoint :checkpoint}]
-  (let [viewmodel {:cards nil
+(defn refresh-checkpoint [appstate]
+  (let [level (:level @appstate)
+        course-id (:course-id level)
+        checkpoint-id (:checkpoint-id level)
+        course (@ds/store course-id)
+        checkpoint (get (course :checkpoints) checkpoint-id)
+        viewmodel {:cards nil
                    :sidebar checkpoint
-                   :topbar [(checkpoint :course-goal) (checkpoint :task)]}]
+                   :topbar [(course :goal) (checkpoint :task)]}]
     (refresh-viewmodel appstate viewmodel)))
 
-(defn refresh-course [appstate {course :course}]
-  (let [viewmodel {:cards (map #(assoc %1 :type :checkpoint) (vals (course :checkpoints)))
+(defn refresh-course [appstate]
+  (let [course-id (:course-id (:level @appstate))
+        course (@ds/store course-id)
+        viewmodel {:cards (map #(assoc %1 :type :checkpoint) (vals (course :checkpoints)))
                    :sidebar course
                    :topbar [(course :goal)]}]
     (refresh-viewmodel appstate viewmodel)))
 
-(defn refresh-courses [appstate {collection-name :collection-name courses :courses}]
-  (let [viewmodel {:cards (map #(assoc %1 :type :course) courses)
+(defn refresh-collection [appstate]
+  (let [collection-name (:collection-name (:level @appstate))
+        courses (ds/choose-collection collection-name)
+        viewmodel {:cards (map #(assoc %1 :type :course) courses)
                    :sidebar nil
                    :topbar [collection-name]}]
     (refresh-viewmodel appstate viewmodel)))
 
-(defn update-course [appstate {name :name course :course :as payload}]
-  (let [id (course :id)
-        card-ids (map #(%1 :id) (:cards (:viewmodel @appstate)))
-        in-cards (some #(= id %1) card-ids)]
-    (if in-cards
-      (swap! appstate update-in [:viewmodel :cards] #(update-cards %1 course))
-      (refresh-course appstate payload))))
+(defn update-viewmodel [appstate]
+  (let [{type :type :as level} (:level @appstate)]
+    (case type
+      :collection (refresh-collection appstate)
+      :course (refresh-course appstate)
+      :checkpoint (refresh-checkpoint appstate))))

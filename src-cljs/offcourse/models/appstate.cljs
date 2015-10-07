@@ -3,9 +3,8 @@
 (defn toggle-mode [mode]
   (if (= mode :learn) :curate :learn))
 
-(defn update-level [appstate type]
-  (if-not (= type :update-course)
-    (swap! appstate assoc :level type)))
+(defn set-level [appstate payload]
+  (swap! appstate assoc :level payload))
 
 (defn set-course-collections! [appstate collections]
   (swap! appstate assoc-in [:course-collections] collections))

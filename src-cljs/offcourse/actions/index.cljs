@@ -28,14 +28,17 @@
                 :checkpoint-id checkpoint-id}))
 
 (defn get-courses [{collection-name :collection-name}]
-  (send-action :get-courses {:collection-name collection-name}))
+  (send-action :set-level {:type :collection
+                           :collection-name collection-name}))
 
 (defn get-course [id]
-  (send-action :get-course {:id id}))
+  (send-action :set-level {:type :course
+                           :course-id id}))
 
 (defn get-checkpoint [course-id checkpoint-id]
-  (send-action :get-checkpoint {:course-id course-id
-                            :checkpoint-id checkpoint-id}))
+  (send-action :set-level {:type :checkpoint
+                           :course-id course-id
+                           :checkpoint-id checkpoint-id}))
 
 (defn go-to-collection [collection-name]
   (send-action :go-to {:level :collection
@@ -49,3 +52,6 @@
   (send-action :go-to {:level :checkpoint
                        :course-id course-id
                        :checkpoint-id checkpoint-id}))
+
+(defn refresh-viewmodel []
+  (send-action :refresh-viewmodel))

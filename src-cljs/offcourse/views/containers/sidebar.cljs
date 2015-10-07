@@ -20,11 +20,11 @@
 (defn sidebar []
   (let [collection-names (:course-collections @appstate)
         item (:sidebar (:viewmodel @appstate))
-        level (:level @appstate)]
+        level (:type (:level @appstate))]
     [:section {:class (css/classes "sidebar")}
      [logo {:on-click #(actions/go-to-collection :featured)}]
      (case level
-       :refresh-courses [course-collection-buttons collection-names {:on-click actions/go-to-collection}]
-       :refresh-course [card (assoc item :type :course) {:check-done actions/toggle-done} :sidebar]
-       :refresh-checkpoint [card (assoc item :type :checkpoint) {} :sidebar]
-       nil)]))
+       :collection [course-collection-buttons collection-names {:on-click actions/go-to-collection}]
+       :course [card (assoc item :type :course) {:check-done actions/toggle-done} :sidebar]
+       :checkpoint [card (assoc item :type :checkpoint) {} :sidebar]
+       :initial nil)]))

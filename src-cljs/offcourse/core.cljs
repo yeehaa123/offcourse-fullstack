@@ -2,6 +2,7 @@
   (:require [reagent.core :as reagent :refer [atom]]
             [offcourse.views.index :as views]
             [offcourse.stores.appstate :as appstate]
+            [offcourse.stores.data :as api]
             [offcourse.routes]
             [offcourse.services.history :as history]
             [offcourse.actions.index :as actions]))
@@ -12,4 +13,6 @@
 
 (defn init! []
   (appstate/init)
+  (api/init)
+  (history/init!)
   (mount-components))
