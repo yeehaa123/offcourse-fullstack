@@ -6,7 +6,7 @@
             [offcourse.services.fake-data :as fake-data]
             [offcourse.models.checkpoint :as checkpoint]))
 
-(def channel (chan 10))
+(def channel (chan))
 
 (defn fetch-collection [collection-name]
   (let [collection-ids {:featured [0 1 2 3]

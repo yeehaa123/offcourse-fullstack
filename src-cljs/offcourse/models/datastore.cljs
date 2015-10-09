@@ -15,6 +15,7 @@
 (defn refresh-course [store {course :course}]
   (do
     (swap! store assoc-in [:courses (:id course)] course)
+    (comment (add action/get-resources here))
     (actions/refresh-viewmodel store)))
 
 (defn toggle-done [store {course-id :course-id
@@ -30,12 +31,15 @@
     (swap! store update-in [:courses course-id :checkpoints checkpoint-id]
            #(assoc %1 :url (:url resource)
                       :resource resource))
+    (println (get-in @store [:courses course-id :checkpoints checkpoint-id]))
     (actions/refresh-viewmodel store)))
 
-(defn get-resources [_ {course :course}]
-  (doseq [checkpoint (vals (:checkpoints course))]
-    (if-not (:resource checkpoint)
-      (resources/fetch-resource (:id course) checkpoint))))
+(defn get-resources [store {{course-id :id} :course}]
+  (let [course (get (:courses @store) course-id)
+        checkpoints (vals (:checkpoints course))]
+    (doseq [checkpoint checkpoints]
+      (when-not (:resource checkpoint)
+        (resources/fetch-resource course-id checkpoint)))))
 
 (defn get-course [{courses :courses :as store}
                   {course-id :course-id}]

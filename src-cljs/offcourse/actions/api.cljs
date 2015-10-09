@@ -3,7 +3,7 @@
   (:require [cljs.core.async :refer [chan <! >!]]
             [ajax.core :refer [GET POST]]))
 
-(def channel (chan 10))
+(def channel (chan))
 
 (defn send-action
   ([type](send-action type {}))
