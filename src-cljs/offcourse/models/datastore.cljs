@@ -1,5 +1,8 @@
 (ns offcourse.models.datastore
-  (:require [offcourse.actions.index :as actions]))
+  (:require [offcourse.actions.index :as actions]
+            [offcourse.stores.resources :as resources]
+            [offcourse.stores.courses :as courses]
+            [offcourse.actions.index :as actions]))
 
 (defn refresh-collection [store {collection-name :collection-name
                                  collection-ids :collection-ids
@@ -24,5 +27,32 @@
                                  checkpoint-id :checkpoint-id
                                  resource :resource}]
   (do
-    (swap! store assoc-in [:courses course-id :checkpoints checkpoint-id :resource] resource)
+    (swap! store update-in [:courses course-id :checkpoints checkpoint-id]
+           #(assoc %1 :url (:url resource)
+                      :resource resource))
     (actions/refresh-viewmodel store)))
+
+(defn get-resources [_ {course :course}]
+  (doseq [checkpoint (vals (:checkpoints course))]
+    (if-not (:resource checkpoint)
+      (resources/fetch-resource (:id course) checkpoint))))
+
+(defn get-course [{courses :courses :as store}
+                  {course-id :course-id}]
+  (let [course (get courses course-id)]
+    (if-not course
+      (courses/fetch-course course-id)
+      (do
+        (actions/refresh-viewmodel store)
+        (get-resources store {:course course})))))
+
+(defn get-collection [{collections :collections :as store}
+                      {collection-name :collection-name}]
+  (if-not (collection-name collections)
+    (courses/fetch-collection collection-name)
+    (actions/refresh-viewmodel store)))
+
+(defn get-data [store {type :type :as payload}]
+  (case type
+    :collection (get-collection store payload)
+    (get-course store payload)))

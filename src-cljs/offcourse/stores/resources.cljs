@@ -10,7 +10,7 @@
 
 (defn fetch-resource [course-id checkpoint]
   (let [checkpoint-id (:id checkpoint)
-        url (:url (:resource checkpoint))
+        url (:url checkpoint)
         resource (get fake-data/resources url)]
     (go
       (<! (timeout (rand-int 3000)))
@@ -18,11 +18,3 @@
                    :payload {:course-id course-id
                              :checkpoint-id checkpoint-id
                              :resource resource}}))))
-
-(defn fetch-resources [course-id checkpoints]
-  (doseq [checkpoint checkpoints]
-    (fetch-resource course-id checkpoint)))
-
-(defn get-course-resources [payload]
-  (let [course (:course payload)]
-    (fetch-resources (:id course) (vals (:checkpoints course)))))

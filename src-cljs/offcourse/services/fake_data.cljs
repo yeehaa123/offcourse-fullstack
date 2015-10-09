@@ -43,7 +43,7 @@
 
 (defn index-checkpoint [checkpoint index]
   [index (assoc checkpoint :id index
-                           :resource {:url (rand-nth urls)})])
+                           :url (rand-nth urls))])
 
 (defn index-checkpoints [checkpoints]
   (->> checkpoints
@@ -65,8 +65,10 @@
 
 (def resources
   (->> urls
-       (map-indexed (fn [index url] [url {:url url
-                                          :title (str "fake-resource " index)}]))
+       (map-indexed (fn [index url]
+                      (if (= url "google.com")
+                        [url {:url "offcourse.io"
+                              :title (str "fake-resource " index)}]
+                        [url {:url url
+                              :title (str "fake-resource " index)}])))
        (into {})))
-
-
