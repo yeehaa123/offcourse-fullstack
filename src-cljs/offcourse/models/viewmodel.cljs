@@ -8,36 +8,39 @@
 (defn refresh-viewmodel [appstate viewmodel]
   (swap! appstate assoc-in [:viewmodel] viewmodel))
 
-(defn refresh-checkpoint [appstate]
+(defn refresh-checkpoint [appstate store]
   (let [level (:level @appstate)
         course-id (:course-id level)
         checkpoint-id (:checkpoint-id level)
-        course (@ds/store course-id)
+        course ((:courses @store) course-id)
         checkpoint (get (course :checkpoints) checkpoint-id)
         viewmodel {:cards nil
                    :sidebar checkpoint
                    :topbar [(course :goal) (checkpoint :task)]}]
     (refresh-viewmodel appstate viewmodel)))
 
-(defn refresh-course [appstate]
+(defn refresh-course [appstate store]
   (let [course-id (:course-id (:level @appstate))
-        course (@ds/store course-id)
+        course ((:courses @store) course-id)
         viewmodel {:cards (map #(assoc %1 :type :checkpoint) (vals (course :checkpoints)))
                    :sidebar course
                    :topbar [(course :goal)]}]
     (refresh-viewmodel appstate viewmodel)))
 
-(defn refresh-collection [appstate]
+(defn refresh-collection [appstate store]
   (let [collection-name (:collection-name (:level @appstate))
-        courses (ds/choose-collection collection-name)
-        viewmodel {:cards (map #(assoc %1 :type :course) courses)
+        collection      (->> @store
+                             :collections
+                             collection-name
+                             (map #(get (:courses @store) %1)))
+        viewmodel {:cards (map #(assoc %1 :type :course) collection)
                    :sidebar nil
                    :topbar [collection-name]}]
     (refresh-viewmodel appstate viewmodel)))
 
-(defn update-viewmodel [appstate]
+(defn update-viewmodel [appstate {store :store}]
   (let [{type :type :as level} (:level @appstate)]
     (case type
-      :collection (refresh-collection appstate)
-      :course (refresh-course appstate)
-      :checkpoint (refresh-checkpoint appstate))))
+      :collection (refresh-collection appstate store)
+      :course (refresh-course appstate store)
+      :checkpoint (refresh-checkpoint appstate store))))

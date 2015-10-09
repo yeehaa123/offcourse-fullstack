@@ -9,12 +9,19 @@
 (def channel (chan))
 
 (defn fetch-resource [course-id checkpoint-id]
-  (println course-id checkpoint-id)
   (go
-    (<! (timeout 1000))
-    (>! channel [course-id checkpoint-id {:title "BlaBlaBla"
-                                          :url "http://facebook.com"}])))
+    (<! (timeout (rand-int 3000)))
+    (>! channel {:type :augment-checkpoint
+                 :payload {:course-id course-id
+                           :checkpoint-id checkpoint-id
+                           :resource {:title "BlaBlaBla"
+                                      :url "http://facebook.com"}}})))
 
 (defn fetch-resources [course-id checkpoint-ids]
   (doseq [checkpoint-id checkpoint-ids]
     (fetch-resource course-id checkpoint-id)))
+
+(defn get-course-resources [payload]
+  (let [course (:course payload)
+        checkpoint-ids (keys (:checkpoints course))]
+    (fetch-resources (:id course) checkpoint-ids)))

@@ -17,3 +17,9 @@
 
 (defn get-data [payload]
   (send-action :get-data payload))
+
+(defn refresh-course [payload]
+  (send-action :refresh-course payload))
+
+(defn refresh-collection [payload]
+  (send-action :refresh-collection payload))

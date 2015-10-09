@@ -1,7 +1,6 @@
 (ns offcourse.actions.index
   (:require-macros [cljs.core.async.macros :refer [go]])
-  (:require [reagent.session :as session]
-            [cljs.core.async :refer [chan <! >!]]
+  (:require [cljs.core.async :refer [chan <! >!]]
             [ajax.core :refer [GET POST]]))
 
 (def channel (chan))
@@ -19,8 +18,6 @@
 (defn toggle-mode! []
   (send-action :toggle-mode))
 
-(defn fetch-docs! []
-  (GET "/docs" {:handler #(session/put! :docs %)}))
 
 (defn toggle-done [course-id checkpoint-id]
   (send-action :toggle-done
@@ -53,5 +50,5 @@
                        :course-id course-id
                        :checkpoint-id checkpoint-id}))
 
-(defn refresh-viewmodel []
-  (send-action :refresh-viewmodel))
+(defn refresh-viewmodel [store]
+  (send-action :refresh-viewmodel {:store store}))

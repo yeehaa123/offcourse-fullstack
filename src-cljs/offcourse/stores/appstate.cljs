@@ -25,7 +25,7 @@
         :toggle-done       (api-actions/toggle-done payload)
         :toggle-mode       (model/toggle-mode! appstate)
         :set-mode          (model/set-mode! appstate payload)
-        :refresh-viewmodel (viewmodel/update-viewmodel appstate)))
+        :refresh-viewmodel (viewmodel/update-viewmodel appstate payload)))
       (recur)))
 
 (defn init []
