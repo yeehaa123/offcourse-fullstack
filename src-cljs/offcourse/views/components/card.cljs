@@ -42,8 +42,8 @@
         [layout
          ^{:type :map}    [:div {:class (if (:completed item) "complete" "incomplete")}]
          ^{:type :title}  [:h1 (item :task)]
-         ^{:type :title}  [:h1 (item :title)]
-         ^{:type :url}    [:p (item :url)]]
+         ^{:type :title}  [:h1 (:title (:resource item))]
+         ^{:type :url}    [:p (:url (:resource item))]]
 
       (= type :course)
         [layout
@@ -56,6 +56,6 @@
         [layout
          ^{:type :map}    [:div {:class (if (:completed item) "complete" "incomplete")}]
          ^{:type :title}  [:h1 (item :task)]
-         ^{:type :title}  [:h1 (item :title)]
-         ^{:type :url}    [:p (item :url)]
+         ^{:type :title}  [:h1 (:title (:resource item))]
+         ^{:type :url}    [:p (:url (:resource item))]
          ^{:type :button} [browse-checkpoint-button {:on-click (:go-to-checkpoint handlers)}]])))

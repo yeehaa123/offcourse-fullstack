@@ -3,25 +3,26 @@
   (:require [cljs.core.async :refer [chan timeout <! >!]]
             [offcourse.models.course :as course]
             [offcourse.actions.index :as actions]
-            [offcourse.services.fake-data :refer [courses]]
+            [offcourse.services.fake-data :as fake-data]
             [offcourse.models.checkpoint :as checkpoint]))
 
 (def channel (chan))
 
-(defn fetch-resource [course-id checkpoint-id]
-  (go
-    (<! (timeout (rand-int 3000)))
-    (>! channel {:type :augment-checkpoint
-                 :payload {:course-id course-id
-                           :checkpoint-id checkpoint-id
-                           :resource {:title "BlaBlaBla"
-                                      :url "http://facebook.com"}}})))
+(defn fetch-resource [course-id checkpoint]
+  (let [checkpoint-id (:id checkpoint)
+        url (:url (:resource checkpoint))
+        resource (get fake-data/resources url)]
+    (go
+      (<! (timeout (rand-int 3000)))
+      (>! channel {:type :augment-checkpoint
+                   :payload {:course-id course-id
+                             :checkpoint-id checkpoint-id
+                             :resource resource}}))))
 
-(defn fetch-resources [course-id checkpoint-ids]
-  (doseq [checkpoint-id checkpoint-ids]
-    (fetch-resource course-id checkpoint-id)))
+(defn fetch-resources [course-id checkpoints]
+  (doseq [checkpoint checkpoints]
+    (fetch-resource course-id checkpoint)))
 
 (defn get-course-resources [payload]
-  (let [course (:course payload)
-        checkpoint-ids (keys (:checkpoints course))]
-    (fetch-resources (:id course) checkpoint-ids)))
+  (let [course (:course payload)]
+    (fetch-resources (:id course) (vals (:checkpoints course)))))

@@ -24,5 +24,5 @@
                                  checkpoint-id :checkpoint-id
                                  resource :resource}]
   (do
-    (swap! store update-in [:courses course-id :checkpoints checkpoint-id] #(into %1 resource))
+    (swap! store assoc-in [:courses course-id :checkpoints checkpoint-id :resource] resource)
     (actions/refresh-viewmodel store)))

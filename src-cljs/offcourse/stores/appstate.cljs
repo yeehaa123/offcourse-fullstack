@@ -20,8 +20,9 @@
     (let [{type :type payload :payload} (<! actions/channel)]
       (case type
         :go-to             (history/nav! payload)
-        :set-level         (do (model/set-level appstate payload)
-                               (api-actions/get-data payload))
+        :set-level         (do
+                             (api-actions/get-data payload)
+                             (model/set-level appstate payload))
         :toggle-done       (api-actions/toggle-done payload)
         :toggle-mode       (model/toggle-mode! appstate)
         :set-mode          (model/set-mode! appstate payload)

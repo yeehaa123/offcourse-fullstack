@@ -4,21 +4,28 @@
             [offcourse.models.datastore :as model]
             [offcourse.stores.resources :as resources]
             [offcourse.stores.courses :as courses]
-            [offcourse.actions.api :as actions]))
+            [offcourse.actions.api :as actions]
+            [offcourse.actions.index :as appstate-actions]))
 
 (def store (atom {:collections {}
                   :courses {}}))
 
-(defn get-collection [{collection-name :collection-name}]
-  (let [collection (collection-name (:collections @store))]
-    (when-not collection
-      (courses/fetch-collection collection-name))))
+(defn get-resources [course]
+  (do
+    (appstate-actions/refresh-viewmodel store)
+    (resources/get-course-resources {:course course})))
 
 (defn get-course [{course-id :course-id}]
   (let [course ((:courses @store) course-id)]
     (if-not course
       (courses/fetch-course course-id)
-      (resources/get-course-resources {:course course}))))
+      (get-resources course))))
+
+(defn get-collection [{collection-name :collection-name}]
+  (let [collection (collection-name (:collections @store))]
+    (if-not collection
+      (courses/fetch-collection collection-name)
+      (appstate-actions/refresh-viewmodel store))))
 
 (defn get-data [{type :type :as payload}]
   (case type

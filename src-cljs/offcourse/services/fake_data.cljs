@@ -1,60 +1,49 @@
 (ns offcourse.services.fake-data)
 
+(def urls ["facebook.com" "google.com" "yahoo.com"])
+
 (def raw-courses [{:goal "Become a Frontend Ninja"
                    :checkpoints [{:task "Install React"
-                                  :completed true
-                                  :url "http://facebook.com"}
+                                  :completed true}
                                  {:task "Build a Component"
-                                  :completed false
-                                  :url "http://facebook.com"}
-                                 {:task "Create and App"
-                                  :completed false
-                                  :url "http://facebook.com"}]}
+                                  :completed false}
+                                 {:task "Create an App"
+                                  :completed false}]}
                   {:goal "Improve your Backend Chops"
                    :checkpoints [{:task "Install Node"
                                   :completed true
-                                  :url "http://facebook.com"}
+                                  :resource {:url "http://facebook.com"}}
                                  {:task "Set up a Route"
-                                  :completed false
-                                  :url "http://facebook.com"}
+                                  :completed false}
                                  {:task "Add some Middleware"
-                                  :completed false
-                                  :url "http://facebook.com"}
+                                  :completed false}
                                  {:task "Build an API"
-                                  :completed false
-                                  :url "http://facebook.com"}]}
+                                  :completed false}]}
                   {:goal "Get More Street Cred"
                    :checkpoints [{:task "Talk Dirty with Reika"
-                                  :completed false
-                                  :url "http://facebook.com"}
+                                  :completed false}
                                  {:task "Pair with Greg"
-                                  :completed false
-                                  :url "http://facebook.com"}
+                                  :completed false}
                                  {:task "Scheme with Charlotte"
-                                  :completed false
-                                  :url "http://facebook.com"}
+                                  :completed false}
                                  {:task "Brawl with Yeehaa"
-                                  :completed false
-                                  :url "http://facebook.com"}]}
+                                  :completed false}]}
                   {:goal "Make DevOps Your Thing"
                    :checkpoints [{:task "Tame the Command Line"
-                                  :completed true
-                                  :url "http://facebook.com"}
+                                  :completed false}
                                  {:task "Just Git It"
-                                  :completed false
-                                  :url "http://facebook.com"}
+                                  :completed false}
                                  {:task "Try a PAAS"
-                                  :completed false
-                                  :url "http://facebook.com"}
+                                  :completed false}
                                  {:task "Make Containers"
-                                  :completed false
-                                  :url "http://facebook.com"}
+                                  :completed false}
                                  {:task "Do it All"
-                                  :completed true
-                                  :url "http://facebook.com"}]}])
+                                  :completed false}]}])
+
 
 (defn index-checkpoint [checkpoint index]
-  [index (assoc checkpoint :id index)])
+  [index (assoc checkpoint :id index
+                           :resource {:url (rand-nth urls)})])
 
 (defn index-checkpoints [checkpoints]
   (->> checkpoints
@@ -73,3 +62,11 @@
 (def courses
   (->> raw-courses
        indexed-courses))
+
+(def resources
+  (->> urls
+       (map-indexed (fn [index url] [url {:url url
+                                          :title (str "fake-resource " index)}]))
+       (into {})))
+
+

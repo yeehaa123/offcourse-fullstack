@@ -3,11 +3,10 @@
   (:require [cljs.core.async :refer [chan timeout <! >!]]
             [offcourse.models.course :as course]
             [offcourse.actions.index :as actions]
-            [offcourse.services.fake-data :refer [courses]]
+            [offcourse.services.fake-data :as fake-data]
             [offcourse.models.checkpoint :as checkpoint]))
 
-(def channel (chan))
-(def store (atom courses))
+(def channel (chan 10))
 
 (defn fetch-collection [collection-name]
   (let [collection-ids {:featured [0 1 2 3]
@@ -15,7 +14,7 @@
                         :new [1]}
         collection (->> collection-ids
                         collection-name
-                        (map (fn [id] [id (get courses id)]))
+                        (map (fn [id] [id (get fake-data/courses id)]))
                         (into {}))]
     (go
       (>! channel {:type :refresh-collection
@@ -24,7 +23,7 @@
                              :collection collection}}))))
 
 (defn fetch-course [course-id]
-  (let [course (get courses course-id)]
+  (let [course (get fake-data/courses course-id)]
     (go
       (>! channel {:type :refresh-course
                    :payload {:course course}}))))
