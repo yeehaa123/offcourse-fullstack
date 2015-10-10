@@ -4,6 +4,7 @@
   (if (= mode :learn) :curate :learn))
 
 (defn set-level [appstate payload]
+  (println appstate)
   (swap! appstate assoc :level payload))
 
 (defn set-course-collections! [appstate collections]

@@ -2,7 +2,6 @@
   (:require [offcourse.helpers.css :as css]
             [offcourse.views.components.logo :refer [logo]]
             [offcourse.views.components.card :refer [card]]
-            [offcourse.stores.appstate :refer [appstate]]
             [clojure.string :as string]
             [offcourse.actions.index :as actions]))
 
@@ -17,7 +16,7 @@
     (for [route-name collection-names]
       ^{:key route-name}[course-collection-button route-name handlers])]])
 
-(defn sidebar []
+(defn sidebar [appstate]
   (let [collection-names (:course-collections @appstate)
         item (:sidebar (:viewmodel @appstate))
         level (:type (:level @appstate))]

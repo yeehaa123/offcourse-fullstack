@@ -1,7 +1,7 @@
 (ns offcourse.models.datastore
   (:require [offcourse.actions.index :as actions]
-            [offcourse.stores.resources :as resources]
-            [offcourse.stores.courses :as courses]
+            [offcourse.services.resources :as resources]
+            [offcourse.services.courses :as courses]
             [offcourse.actions.index :as actions]))
 
 (defn refresh-collection [store {collection-name :collection-name
@@ -13,6 +13,7 @@
     (actions/refresh-viewmodel store)))
 
 (defn refresh-course [store {course :course}]
+  (println store)
   (do
     (swap! store assoc-in [:courses (:id course)] course)
     (comment (add action/get-resources here))
@@ -57,6 +58,7 @@
     (actions/refresh-viewmodel store)))
 
 (defn get-data [store {type :type :as payload}]
+  (println payload)
   (case type
     :collection (get-collection store payload)
     (get-course store payload)))

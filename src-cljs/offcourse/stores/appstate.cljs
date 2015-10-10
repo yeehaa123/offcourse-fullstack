@@ -4,30 +4,23 @@
             [offcourse.models.viewmodel :as viewmodel]
             [offcourse.models.appstate :as model]
             [offcourse.services.history :as history]
-            [offcourse.actions.index :as actions]
-            [offcourse.actions.api :as api-actions]
+            [offcourse.actions.data :as data-actions]
             [cljs.core.async :refer [chan alts! <! >!]]))
 
-(defonce appstate (r/atom {:level {:type :initial}
-                           :mode :learn
-                           :course-collections [:featured :popular :new]
-                           :viewmodel {:cards []
-                                       :sidebar {}
-                                       :topbar {}}}))
-
-(defn listen-for-actions []
+(defn listen-for-actions [{appstate :appstate
+                           channels :channels}]
   (go-loop []
-    (let [{type :type payload :payload} (<! actions/channel)]
+    (let [[{type :type payload :payload}] (alts! channels)]
       (case type
         :go-to             (history/nav! payload)
         :set-level         (do
-                             (api-actions/get-data payload)
+                             (data-actions/get-data payload)
                              (model/set-level appstate payload))
-        :toggle-done       (api-actions/toggle-done payload)
+        :toggle-done       (data-actions/toggle-done payload)
         :toggle-mode       (model/toggle-mode! appstate)
         :set-mode          (model/set-mode! appstate payload)
         :refresh-viewmodel (viewmodel/update-viewmodel appstate payload)))
       (recur)))
 
-(defn init []
-  (listen-for-actions))
+(defn init [config]
+  (listen-for-actions config))

@@ -1,18 +1,14 @@
 (ns offcourse.stores.data
   (:require-macros [cljs.core.async.macros :refer [go go-loop]])
   (:require [cljs.core.async :refer [chan timeout alts! <! >!]]
-            [offcourse.stores.resources :as resources]
-            [offcourse.stores.courses :as courses]
-            [offcourse.models.datastore :as model]
-            [offcourse.actions.api :as actions]))
+            [offcourse.models.datastore :as model]))
 
-(def store (atom {:collections {}
-                  :courses {}}))
 
-(defn listen-for-actions []
+(defn listen-for-actions [{store :store
+                           channels :channels}]
+
   (go-loop []
-    (let [channels [actions/channel courses/channel resources/channel]
-          [{type :type payload :payload}] (alts! channels)]
+    (let [[{type :type payload :payload}] (alts! channels)]
       (case type
         :get-data           (model/get-data store payload)
         :refresh-collection (model/refresh-collection store payload)
@@ -24,5 +20,5 @@
     (recur)))
 
 
-(defn init []
-  (listen-for-actions))
+(defn init [config]
+  (listen-for-actions config))

@@ -1,5 +1,4 @@
-(ns offcourse.models.viewmodel
-  (:require [offcourse.stores.courses :as ds]))
+(ns offcourse.models.viewmodel)
 
 (defn update-cards [courses course]
   (let [courses (remove #(== (course :id) (:id %1)) courses)]

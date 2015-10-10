@@ -1,9 +1,8 @@
 (ns offcourse.views.containers.topbar
-  (:require [offcourse.stores.appstate :refer [appstate]]
-            [offcourse.views.components.breadcrumbs :refer [breadcrumbs]]
+  (:require [offcourse.views.components.breadcrumbs :refer [breadcrumbs]]
             [clojure.string :as string]))
 
-(defn topbar []
+(defn topbar [appstate]
   (let [crumbs (:topbar (:viewmodel @appstate))]
     [:section.topbar
      [breadcrumbs crumbs]

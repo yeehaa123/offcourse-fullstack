@@ -1,4 +1,4 @@
-(ns offcourse.actions.api
+(ns offcourse.actions.data
   (:require-macros [cljs.core.async.macros :refer [go]])
   (:require [cljs.core.async :refer [chan <! >!]]
             [ajax.core :refer [GET POST]]))
