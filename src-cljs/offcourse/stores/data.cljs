@@ -3,9 +3,8 @@
   (:require [cljs.core.async :refer [chan timeout alts! <! >!]]
             [offcourse.models.datastore :as model]))
 
-
 (defn listen-for-actions [{store :store
-                           channels :channels}]
+                           channels :channels-in}]
 
   (go-loop []
     (let [[{type :type payload :payload}] (alts! channels)]

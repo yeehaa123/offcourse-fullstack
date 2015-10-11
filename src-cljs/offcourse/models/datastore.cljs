@@ -1,7 +1,8 @@
 (ns offcourse.models.datastore
-  (:require [offcourse.actions.index :as actions]
-            [offcourse.services.resources :as resources]
-            [offcourse.services.courses :as courses]
+  (:require-macros [cljs.core.async.macros :refer [go go-loop]])
+  (:require [offcourse.channels :as channels]
+            [offcourse.actions.index :as actions]
+            [cljs.core.async :refer [>!]]
             [offcourse.actions.index :as actions]))
 
 (defrecord DataStore [collections courses])
@@ -18,7 +19,6 @@
     (actions/refresh-viewmodel store)))
 
 (defn refresh-course [store {course :course}]
-  (println store)
   (do
     (swap! store assoc-in [:courses (:id course)] course)
     (comment (add action/get-resources here))
@@ -37,7 +37,6 @@
     (swap! store update-in [:courses course-id :checkpoints checkpoint-id]
            #(assoc %1 :url (:url resource)
                       :resource resource))
-    (println (get-in @store [:courses course-id :checkpoints checkpoint-id]))
     (actions/refresh-viewmodel store)))
 
 (defn get-resources [store {{course-id :id} :course}]
@@ -45,13 +44,18 @@
         checkpoints (vals (:checkpoints course))]
     (doseq [checkpoint checkpoints]
       (when-not (:resource checkpoint)
-        (resources/fetch-resource course-id checkpoint)))))
+        (go
+          (>! channels/api-in {:type :fetch-resource
+                               :payload {:course-id course-id
+                                         :checkpoint checkpoint}}))))))
 
 (defn get-course [{courses :courses :as store}
                   {course-id :course-id}]
   (let [course (get courses course-id)]
     (if-not course
-      (courses/fetch-course course-id)
+      (go
+        (>! channels/api-in {:type :fetch-course
+                             :payload {:course-id course-id}}))
       (do
         (actions/refresh-viewmodel store)
         (get-resources store {:course course})))))
@@ -59,11 +63,12 @@
 (defn get-collection [{collections :collections :as store}
                       {collection-name :collection-name}]
   (if-not (collection-name collections)
-    (courses/fetch-collection collection-name)
+    (go
+      (>! channels/api-in {:type :fetch-collection
+                           :payload {:collection-name collection-name}}))
     (actions/refresh-viewmodel store)))
 
 (defn get-data [store {type :type :as payload}]
-  (println payload)
   (case type
     :collection (get-collection store payload)
     (get-course store payload)))
