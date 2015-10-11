@@ -1,5 +1,7 @@
 (ns offcourse.views.index
-  (:require [offcourse.views.containers.app :refer [app]]
+  (:require [reagent.core :as reagent]
+            [offcourse.routes]
+            [offcourse.views.containers.app :refer [app]]
             [offcourse.views.containers.main :refer [main]]
             [offcourse.views.containers.topbar :refer [topbar]]
             [offcourse.views.containers.sidebar :refer [sidebar]]
@@ -11,3 +13,7 @@
    [main
     [topbar appstate]
     [cards appstate]]])
+
+(defn mount-components [appstate]
+  (reagent/render [#'home-page appstate]
+                  (.querySelector js/document ".container")))

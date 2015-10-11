@@ -1,12 +1,10 @@
 (ns offcourse.services.courses
   (:require-macros [cljs.core.async.macros :refer [go go-loop]])
-  (:require [cljs.core.async :refer [chan timeout <! >!]]
-            [offcourse.models.course :as course]
-            [offcourse.actions.index :as actions]
-            [offcourse.services.fake-data :as fake-data]
-            [offcourse.models.checkpoint :as checkpoint]))
+  (:require [offcourse.channels :as channels]
+            [cljs.core.async :refer [>!]]
+            [offcourse.services.fake-data :refer [courses]]))
 
-(def channel (chan))
+(def store (atom courses))
 
 (defn fetch-collection [collection-name]
   (let [collection-ids {:featured [0 1 2 3]
@@ -14,16 +12,16 @@
                         :new [1]}
         collection (->> collection-ids
                         collection-name
-                        (map (fn [id] [id (get fake-data/courses id)]))
+                        (map (fn [id] [id (get courses id)]))
                         (into {}))]
     (go
-      (>! channel {:type :refresh-collection
-                   :payload {:collection-name collection-name
-                             :collection-ids (collection-name collection-ids)
-                             :collection collection}}))))
+      (>! channels/api-out {:type :refresh-collection
+                            :payload {:collection-name collection-name
+                                      :collection-ids (collection-name collection-ids)
+                                      :collection collection}}))))
 
 (defn fetch-course [course-id]
-  (let [course (get fake-data/courses course-id)]
+  (let [course (get courses course-id)]
     (go
-      (>! channel {:type :refresh-course
-                   :payload {:course course}}))))
+      (>! channels/api-out {:type :refresh-course
+                            :payload {:course course}}))))

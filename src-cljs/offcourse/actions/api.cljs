@@ -1,4 +1,4 @@
-(ns offcourse.actions.data
+(ns offcourse.actions.api
   (:require-macros [cljs.core.async.macros :refer [go]])
   (:require [offcourse.channels :as channels]
             [cljs.core.async :refer [chan <! >!]]
@@ -6,11 +6,10 @@
 
 (defn send-action
   ([type](send-action type {}))
-  ([type payload]
-   (go
-     (let [action {:type type
-                   :payload payload}]
-       (>! channels/datastore-in action)))))
+  ([type payload](go
+                   (let [action {:type type
+                                 :payload payload}]
+                     (>! channels/datastore-in action)))))
 
 (defn toggle-done [payload]
   (send-action :toggle-done payload))

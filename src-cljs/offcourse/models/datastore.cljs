@@ -4,6 +4,11 @@
             [offcourse.services.courses :as courses]
             [offcourse.actions.index :as actions]))
 
+(defrecord DataStore [collections courses])
+
+(defn new-datastore []
+  (atom(->DataStore {} {})))
+
 (defn refresh-collection [store {collection-name :collection-name
                                  collection-ids :collection-ids
                                  collection :collection}]

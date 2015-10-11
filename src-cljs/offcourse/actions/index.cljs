@@ -1,16 +1,15 @@
 (ns offcourse.actions.index
   (:require-macros [cljs.core.async.macros :refer [go]])
   (:require [cljs.core.async :refer [chan <! >!]]
+            [offcourse.channels :as channels]
             [ajax.core :refer [GET POST]]))
-
-(def channel (chan))
 
 (defn send-action
   ([type](send-action type {}))
   ([type payload](go
                    (let [action {:type type
                                  :payload payload}]
-                   (>! channel action)))))
+                     (>! channels/appstate-in action)))))
 
 (defn set-mode! [mode]
   (send-action :set-mode {:mode mode}))

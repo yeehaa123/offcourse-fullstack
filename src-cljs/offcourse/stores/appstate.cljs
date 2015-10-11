@@ -7,7 +7,7 @@
             [offcourse.actions.data :as data-actions]
             [cljs.core.async :refer [chan alts! <! >!]]))
 
-(defn listen-for-actions [{appstate :appstate
+(defn listen-for-actions [{store :store
                            channels :channels}]
   (go-loop []
     (let [[{type :type payload :payload}] (alts! channels)]
@@ -15,11 +15,11 @@
         :go-to             (history/nav! payload)
         :set-level         (do
                              (data-actions/get-data payload)
-                             (model/set-level appstate payload))
+                             (model/set-level store payload))
         :toggle-done       (data-actions/toggle-done payload)
-        :toggle-mode       (model/toggle-mode! appstate)
-        :set-mode          (model/set-mode! appstate payload)
-        :refresh-viewmodel (viewmodel/update-viewmodel appstate payload)))
+        :toggle-mode       (model/toggle-mode! store)
+        :set-mode          (model/set-mode! store payload)
+        :refresh-viewmodel (viewmodel/update-viewmodel store payload)))
       (recur)))
 
 (defn init [config]

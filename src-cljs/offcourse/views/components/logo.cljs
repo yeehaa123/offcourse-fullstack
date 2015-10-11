@@ -1,6 +1,5 @@
 (ns offcourse.views.components.logo
   (:require [offcourse.helpers.css :as css]
-            [reagent.session :as session]
             [clojure.string :as string]
             [offcourse.actions.index :as actions]))
 

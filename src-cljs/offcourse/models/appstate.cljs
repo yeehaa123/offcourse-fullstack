@@ -1,4 +1,15 @@
-(ns offcourse.models.appstate)
+(ns offcourse.models.appstate
+  (:require [reagent.core :as reagent]))
+
+(defrecord AppState [level mode course-collections viewmodel])
+
+(defn new-appstate []
+  (reagent/atom (map->AppState {:level {:type :initial}
+                                 :mode :learn
+                                 :course-collections [:featured :popular :new]
+                                 :viewmodel {:cards []
+                                             :sidebar {}
+                                             :topbar {}}})))
 
 (defn toggle-mode [mode]
   (if (= mode :learn) :curate :learn))
