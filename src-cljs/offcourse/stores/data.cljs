@@ -3,17 +3,18 @@
   (:require [cljs.core.async :refer [chan timeout alts! <! >!]]
             [offcourse.models.datastore :as model]))
 
-(defn listen-for-actions [{store :store
-                           channels :channels-in}]
+(defn listen-for-actions [{store  :store
+                           input  :channel-in
+                           output :channel-out}]
 
   (go-loop []
-    (let [[{type :type payload :payload}] (alts! channels)]
+    (let [{type :type payload :payload} (<! input)]
       (case type
-        :get-data           (model/get-data store payload)
+        :get-data           (>! output (model/get-data store payload))
         :refresh-collection (model/refresh-collection store payload)
         :refresh-course     (do
                               (model/refresh-course store payload)
-                              (model/get-resources store payload))
+                              (>! output (model/get-resources store payload)))
         :toggle-done        (model/toggle-done store payload)
         :augment-checkpoint (model/augment-checkpoint store payload)))
     (recur)))

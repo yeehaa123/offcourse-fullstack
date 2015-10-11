@@ -27,7 +27,8 @@
     (refresh-viewmodel appstate viewmodel)))
 
 (defn refresh-collection [appstate store]
-  (let [collection-name (:collection-name (:level @appstate))
+  (let [level (:level @appstate)
+        collection-name (:collection-name level)
         collection      (->> @store
                              :collections
                              collection-name

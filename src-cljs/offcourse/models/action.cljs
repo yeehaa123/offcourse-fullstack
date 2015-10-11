@@ -4,4 +4,4 @@
 
 (defn respond [type & payload]
   (map->Action {:type type
-                :payload payload}))
+                :payload (apply hash-map payload)}))

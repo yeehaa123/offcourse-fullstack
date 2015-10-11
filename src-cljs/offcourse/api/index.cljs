@@ -3,16 +3,15 @@
   (:require [cljs.core.async :refer [>! <! timeout alts!]]
             [offcourse.api.service :as service]))
 
-(defn listen-for-actions [{inputs :channels-in
+(defn listen-for-actions [{input :channel-in
                            output :channel-out}]
   (go-loop []
-    (let [[{type :type payload :payload}] (alts! inputs)]
+    (let [{type :type payload :payload} (<! input)]
       (case type
         :fetch-collection (>! output (service/fetch-collection payload))
         :fetch-course     (>! output (service/fetch-course payload))
-        :fetch-resource   (do
-                            (<! (timeout (rand-int 3000)))
-                            (>! output (service/fetch-resource payload)))))
+        :fetch-resources  (service/fetch-resources input payload)
+        :fetch-resource   (>! output (service/fetch-resource payload))))
     (recur)))
 
 (defn init [config]

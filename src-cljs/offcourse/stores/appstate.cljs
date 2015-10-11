@@ -8,18 +8,21 @@
             [cljs.core.async :refer [chan alts! <! >!]]))
 
 (defn listen-for-actions [{store :store
-                           channels :channels}]
+                           input :channel-in
+                           output :channel-out}]
   (go-loop []
-    (let [[{type :type payload :payload}] (alts! channels)]
+    (let [{type :type payload :payload} (<! input)]
       (case type
         :go-to             (history/nav! payload)
         :set-level         (do
-                             (data-actions/get-data payload)
+                             (>! output (model/get-data payload))
                              (model/set-level store payload))
-        :toggle-done       (data-actions/toggle-done payload)
+        :toggle-done       (>! output (model/toggle-done payload))
         :toggle-mode       (model/toggle-mode! store)
         :set-mode          (model/set-mode! store payload)
-        :refresh-viewmodel (viewmodel/update-viewmodel store payload)))
+        :refresh-viewmodel (do
+                             (println "refresh")
+                             (viewmodel/update-viewmodel store payload))))
       (recur)))
 
 (defn init [config]

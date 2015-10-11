@@ -1,8 +1,8 @@
 (ns offcourse.models.datastore
   (:require-macros [cljs.core.async.macros :refer [go go-loop]])
-  (:require [offcourse.channels :as channels]
-            [offcourse.actions.index :as actions]
+  (:require [offcourse.actions.index :as actions]
             [cljs.core.async :refer [>!]]
+            [offcourse.models.action :refer [respond]]
             [offcourse.actions.index :as actions]))
 
 (defrecord DataStore [collections courses])
@@ -21,7 +21,6 @@
 (defn refresh-course [store {course :course}]
   (do
     (swap! store assoc-in [:courses (:id course)] course)
-    (comment (add action/get-resources here))
     (actions/refresh-viewmodel store)))
 
 (defn toggle-done [store {course-id :course-id
@@ -42,31 +41,28 @@
 (defn get-resources [store {{course-id :id} :course}]
   (let [course (get (:courses @store) course-id)
         checkpoints (vals (:checkpoints course))]
-    (doseq [checkpoint checkpoints]
-      (when-not (:resource checkpoint)
-        (go
-          (>! channels/api-in {:type :fetch-resource
-                               :payload {:course-id course-id
-                                         :checkpoint checkpoint}}))))))
+    (respond :fetch-resources
+             :course-id course-id
+             :checkpoints checkpoints)))
 
 (defn get-course [{courses :courses :as store}
                   {course-id :course-id}]
   (let [course (get courses course-id)]
     (if-not course
-      (go
-        (>! channels/api-in {:type :fetch-course
-                             :payload {:course-id course-id}}))
+      (respond :fetch-course
+               :course-id course-id)
       (do
         (actions/refresh-viewmodel store)
-        (get-resources store {:course course})))))
+        (respond :ignore)))))
 
 (defn get-collection [{collections :collections :as store}
                       {collection-name :collection-name}]
   (if-not (collection-name collections)
-    (go
-      (>! channels/api-in {:type :fetch-collection
-                           :payload {:collection-name collection-name}}))
-    (actions/refresh-viewmodel store)))
+    (respond :fetch-collection
+             :collection-name collection-name)
+    (do
+      (actions/refresh-viewmodel store)
+      (respond :ignore))))
 
 (defn get-data [store {type :type :as payload}]
   (case type
