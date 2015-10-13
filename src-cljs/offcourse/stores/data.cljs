@@ -11,12 +11,12 @@
     (let [{type :type payload :payload} (<! input)]
       (case type
         :get-data           (>! output (model/get-data store payload))
-        :refresh-collection (model/refresh-collection store payload)
+        :refresh-collection (>! output (model/refresh-collection store payload))
         :refresh-course     (do
-                              (model/refresh-course store payload)
+                              (>! output (model/refresh-course store payload))
                               (>! output (model/get-resources store payload)))
-        :toggle-done        (model/toggle-done store payload)
-        :augment-checkpoint (model/augment-checkpoint store payload)))
+        :toggle-done        (>! output (model/toggle-done store payload))
+        :augment-checkpoint (>! output (model/augment-checkpoint store payload))))
     (recur)))
 
 

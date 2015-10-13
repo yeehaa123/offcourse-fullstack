@@ -20,9 +20,8 @@
         :toggle-done       (>! output (model/toggle-done payload))
         :toggle-mode       (model/toggle-mode! store)
         :set-mode          (model/set-mode! store payload)
-        :refresh-viewmodel (do
-                             (println "refresh")
-                             (viewmodel/update-viewmodel store payload))))
+        :refresh-viewmodel (viewmodel/update-viewmodel store payload)
+        nil))
       (recur)))
 
 (defn init [config]

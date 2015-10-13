@@ -11,7 +11,8 @@
         :fetch-collection (>! output (service/fetch-collection payload))
         :fetch-course     (>! output (service/fetch-course payload))
         :fetch-resources  (service/fetch-resources input payload)
-        :fetch-resource   (>! output (service/fetch-resource payload))))
+        :fetch-resource   (>! output (service/fetch-resource payload))
+        nil))
     (recur)))
 
 (defn init [config]

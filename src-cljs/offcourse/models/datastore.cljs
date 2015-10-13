@@ -16,18 +16,21 @@
   (do
     (swap! store assoc-in [:collections collection-name] collection-ids)
     (swap! store update-in [:courses] (fn [courses] (into courses collection)))
-    (actions/refresh-viewmodel store)))
+    (respond :refresh-viewmodel
+             :store store)))
 
 (defn refresh-course [store {course :course}]
   (do
     (swap! store assoc-in [:courses (:id course)] course)
-    (actions/refresh-viewmodel store)))
+    (respond :refresh-viewmodel
+             :store store)))
 
 (defn toggle-done [store {course-id :course-id
                           checkpoint-id :checkpoint-id}]
   (do
     (swap! store update-in [:courses course-id :checkpoints checkpoint-id :completed] not)
-    (actions/refresh-viewmodel store)))
+    (respond :refresh-viewmodel
+             :store store)))
 
 (defn augment-checkpoint [store {course-id :course-id
                                  checkpoint-id :checkpoint-id
@@ -36,7 +39,8 @@
     (swap! store update-in [:courses course-id :checkpoints checkpoint-id]
            #(assoc %1 :url (:url resource)
                       :resource resource))
-    (actions/refresh-viewmodel store)))
+    (respond :refresh-viewmodel
+             :store store)))
 
 (defn get-resources [store {{course-id :id} :course}]
   (let [course (get (:courses @store) course-id)
@@ -45,24 +49,21 @@
              :course-id course-id
              :checkpoints checkpoints)))
 
-(defn get-course [{courses :courses :as store}
-                  {course-id :course-id}]
-  (let [course (get courses course-id)]
+(defn get-course [store {course-id :course-id}]
+  (let [course (get (:courses @store) course-id)]
     (if-not course
       (respond :fetch-course
                :course-id course-id)
-      (do
-        (actions/refresh-viewmodel store)
-        (respond :ignore)))))
+      (respond :refresh-viewmodel
+               :store store))))
 
 (defn get-collection [{collections :collections :as store}
                       {collection-name :collection-name}]
   (if-not (collection-name collections)
     (respond :fetch-collection
              :collection-name collection-name)
-    (do
-      (actions/refresh-viewmodel store)
-      (respond :ignore))))
+    (respond :refresh-viewmodel
+             :store store)))
 
 (defn get-data [store {type :type :as payload}]
   (case type
