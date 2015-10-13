@@ -17,7 +17,7 @@
       ^{:key route-name}[course-collection-button route-name handlers])]])
 
 (defn sidebar [appstate]
-  (let [collection-names (:course-collections @appstate)
+  (let [collection-names (keys (:collections @appstate))
         item (:sidebar (:viewmodel @appstate))
         level (:type (:level @appstate))]
     [:section {:class (css/classes "sidebar")}

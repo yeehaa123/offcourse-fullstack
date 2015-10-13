@@ -6,11 +6,13 @@
 
 (defn new-appstate []
   (reagent/atom (map->AppState {:level {:type :initial}
-                                 :mode :learn
-                                 :course-collections [:featured :popular :new]
-                                 :viewmodel {:cards []
-                                             :sidebar {}
-                                             :topbar {}}})))
+                                :mode :learn
+                                :collections {:featured []
+                                              :popular []
+                                              :new []}
+                                :viewmodel {:cards []
+                                            :sidebar {}
+                                            :topbar {}}})))
 
 (defn toggle-mode [mode]
   (if (= mode :learn) :curate :learn))
@@ -22,9 +24,6 @@
   {:type :toggle-done
    :payload payload})
 
-(defn set-course-collections! [appstate collections]
-  (swap! appstate assoc-in [:course-collections] collections))
-
 (defn set-mode! [appstate {mode :mode}]
   (swap! appstate assoc-in [:mode] mode))
 
@@ -34,3 +33,8 @@
 (defn get-data [payload]
   {:type :get-data
    :payload payload})
+
+(defn update-collections [appstate {:keys [collection-name course-ids]}]
+  (let [collections (:collections @appstate)]
+    (swap! appstate update-in [:collections collection-name] (fn [_] course-ids))))
+

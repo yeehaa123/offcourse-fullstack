@@ -1,6 +1,6 @@
 (ns offcourse.stores.data
-  (:require-macros [cljs.core.async.macros :refer [go go-loop]])
-  (:require [cljs.core.async :refer [chan timeout alts! <! >!]]
+  (:require-macros [cljs.core.async.macros :refer [go-loop]])
+  (:require [cljs.core.async :refer [>! <!]]
             [offcourse.models.datastore :as model]))
 
 (defn listen-for-actions [{store  :store
@@ -9,14 +9,13 @@
 
   (go-loop []
     (let [{type :type payload :payload} (<! input)]
+      (println "data: " type)
       (case type
         :get-data           (>! output (model/get-data store payload))
-        :refresh-collection (>! output (model/refresh-collection store payload))
-        :refresh-course     (do
-                              (>! output (model/refresh-course store payload))
-                              (>! output (model/get-resources store payload)))
-        :toggle-done        (>! output (model/toggle-done store payload))
-        :augment-checkpoint (>! output (model/augment-checkpoint store payload))))
+        :fetched-collection (>! output (model/update-collections store payload))
+        :fetched-course     (>! output (model/update-course store payload))
+        :fetched-resource   (>! output (model/augment-checkpoint store payload))
+        :toggle-done        (>! output (model/toggle-done store payload))))
     (recur)))
 
 
