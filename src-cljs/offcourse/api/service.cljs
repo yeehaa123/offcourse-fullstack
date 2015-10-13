@@ -1,7 +1,7 @@
 (ns offcourse.api.service
   (:require-macros [cljs.core.async.macros :refer [go go-loop]])
   (:require [cljs.core.async :refer [timeout chan >!]]
-             [offcourse.services.fake-data :as fake-data]
+             [offcourse.api.fake-data :as fake-data]
              [offcourse.models.action :refer [respond]]))
 
 (defn fetch-collection [{collection-name :collection-name}]

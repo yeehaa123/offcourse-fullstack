@@ -1,4 +1,4 @@
-(ns offcourse.services.fake-data)
+(ns offcourse.api.fake-data)
 
 (def urls ["facebook.com" "google.com" "yahoo.com"])
 

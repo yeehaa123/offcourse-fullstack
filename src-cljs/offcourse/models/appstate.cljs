@@ -38,3 +38,6 @@
   (let [collections (:collections @appstate)]
     (swap! appstate update-in [:collections collection-name] (fn [_] course-ids))))
 
+(defn switch-route [payload]
+  {:type :route-switch-requested
+   :payload payload})

@@ -12,7 +12,7 @@
     (let [{type :type payload :payload} (<! input)]
       (println "appstate:" type)
       (case type
-        :route-switch-requested (history/nav! payload)
+        :route-switch-requested (>! output (model/switch-route payload))
         :level-switch-requested (do
                                   (>! output (model/get-data payload))
                                   (model/set-level store payload))

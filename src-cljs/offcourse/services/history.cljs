@@ -1,7 +1,9 @@
 (ns offcourse.services.history
+  (:require-macros [cljs.core.async.macros :refer [go-loop]])
   (:require [secretary.core :as secretary :refer-macros [defroute]]
-            [goog.events])
-  (:import [goog.history Html5History EventType]))
+            [goog.events]
+            [cljs.core.async :refer [>! <!]])
+(:import [goog.history Html5History EventType]))
 
 (defn get-token []
   (str js/window.location.pathname js/window.location.search))
@@ -48,10 +50,20 @@
   (let [token (str "/" (create-token location-data))]
     (.setToken history token)))
 
-(defn init! []
+(defn listen-for-actions [{input :channel-in}]
+  (go-loop []
+    (let [{type :type payload :payload} (<! input)]
+      (println "history:" type)
+      (case type
+        :route-switch-requested (nav! payload)
+        nil))
+    (recur)))
+
+(defn init! [config]
   (defonce history
     (doto (make-history)
       (goog.events/listen EventType.NAVIGATE
                           ;; wrap in a fn to allow live reloading
                           #(handle-url-change %))
-      (.setEnabled true))))
+      (.setEnabled true)))
+  (listen-for-actions config))

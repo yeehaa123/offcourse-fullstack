@@ -15,7 +15,8 @@
         :fetched-collection    (>! output (model/update-collections store payload))
         :fetched-course        (>! output (model/update-course store payload))
         :fetched-resource      (>! output (model/augment-checkpoint store payload))
-        :done-toggle-requested (>! output (model/toggle-done store payload))))
+        :done-toggle-requested (>! output (model/toggle-done store payload))
+        nil))
     (recur)))
 
 
