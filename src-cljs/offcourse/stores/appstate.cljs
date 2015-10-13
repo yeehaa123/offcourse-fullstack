@@ -12,18 +12,18 @@
     (let [{type :type payload :payload} (<! input)]
       (println "appstate:" type)
       (case type
-        :go-to               (history/nav! payload)
-        :set-level           (do
-                               (>! output (model/get-data payload))
-                               (model/set-level store payload))
-        :toggle-done         (>! output (model/toggle-done payload))
-        :toggle-mode         (model/toggle-mode! store)
-        :set-mode            (model/set-mode! store payload)
-        :updated-course      (viewmodel/update-viewmodel store payload)
-        :updated-checkpoint  (viewmodel/update-viewmodel store payload)
-        :checked-courses     (viewmodel/update-viewmodel store payload)
+        :route-switch-requested (history/nav! payload)
+        :level-switch-requested (do
+                                  (>! output (model/get-data payload))
+                                  (model/set-level store payload))
+        :done-toggle-requested  (>! output (model/toggle-done payload))
+        :mode-toggle-requested  (model/toggle-mode! store)
+        :mode-switch-requested  (model/set-mode! store payload)
+        :course-updated         (viewmodel/update-viewmodel store payload)
+        :checkpoint-updated     (viewmodel/update-viewmodel store payload)
+        :datastore-checked      (viewmodel/update-viewmodel store payload)
         nil))
-      (recur)))
+    (recur)))
 
 (defn init [config]
   (listen-for-actions config))

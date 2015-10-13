@@ -21,7 +21,7 @@
   (swap! appstate assoc :level payload))
 
 (defn toggle-done [payload]
-  {:type :toggle-done
+  {:type :done-toggle-requested
    :payload payload})
 
 (defn set-mode! [appstate {mode :mode}]
@@ -31,7 +31,7 @@
   (swap! appstate update-in [:mode] toggle-mode))
 
 (defn get-data [payload]
-  {:type :get-data
+  {:type :data-requested
    :payload payload})
 
 (defn update-collections [appstate {:keys [collection-name course-ids]}]

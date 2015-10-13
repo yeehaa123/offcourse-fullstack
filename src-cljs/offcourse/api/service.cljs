@@ -33,7 +33,6 @@
              :resource resource)))
 
 (defn fetch-resources [output {:keys [course-id store] :as payload}]
-  (println store)
   (let [checkpoints (vals (:checkpoints (get (:courses @store) course-id)))]
     (doseq [checkpoint checkpoints]
       (go

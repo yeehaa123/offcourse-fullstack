@@ -9,12 +9,10 @@
     (let [{type :type payload :payload} (<! input)]
       (println "api: " type)
       (case type
-        :updated-collections (service/fetch-courses output payload)
-        :updated-course      (service/fetch-resources output payload)
-        :fetch-collection    (>! output (service/fetch-collection payload))
-        :fetch-course        (>! output (service/fetch-course payload))
-        :fetch-resources     (service/fetch-resources output payload)
-        :fetch-resource      (>! output (service/fetch-resource payload))
+        :collection-updated   (service/fetch-courses output payload)
+        :course-updated       (service/fetch-resources output payload)
+        :collection-not-found (>! output (service/fetch-collection payload))
+        :course-not-found     (>! output (service/fetch-course payload))
         nil))
     (recur)))
 
