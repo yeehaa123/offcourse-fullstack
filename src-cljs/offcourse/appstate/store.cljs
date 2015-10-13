@@ -1,8 +1,7 @@
-(ns offcourse.stores.appstate
+(ns offcourse.appstate.store
   (:require-macros [cljs.core.async.macros :refer [go-loop]])
-  (:require [offcourse.models.viewmodel :as viewmodel]
-            [offcourse.models.appstate :as model]
-            [offcourse.services.history :as history]
+  (:require [offcourse.appstate.viewmodel :as viewmodel]
+            [offcourse.appstate.model :as model]
             [cljs.core.async :refer [>! <!]]))
 
 (defn listen-for-actions [{store :store
@@ -17,13 +16,17 @@
                                   (model/set-level store payload))
         :level-requested        (>! output (model/switch-route payload))
         :done-toggle-requested  (>! output (model/toggle-done payload))
-        :mode-toggle-requested  (model/toggle-mode! store)
-        :mode-switch-requested  (model/set-mode! store payload)
-        :course-updated         (viewmodel/update-viewmodel store payload)
-        :checkpoint-updated     (viewmodel/update-viewmodel store payload)
-        :datastore-checked      (viewmodel/update-viewmodel store payload)
+        :mode-toggle-requested  (model/toggle-mode store)
+        :mode-switch-requested  (model/set-mode store payload)
+        :course-updated         (viewmodel/refresh store payload)
+        :checkpoint-updated     (viewmodel/refresh store payload)
+        :datastore-checked      (viewmodel/refresh store payload)
         nil))
     (recur)))
 
 (defn init [config]
   (listen-for-actions config))
+
+
+(defn new []
+  (model/new-appstate))

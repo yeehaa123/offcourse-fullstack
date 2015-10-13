@@ -1,7 +1,7 @@
-(ns offcourse.stores.data
+(ns offcourse.datastore.store
   (:require-macros [cljs.core.async.macros :refer [go-loop]])
   (:require [cljs.core.async :refer [>! <!]]
-            [offcourse.models.datastore :as model]))
+            [offcourse.datastore.model :as model]))
 
 (defn listen-for-actions [{store  :store
                            input  :channel-in
@@ -19,6 +19,8 @@
         nil))
     (recur)))
 
-
 (defn init [config]
   (listen-for-actions config))
+
+(defn new []
+  (model/new-datastore))

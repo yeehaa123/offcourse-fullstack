@@ -1,6 +1,6 @@
 (ns offcourse.api.service
   (:require-macros [cljs.core.async.macros :refer [go go-loop]])
-  (:require [cljs.core.async :refer [timeout chan >!]]
+  (:require [cljs.core.async :refer [timeout <! >!]]
              [offcourse.api.fake-data :as fake-data]
              [offcourse.models.action :refer [respond]]))
 
@@ -38,3 +38,19 @@
       (go
         (>! output (fetch-resource {:course-id course-id
                                     :checkpoint checkpoint}))))))
+
+(defn listen-for-actions [{input :channel-in
+                           output :channel-out}]
+  (go-loop []
+    (let [{type :type payload :payload} (<! input)]
+      (println "api: " type)
+      (case type
+        :collection-updated   (fetch-courses output payload)
+        :course-updated       (fetch-resources output payload)
+        :collection-not-found (>! output (fetch-collection payload))
+        :course-not-found     (>! output (fetch-course payload))
+        nil))
+    (recur)))
+
+(defn init [config]
+  (listen-for-actions config))

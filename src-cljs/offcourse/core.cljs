@@ -1,16 +1,14 @@
 (ns offcourse.core
-  (:require [offcourse.api.index :as api]
+  (:require [offcourse.api.service :as api]
             [cljs.core.async :refer [merge chan mult tap]]
             [offcourse.views.index :as views]
             [offcourse.actions.index :as actions]
-            [offcourse.stores.appstate :as appstate-store]
-            [offcourse.stores.data :as data-store]
-            [offcourse.services.history :as history]
-            [offcourse.models.datastore :refer [new-datastore]]
-            [offcourse.models.appstate :refer [new-appstate]]))
+            [offcourse.appstate.store :as appstate-store]
+            [offcourse.datastore.store :as datastore]
+            [offcourse.history.service :as history]))
 
-(defonce appstate (new-appstate))
-(defonce data (new-datastore))
+(defonce appstate (appstate-store/new))
+(defonce data (datastore/new))
 
 (defn init! []
   (let [actions            actions/channel
@@ -33,7 +31,7 @@
     (appstate-store/init {:store        appstate
                           :channel-in   (merge [actions appstate-data])
                           :channel-out  appstate-out})
-    (data-store/init     {:store        data
+    (datastore/init     {:store        data
                           :channel-in   (merge [data-appstate api-out])
                           :channel-out  datastore-out})
     (api/init            {:channel-in   api-in

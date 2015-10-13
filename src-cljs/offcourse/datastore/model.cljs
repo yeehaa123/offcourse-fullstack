@@ -1,4 +1,4 @@
-(ns offcourse.models.datastore
+(ns offcourse.datastore.model
   (:require [offcourse.models.action :refer [respond]]))
 
 (defrecord DataStore [collections courses])
@@ -59,6 +59,7 @@
                :store store))))
 
 (defn get-data [store {type :type :as payload}]
+  (println type)
   (case type
     :collection (get-collection store payload)
     :course     (get-course store payload)

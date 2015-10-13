@@ -3,5 +3,7 @@
 (defrecord Action [type payload])
 
 (defn respond [type & payload]
-  (map->Action {:type type
-                :payload (apply hash-map payload)}))
+  (let [args    (apply hash-map payload)
+        payload (or (:payload args) args)]
+    (map->Action {:type type
+                  :payload payload})))

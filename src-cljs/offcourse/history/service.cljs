@@ -1,4 +1,4 @@
-(ns offcourse.services.history
+(ns offcourse.history.service
   (:require-macros [cljs.core.async.macros :refer [go-loop]])
   (:require [secretary.core :as secretary :refer-macros [defroute]]
             [goog.events]
@@ -53,7 +53,6 @@
 (defn listen-for-actions [{input :channel-in}]
   (go-loop []
     (let [{type :type payload :payload} (<! input)]
-      (println "history:" type)
       (case type
         :route-requested (nav! payload)
         nil))

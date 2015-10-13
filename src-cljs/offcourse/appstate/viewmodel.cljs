@@ -1,4 +1,4 @@
-(ns offcourse.models.viewmodel)
+(ns offcourse.appstate.viewmodel)
 
 (defn update-cards [courses course]
   (let [courses (remove #(== (course :id) (:id %1)) courses)]
@@ -48,7 +48,7 @@
                                             :title collection-name
                                             :collection-name collection-name}]}))))
 
-(defn update-viewmodel [appstate payload]
+(defn refresh [appstate payload]
   (let [{type :type :as level} (:level @appstate)]
     (case type
       :collection (refresh-collection appstate payload)
