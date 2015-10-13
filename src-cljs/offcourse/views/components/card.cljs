@@ -26,36 +26,39 @@
   [:div.btn.btn-inverse.browse
    {:on-click #(on-click)} "Open"])
 
-(defn card [item handlers context]
+(defn sidebar-cards [item handlers]
   (let [id (item :id)
         type (item :type)
         handlers (bind-handlers handlers id)]
-    (cond
+    (case type
+      :course      [layout
+                    ^{:type :map}    [:div]
+                    ^{:type :title}  [:h1 (item :goal)]
+                    ^{:type :list}   [todo-list (sort-by :id (vals (item :checkpoints))) handlers]]
+      :checkpoint  [layout
+                    ^{:type :map}    [:div {:class (if (:completed item) "complete" "incomplete")}]
+                    ^{:type :title}  [:h1 (item :task)]
+                    ^{:type :title}  [:h1 (:title (:resource item))]
+                    ^{:type :url}    [:p (:url (:resource item))]])))
 
-      (and (= context :sidebar) (= type :course))
-        [layout
-        ^{:type :map}    [:div]
-        ^{:type :title}  [:h1 (item :goal)]
-        ^{:type :list}   [todo-list (sort-by :id (vals (item :checkpoints))) handlers]]
+(defn main-cards [item handlers]
+  (let [id (item :id)
+        type (item :type)
+        handlers (bind-handlers handlers id)]
+  (case type
+    :course      [layout
+                  ^{:type :map}    [:div]
+                  ^{:type :title}  [:h1 (item :goal)]
+                  ^{:type :list}   [todo-list (sort-by :id (vals (item :checkpoints))) handlers]
+                  ^{:type :button} [browse-course-button {:on-click (handlers :go-to-course)}]]
+    :checkpoint  [layout
+                  ^{:type :map}    [:div {:class (if (:completed item) "complete" "incomplete")}]
+                  ^{:type :title}  [:h1 (item :task)]
+                  ^{:type :title}  [:h1 (:title (:resource item))]
+                  ^{:type :url}    [:p (:url (:resource item))]
+                  ^{:type :button} [browse-checkpoint-button {:on-click (:go-to-checkpoint handlers)}]])))
 
-      (and (= context :sidebar) (= type :checkpoint))
-        [layout
-         ^{:type :map}    [:div {:class (if (:completed item) "complete" "incomplete")}]
-         ^{:type :title}  [:h1 (item :task)]
-         ^{:type :title}  [:h1 (:title (:resource item))]
-         ^{:type :url}    [:p (:url (:resource item))]]
-
-      (= type :course)
-        [layout
-        ^{:type :map}    [:div]
-        ^{:type :title}  [:h1 (item :goal)]
-        ^{:type :list}   [todo-list (sort-by :id (vals (item :checkpoints))) handlers]
-        ^{:type :button} [browse-course-button {:on-click (handlers :go-to-course)}]]
-
-      (= type :checkpoint)
-        [layout
-         ^{:type :map}    [:div {:class (if (:completed item) "complete" "incomplete")}]
-         ^{:type :title}  [:h1 (item :task)]
-         ^{:type :title}  [:h1 (:title (:resource item))]
-         ^{:type :url}    [:p (:url (:resource item))]
-         ^{:type :button} [browse-checkpoint-button {:on-click (:go-to-checkpoint handlers)}]])))
+(defn card [item handlers context]
+    (case context
+      :sidebar (sidebar-cards item handlers)
+      :cards (main-cards item handlers)))

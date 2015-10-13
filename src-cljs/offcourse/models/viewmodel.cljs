@@ -15,7 +15,13 @@
         checkpoint (get (course :checkpoints) checkpoint-id)
         viewmodel {:cards nil
                    :sidebar checkpoint
-                   :topbar [(course :goal) (checkpoint :task)]}]
+                   :topbar [{:level :course
+                             :title (course :goal)
+                             :course-id course-id
+                             :link true}
+                            {:level :checkpoint
+                             :title (checkpoint :task)
+                             :checkpoint-id checkpoint-id}]}]
     (refresh-viewmodel appstate viewmodel)))
 
 (defn refresh-course [appstate {store :store}]
@@ -23,7 +29,9 @@
         course ((:courses @store) course-id)
         viewmodel {:cards (map #(assoc %1 :type :checkpoint) (vals (course :checkpoints)))
                    :sidebar course
-                   :topbar [(course :goal)]}]
+                   :topbar [{:level :course
+                             :title (course :goal)
+                             :course-id course-id}]}]
     (refresh-viewmodel appstate viewmodel)))
 
 (defn refresh-collection [appstate {store :store}]
@@ -36,7 +44,9 @@
     (when (every? identity (map :id collection))
       (refresh-viewmodel appstate {:cards (map #(assoc %1 :type :course) collection)
                                    :sidebar nil
-                                   :topbar [collection-name]}))))
+                                   :topbar [{:level :collection
+                                            :title collection-name
+                                            :collection-name collection-name}]}))))
 
 (defn update-viewmodel [appstate payload]
   (let [{type :type :as level} (:level @appstate)]

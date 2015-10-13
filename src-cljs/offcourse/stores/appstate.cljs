@@ -12,10 +12,10 @@
     (let [{type :type payload :payload} (<! input)]
       (println "appstate:" type)
       (case type
-        :route-switch-requested (>! output (model/switch-route payload))
-        :level-switch-requested (do
+        :resource-requested     (do
                                   (>! output (model/get-data payload))
                                   (model/set-level store payload))
+        :level-requested        (>! output (model/switch-route payload))
         :done-toggle-requested  (>! output (model/toggle-done payload))
         :mode-toggle-requested  (model/toggle-mode! store)
         :mode-switch-requested  (model/set-mode! store payload)

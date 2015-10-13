@@ -16,23 +16,22 @@
   (let [actions            actions/channel
         api-out            (chan)
         datastore-out      (chan)
-        datastore-out-mult (mult datastore-out)
         appstate-data      (chan)
-        appstate-in        (merge [actions appstate-data])
         api-in             (chan)
         appstate-out       (chan)
         history-in         (chan)
         data-appstate      (chan)
+        datastore-out-mult (mult datastore-out)
         appstate-out-mult  (mult appstate-out)]
-
-    (tap datastore-out-mult api-in)
-    (tap datastore-out-mult appstate-data)
 
     (tap appstate-out-mult data-appstate)
     (tap appstate-out-mult history-in)
 
+    (tap datastore-out-mult api-in)
+    (tap datastore-out-mult appstate-data)
+
     (appstate-store/init {:store        appstate
-                          :channel-in   appstate-in
+                          :channel-in   (merge [actions appstate-data])
                           :channel-out  appstate-out})
     (data-store/init     {:store        data
                           :channel-in   (merge [data-appstate api-out])
@@ -40,6 +39,7 @@
     (api/init            {:channel-in   api-in
                           :channel-out  api-out})
     (history/init!       {:channel-in   history-in})
+
     (views/mount-components appstate)))
 
 (defn reload []

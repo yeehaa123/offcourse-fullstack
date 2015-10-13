@@ -24,34 +24,37 @@
                         :checkpoint-id checkpoint-id)))
 
 (defn get-courses [{collection-name :collection-name}]
-  (send-action (respond :level-switch-requested
+  (send-action (respond :resource-requested
                         :type :collection
                         :collection-name collection-name)))
 
 (defn get-course [id]
-  (send-action (respond :level-switch-requested
+  (send-action (respond :resource-requested
                         :type :course
                         :course-id id)))
 
 (defn get-checkpoint [course-id checkpoint-id]
-  (send-action (respond :level-switch-requested
+  (send-action (respond :resource-requested
                         :type :checkpoint
                         :course-id course-id
                         :checkpoint-id checkpoint-id)))
 
 (defn go-to-collection [collection-name]
-  (send-action (respond :route-switch-requested
+  (send-action (respond :level-requested
                         :level :collection
                         :collection-name collection-name)))
 
 (defn go-to-course [course-id]
-  (send-action (respond :route-switch-requested
+  (send-action (respond :level-requested
                         :level :course
                         :course-id course-id)))
 
 (defn go-to-checkpoint [course-id checkpoint-id]
-  (send-action (respond :route-switch-requested
+  (send-action (respond :level-requested
                         :level :checkpoint
                         :course-id course-id
                         :checkpoint-id checkpoint-id)))
 
+(defn go-to [payload]
+  (send-action {:type :level-requested
+                :payload payload}))

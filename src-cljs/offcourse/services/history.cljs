@@ -17,15 +17,15 @@
 
 (defn handle-url-change [e]
   ;; log the event object to console for inspection
-  (js/console.log e)
+  ;; (js/console.log e)
   ;; and let's see the token
-  (js/console.log (str "Navigating: " (get-token)))
+  ;; (js/console.log (str "Navigating: " (get-token)))
   ;; we are checking if this event is due to user action,
   ;; such as click a link, a back button, etc.
   ;; as opposed to programmatically setting the URL with the API
   (when-not (.-isNavigation e)
     ;; in this case, we're setting it
-    (js/console.log "Token set programmatically")
+    ;; (js/console.log "Token set programmatically")
     ;; let's scroll to the top to simulate a navigation
     (js/window.scrollTo 0 0))
   (secretary/dispatch! (get-token)))
@@ -55,7 +55,7 @@
     (let [{type :type payload :payload} (<! input)]
       (println "history:" type)
       (case type
-        :route-switch-requested (nav! payload)
+        :route-requested (nav! payload)
         nil))
     (recur)))
 
