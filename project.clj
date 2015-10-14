@@ -74,7 +74,7 @@
               :builds
               {:app
                {:source-paths ["env/prod/cljs"]
-                :compiler {:optimizations :advanced :pretty-print false}}}} 
+                :compiler {:optimizations :advanced :pretty-print false}}}}
              :aot :all}
    :dev           [:project/dev :profiles/dev]
    :test          [:project/test :profiles/test]
@@ -88,7 +88,7 @@
                   :cljsbuild
                   {:builds
                    {:app
-                    {:compiler {:source-map true} :source-paths ["env/dev/cljs"]}}} 
+                    {:compiler {:source-map true} :source-paths ["env/dev/cljs"]}}}
 
                   :figwheel
                   {:http-server-root "public"
