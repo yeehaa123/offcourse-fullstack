@@ -1,7 +1,6 @@
 (ns offcourse.actions.index
   (:require-macros [cljs.core.async.macros :refer [go]])
   (:require [cljs.core.async :refer [chan <! >!]]
-            [ajax.core :refer [GET POST]]
             [offcourse.models.action :refer [respond]]))
 
 (def channel (chan))

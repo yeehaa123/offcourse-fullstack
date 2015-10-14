@@ -6,6 +6,7 @@
             [offcourse.appstate.store :as appstate-store]
             [offcourse.datastore.store :as datastore]
             [offcourse.logger.service :as logger]
+            [offcourse.user.service :as user]
             [offcourse.history.service :as history]))
 
 (defonce appstate (appstate-store/new))
@@ -20,6 +21,9 @@
         appstate-log       (chan)
         appstate-out       (chan)
         appstate-out-mult  (mult appstate-out)
+
+        user-in            (chan)
+        user-out           (chan)
 
         datastore-appstate (chan)
         datastore-api      (chan)
@@ -37,7 +41,8 @@
         datastore-in       (merge [appstate-datastore api-datastore])
         api-in             datastore-api
 
-        logger-in          (merge [actions-log api-log appstate-log datastore-log] 10)]
+        logger-in          (merge [actions-log api-log
+                                   user-out appstate-log datastore-log] 10)]
 
     (tap actions-out-mult actions-appstate)
     (tap actions-out-mult actions-log)
@@ -56,6 +61,9 @@
     (appstate-store/init {:store        appstate
                           :channel-in   appstate-in
                           :channel-out  appstate-out})
+
+    (user/init           {:channel-in   user-in
+                          :channel-out  user-out})
 
     (datastore/init      {:store        data
                           :channel-in   datastore-in

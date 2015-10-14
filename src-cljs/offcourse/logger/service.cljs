@@ -15,17 +15,15 @@
               :params {:type (:type action)
                        :collection-name (:collection-name payload)
                        :course-id (:course-id payload)
+                       :location (:location payload)
+                       :ip (:ip payload)
                        :checkpoint-id (:checkpoint-id payload)}})))
 
 (defn listen-for-actions [{input :channel-in}]
-  (go-loop [index 0 chunk []]
+  (go-loop []
     (let [action (<! input)]
-      (if (< index 1)
-        (recur (inc index) (conj chunk action)))
-      (do
-        (store-logs action)
-        (recur 0 [])))))
-
+      (store-logs action)
+      (recur))))
 
 (defn init [config]
   (listen-for-actions config))
