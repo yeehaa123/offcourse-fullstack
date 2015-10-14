@@ -10,14 +10,14 @@
                                  collection-ids :collection-ids}]
   (do
     (swap! store assoc-in [:collections collection-name] collection-ids)
-    (respond :collection-updated
+    (respond :updated-collection
              :collection-name collection-name
              :course-ids collection-ids)))
 
 (defn update-course [store {course :course}]
   (do
     (swap! store assoc-in [:courses (:id course)] course)
-    (respond :course-updated
+    (respond :updated-course
              :course-id (:id course)
              :store store)))
 
@@ -25,7 +25,7 @@
                           checkpoint-id :checkpoint-id}]
   (do
     (swap! store update-in [:courses course-id :checkpoints checkpoint-id :completed] not)
-    (respond :checkpoint-updated
+    (respond :updated-checkpoint
              :course-id course-id
              :checkpoint-id checkpoint-id
              :store store)))
@@ -37,7 +37,7 @@
     (swap! store update-in [:courses course-id :checkpoints checkpoint-id]
            #(assoc %1 :url (:url resource)
                    :resource resource))
-    (respond :checkpoint-updated
+    (respond :updated-checkpoint
              :checkpoint-id checkpoint-id
              :course-id course-id
              :store store)))
@@ -45,17 +45,17 @@
 (defn get-course [store {course-id :course-id}]
   (let [course (get (:courses @store) course-id)]
     (if-not course
-      (respond :course-not-found
+      (respond :not-found-course
                :course-id course-id)
-      (respond :datastore-checked
+      (respond :checked-datastore
                :store store))))
 
 (defn get-collection [store {collection-name :collection-name}]
   (let [collections (:collections @store)]
     (if-not (collection-name collections)
-      (respond :collection-not-found
+      (respond :not-found-collection
                :collection-name collection-name)
-      (respond :datastore-checked
+      (respond :checked-datastore
                :store store))))
 
 (defn get-data [store {type :type :as payload}]

@@ -9,19 +9,18 @@
                            output :channel-out}]
   (go-loop []
     (let [{type :type payload :payload} (<! input)]
-      (println "appstate:" type)
       (case type
-        :resource-requested     (do
+        :requested-resource     (do
                                   (>! output (model/get-data payload))
                                   (model/set-level store payload))
-        :level-requested        (>! output (model/switch-route payload))
-        :done-toggle-requested  (>! output (model/toggle-done payload))
-        :mode-toggle-requested  (model/toggle-mode store)
-        :mode-switch-requested  (model/set-mode store payload)
-        :course-updated         (viewmodel/refresh store payload)
-        :checkpoint-updated     (viewmodel/refresh store payload)
-        :datastore-checked      (viewmodel/refresh store payload)
-        nil))
+        :requested-level        (>! output (model/switch-route payload))
+        :requested-done-toggle  (>! output (model/toggle-done payload))
+        :requested-mode-toggle  (model/toggle-mode store)
+        :requested-mode-switch  (model/set-mode store payload)
+        :updated-course         (viewmodel/refresh store payload)
+        :updated-checkpoint     (viewmodel/refresh store payload)
+        :checked-datastore      (viewmodel/refresh store payload)
+        (println type)))
     (recur)))
 
 (defn init [config]

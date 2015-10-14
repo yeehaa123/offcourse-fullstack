@@ -43,13 +43,12 @@
                            output :channel-out}]
   (go-loop []
     (let [{type :type payload :payload} (<! input)]
-      (println "api: " type)
       (case type
-        :collection-updated   (fetch-courses output payload)
-        :course-updated       (fetch-resources output payload)
-        :collection-not-found (>! output (fetch-collection payload))
-        :course-not-found     (>! output (fetch-course payload))
-        nil))
+        :updated-collection   (fetch-courses output payload)
+        :updated-course       (fetch-resources output payload)
+        :not-found-collection (>! output (fetch-collection payload))
+        :not-found-course     (>! output (fetch-course payload))
+        (println type)))
     (recur)))
 
 (defn init [config]
