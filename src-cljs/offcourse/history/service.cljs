@@ -54,7 +54,7 @@
   (go-loop []
     (let [{type :type payload :payload} (<! input)]
       (case type
-        :route-requested (nav! payload)
+        :requested-route (nav! payload)
         nil))
     (recur)))
 

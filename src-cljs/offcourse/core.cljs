@@ -37,9 +37,7 @@
         datastore-in       (merge [appstate-datastore api-datastore])
         api-in             datastore-api
 
-        logger-in       (merge [actions-log api-log appstate-log datastore-log])]
-
-
+        logger-in          (merge [actions-log api-log appstate-log datastore-log] 10)]
 
     (tap actions-out-mult actions-appstate)
     (tap actions-out-mult actions-log)
@@ -58,12 +56,16 @@
     (appstate-store/init {:store        appstate
                           :channel-in   appstate-in
                           :channel-out  appstate-out})
+
     (datastore/init      {:store        data
                           :channel-in   datastore-in
                           :channel-out  datastore-out})
+
     (api/init            {:channel-in   api-in
                           :channel-out  api-out})
+
     (history/init!       {:channel-in   history-in})
+
     (logger/init         {:channel-in   logger-in})
 
     (views/mount-components appstate)))

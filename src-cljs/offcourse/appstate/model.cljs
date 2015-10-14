@@ -39,5 +39,5 @@
     (swap! appstate update-in [:collections collection-name] (fn [_] course-ids))))
 
 (defn switch-route [payload]
-  (respond :route-requested
+  (respond :requested-route
             :payload payload))
