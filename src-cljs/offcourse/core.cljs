@@ -7,6 +7,7 @@
             [offcourse.datastore.store :as datastore]
             [offcourse.logger.service :as logger]
             [offcourse.user.service :as user]
+            [offcourse.routes :as router]
             [offcourse.history.service :as history]))
 
 (defonce appstate (appstate-store/new))
@@ -15,7 +16,8 @@
 (defn init! []
   (let [actions-appstate   (chan)
         actions-log        (chan)
-        actions-out-mult   (mult actions/channel)
+        actions-out        (chan)
+        actions-out-mult   (mult actions-out)
 
         appstate-datastore (chan)
         appstate-log       (chan)
@@ -36,8 +38,10 @@
         api-out            (chan)
         api-out-mult       (mult api-out)
 
+        router-out         (chan)
         history-in         (chan)
-        appstate-in        (merge [actions-appstate datastore-appstate])
+
+        appstate-in        (merge [router-out actions-appstate datastore-appstate])
         datastore-in       (merge [appstate-datastore api-datastore])
         api-in             datastore-api
 
@@ -57,6 +61,10 @@
 
     (tap api-out-mult api-datastore)
     (tap api-out-mult api-log)
+
+    (actions/init        {:channel-out  actions-out})
+
+    (router/init         {:channel-out  router-out})
 
     (appstate-store/init {:store        appstate
                           :channel-in   appstate-in
