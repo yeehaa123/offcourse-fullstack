@@ -21,8 +21,9 @@
 
 (defn listen-for-actions [{input :channel-in}]
   (go-loop []
-    (let [action (<! input)]
-      (store-logs action)
+    (let [{type :type :as action} (<! input)]
+      (println type)
+      ;; (store-logs action)
       (recur))))
 
 (defn init [config]

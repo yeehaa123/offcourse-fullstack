@@ -7,6 +7,8 @@
             [offcourse.datastore.store :as datastore]
             [offcourse.logger.service :as logger]
             [offcourse.user.service :as user]
+            [quiescent.core :as q]
+            [quiescent.dom :as d]
             [offcourse.routes :as router]
             [offcourse.history.service :as history]))
 
@@ -84,7 +86,9 @@
 
     (logger/init         {:channel-in   logger-in})
 
-    (views/mount-components appstate)))
+    (q/render (d/h1 {} "Hello World")
+              (.querySelector js/document ".container"))))
 
 (defn reload []
-  (views/mount-components appstate))
+  (q/render (d/h1 {} "Still Here World...? Waiting ...")
+            (.querySelector js/document ".container")))

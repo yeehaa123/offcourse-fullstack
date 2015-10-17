@@ -32,6 +32,7 @@
                  [secretary "1.2.3"]
                  [org.clojure/core.async "0.1.346.0-17112a-alpha"]
                  [cljs-ajax "0.3.14"]
+                 [quiescent "0.2.0-RC2"]
                  [metosin/compojure-api "0.23.1"]
                  [metosin/ring-swagger-ui "2.1.2"]
                  [org.clojure/core.async "0.1.346.0-17112a-alpha"]
