@@ -1,19 +1,31 @@
 (ns offcourse.views.index
-  (:require [reagent.core :as reagent]
-            [offcourse.routes]
-            [offcourse.views.containers.app :refer [app]]
-            [offcourse.views.containers.main :refer [main]]
-            [offcourse.views.containers.topbar :refer [topbar]]
-            [offcourse.views.containers.sidebar :refer [sidebar]]
-            [offcourse.views.containers.cards :refer [cards]]))
+  (:require-macros [cljs.core.async.macros :refer [go-loop]])
+  (:require [cljs.core.async :refer [<!]]
+            [offcourse.helpers.css :as css]
+            [quiescent.core :as q]
+            [offcourse.views.containers.sidebar :refer [Sidebar]]
+            [offcourse.views.actions :as actions]
+            [quiescent.dom :as d]))
 
-(defn home-page [appstate]
-  [app appstate
-   [sidebar appstate]
-   [main
-    [topbar appstate]
-    [cards appstate]]])
+(defn App [appstate]
+  (d/section {:className (css/classes "app" (:mode appstate) "waypoints")}
+             (d/div {:className "layout-sidebar"}
+                    (Sidebar (:sidebar (:viewmodel appstate))))
+             (d/div {:className "layout-main"})))
 
-(defn mount-components [appstate]
-  (reagent/render [#'home-page appstate]
-                  (.querySelector js/document ".container")))
+(defn rerender [appstate]
+  (q/render (App @appstate)
+            (.querySelector js/document ".container")))
+
+(defn listen-for-actions [{input :channel-in
+                           output :channel-out}]
+  (go-loop []
+    (let [{type :type payload :payload} (<! input)]
+      (case type
+        :updated-viewmodel (rerender (:appstate payload))
+        nil))
+    (recur)))
+
+(defn init [config]
+  (actions/init config)
+  (listen-for-actions config))

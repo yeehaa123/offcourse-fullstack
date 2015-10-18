@@ -48,7 +48,7 @@
         :updated-course       (fetch-resources output payload)
         :not-found-collection (>! output (fetch-collection payload))
         :not-found-course     (>! output (fetch-course payload))
-        (println type)))
+        nil))
     (recur)))
 
 (defn init [config]

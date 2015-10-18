@@ -3,17 +3,12 @@
             [cljs.core.async :refer [merge pipeline chan mult tap]]
             [offcourse.views.index :as views]
             [offcourse.actions.index :as actions]
-            [offcourse.appstate.store :as appstate-store]
+            [offcourse.appstate.store :as appstate]
             [offcourse.datastore.store :as datastore]
             [offcourse.logger.service :as logger]
             [offcourse.user.service :as user]
-            [quiescent.core :as q]
-            [quiescent.dom :as d]
             [offcourse.routes :as router]
             [offcourse.history.service :as history]))
-
-(defonce appstate (appstate-store/new))
-(defonce data (datastore/new))
 
 (defn init! []
   (let [actions-appstate   (chan)
@@ -43,18 +38,25 @@
         router-out         (chan)
         history-in         (chan)
 
-        appstate-in        (merge [router-out actions-appstate datastore-appstate])
+        views-in           (chan)
+        views-appstate     (chan)
+        views-log          (chan)
+        views-out          (chan)
+        views-out-mult     (mult views-out)
+
+        appstate-in        (merge [router-out actions-appstate
+                                   datastore-appstate views-appstate])
         datastore-in       (merge [appstate-datastore api-datastore])
         api-in             datastore-api
-
-        logger-in          (merge [actions-log api-log
-                                   user-out appstate-log datastore-log] 10)]
+        logger-in          (merge [actions-log api-log user-out appstate-log
+                                   views-log datastore-log] 10)]
 
     (tap actions-out-mult actions-appstate)
     (tap actions-out-mult actions-log)
 
     (tap appstate-out-mult appstate-datastore)
     (tap appstate-out-mult history-in)
+    (tap appstate-out-mult views-in)
     (tap appstate-out-mult appstate-log)
 
     (tap datastore-out-mult datastore-api)
@@ -64,19 +66,20 @@
     (tap api-out-mult api-datastore)
     (tap api-out-mult api-log)
 
+    (tap views-out-mult views-appstate)
+    (tap views-out-mult views-log)
+
     (actions/init        {:channel-out  actions-out})
 
     (router/init         {:channel-out  router-out})
 
-    (appstate-store/init {:store        appstate
-                          :channel-in   appstate-in
+    (appstate/init       {:channel-in   appstate-in
                           :channel-out  appstate-out})
 
     (user/init           {:channel-in   user-in
                           :channel-out  user-out})
 
-    (datastore/init      {:store        data
-                          :channel-in   datastore-in
+    (datastore/init      {:channel-in   datastore-in
                           :channel-out  datastore-out})
 
     (api/init            {:channel-in   api-in
@@ -84,11 +87,11 @@
 
     (history/init!       {:channel-in   history-in})
 
-    (logger/init         {:channel-in   logger-in})
 
-    (q/render (d/h1 {} "Hello World")
-              (.querySelector js/document ".container"))))
+    (views/init          {:channel-in   views-in
+                          :channel-out  views-out})
+
+    (logger/init         {:channel-in   logger-in})))
 
 (defn reload []
-  (q/render (d/h1 {} "Still Here World...? Waiting ...")
-            (.querySelector js/document ".container")))
+  (actions/refresh))

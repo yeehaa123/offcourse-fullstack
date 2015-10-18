@@ -3,10 +3,8 @@
   (:require [cljs.core.async :refer [>! <!]]
             [offcourse.datastore.model :as model]))
 
-(defn listen-for-actions [{store  :store
-                           input  :channel-in
-                           output :channel-out}]
-
+(defn listen-for-actions [store {input  :channel-in
+                                 output :channel-out}]
   (go-loop []
     (let [{type :type payload :payload} (<! input)]
       (case type
@@ -19,7 +17,9 @@
     (recur)))
 
 (defn init [config]
-  (listen-for-actions config))
+  (let [store (model/new-datastore)]
+    (listen-for-actions store config)))
 
 (defn new []
+
   (model/new-datastore))

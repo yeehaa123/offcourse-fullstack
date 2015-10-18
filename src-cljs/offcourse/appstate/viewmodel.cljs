@@ -1,11 +1,20 @@
-(ns offcourse.appstate.viewmodel)
+(ns offcourse.appstate.viewmodel
+  (:require [offcourse.models.action :refer [respond]]))
 
 (defn update-cards [courses course]
   (let [courses (remove #(== (course :id) (:id %1)) courses)]
     (conj courses (assoc course :type :course))))
 
+(defn force-refresh [appstate]
+  (respond :updated-viewmodel
+           :appstate appstate))
+
 (defn refresh-viewmodel [appstate viewmodel]
-  (swap! appstate assoc-in [:viewmodel] viewmodel))
+  (do
+    (swap! appstate assoc-in [:viewmodel] viewmodel)
+    (respond :updated-viewmodel
+             :appstate appstate)))
+
 
 (defn refresh-checkpoint [appstate {store :store}]
   (let [level (:level @appstate)
@@ -41,12 +50,13 @@
                              :collections
                              collection-name
                              (map #(get (:courses @store) %1)))]
-    (when (every? identity (map :id collection))
+    (if (every? identity (map :id collection))
       (refresh-viewmodel appstate {:cards (map #(assoc %1 :type :course) collection)
-                                   :sidebar nil
+                                   :sidebar {:collection-names [:featured :new :popular]}
                                    :topbar [{:level :collection
                                             :title collection-name
-                                            :collection-name collection-name}]}))))
+                                             :collection-name collection-name}]})
+      (respond :ignore))))
 
 (defn refresh [appstate payload]
   (let [{type :type :as level} (:level @appstate)]

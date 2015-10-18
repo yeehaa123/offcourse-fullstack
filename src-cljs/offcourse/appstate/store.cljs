@@ -4,9 +4,8 @@
             [offcourse.appstate.model :as model]
             [cljs.core.async :refer [>! <!]]))
 
-(defn listen-for-actions [{store :store
-                           input :channel-in
-                           output :channel-out}]
+(defn listen-for-actions [store {input :channel-in
+                                 output :channel-out}]
   (go-loop []
     (let [{type :type payload :payload} (<! input)]
       (case type
@@ -17,15 +16,13 @@
         :requested-done-toggle  (>! output (model/toggle-done payload))
         :requested-mode-toggle  (model/toggle-mode store)
         :requested-mode-switch  (model/set-mode store payload)
-        :updated-course         (viewmodel/refresh store payload)
-        :updated-checkpoint     (viewmodel/refresh store payload)
-        :checked-datastore      (viewmodel/refresh store payload)
-        (println type)))
+        :updated-course         (>! output (viewmodel/refresh store payload))
+        :updated-checkpoint     (>! output (viewmodel/refresh store payload))
+        :checked-datastore      (>! output (viewmodel/refresh store payload))
+        :refresh                (>! output (viewmodel/force-refresh store))
+        nil))
     (recur)))
 
 (defn init [config]
-  (listen-for-actions config))
-
-
-(defn new []
-  (model/new-appstate))
+  (let [store (model/new-appstate)]
+  (listen-for-actions store config)))

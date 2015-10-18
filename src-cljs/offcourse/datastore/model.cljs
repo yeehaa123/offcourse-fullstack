@@ -59,7 +59,6 @@
                :store store))))
 
 (defn get-data [store {type :type :as payload}]
-  (println type)
   (case type
     :collection (get-collection store payload)
     :course     (get-course store payload)
