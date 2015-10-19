@@ -1,23 +1,22 @@
 (ns offcourse.views.components.todo-list
   (:require [offcourse.helpers.css :as css]
-            [offcourse.helpers.actions :refer [bind-handlers]]))
+            [quiescent.dom :as d]))
 
-(defn checkbox [completed handlers]
-  (let [status (if completed :complete :incomplete)
-        check-done (handlers :check-done)
-        classes (css/classes "checkbox" status)]
-    [:span {:class classes :on-click #(check-done)}]))
+(defn Checkbox [completed {:keys [toggle-done]}]
+  (let [completed (if completed "complete" "incomplete")]
+    (d/span {:className (css/classes "checkbox" completed)
+             :onClick #(toggle-done)})))
 
-(defn todo-list-item [item handlers]
-  [:li.todolist_item
-   [:p
-    [checkbox
-     (item :completed)
-     (bind-handlers handlers (item :id))]
-    [:span (item :task)]]])
+(defn TodoListItem [[id completed title] {:keys [toggle-done]}]
+  (let [toggle-done (partial toggle-done id)]
+    (d/li {:key id
+           :className (css/classes "todolist_item")}
+          (d/p {}
+               (Checkbox completed {:toggle-done toggle-done})
+               (d/span {} title)))))
 
-(defn todo-list [items handlers]
-  [:ul.todolist
-   (map-indexed
-    (fn [index item] ^{:key index} [todo-list-item item handlers])
-    items)])
+(defn TodoList [id items {:keys [toggle-done]}]
+  (let [toggle-done (partial toggle-done id)]
+    (d/ul {:className (css/classes "todolist")}
+          (for [[_ {:keys [id completed task]}] items]
+            (TodoListItem [id completed task] {:toggle-done toggle-done})))))

@@ -1,12 +1,9 @@
 (ns offcourse.views.components.logo
   (:require [offcourse.helpers.css :as css]
-            [clojure.string :as string]
-            [offcourse.actions.index :as actions]))
+            [quiescent.dom :as d]))
 
-(defn textbar [text {on-click :on-click}]
-  [:button {:on-click on-click
-            :class (css/classes "textbar")} text])
-
-(defn logo [handlers]
-  [:section {:class (css/classes "logo")}
-   [textbar "Offcourse_" handlers]])
+(defn Logo [{:keys [go-to-collection]}]
+  (d/section {:className (css/classes "logo")}
+             (d/button {:className (css/classes "textbar")
+                        :onClick #(go-to-collection :featured)}
+                       "Offcourse_")))

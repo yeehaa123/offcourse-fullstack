@@ -1,7 +1,8 @@
 (ns offcourse.views.containers.sidebar
   (:require [offcourse.helpers.css :as css]
-            [offcourse.views.components.logo :refer [logo]]
-            [offcourse.views.components.card :refer [card]]
+            [offcourse.views.components.logo :refer [Logo]]
+            [offcourse.views.components.card :refer [Card]]
+            [offcourse.views.components.collections-navigation :refer [Collections-Navigation]]
             [clojure.string :as string]
             [quiescent.dom :as d]
             [offcourse.views.actions :as actions]))
@@ -18,22 +19,9 @@
        :checkpoint [card (assoc item :type :checkpoint) {} :sidebar]
        :initial nil)])))
 
-(defn Collection-Button [collection-name {on-click :on-click}]
-  (d/button {:className "btn btn-inverse browse"
-             :onClick #(on-click collection-name)}
-            (string/capitalize (name collection-name))))
-
-(defn Collections-Navigation [collection-names handlers]
-  (d/nav {}
-         (d/ul {}
-               (for [collection-name collection-names]
-                 (d/li {:key collection-name}
-                       (Collection-Button collection-name handlers))))))
-
-(defn Sidebar [viewmodel]
+(defn Sidebar [{:keys [level collection-names course]} handlers]
   (d/section {:className (css/classes "sidebar")}
-             (d/section {:className (css/classes "logo")}
-                        (d/button {:className (css/classes "textbar")}
-                                  "Offcourse_"))
-             (Collections-Navigation (:collection-names viewmodel)
-                                     {:on-click actions/go-to-collection})))
+             (Logo handlers)
+             (case level
+               :collection (Collections-Navigation collection-names handlers)
+               :course (Card course handlers))))

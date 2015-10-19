@@ -1,31 +1,26 @@
 (ns offcourse.views.index
   (:require-macros [cljs.core.async.macros :refer [go-loop]])
   (:require [cljs.core.async :refer [<!]]
-            [offcourse.helpers.css :as css]
             [quiescent.core :as q]
-            [offcourse.views.containers.sidebar :refer [Sidebar]]
+            [quiescent.dom :as d]
             [offcourse.views.actions :as actions]
-            [quiescent.dom :as d]))
+            [offcourse.views.containers.app :refer [App]]))
 
-(defn App [appstate]
-  (d/section {:className (css/classes "app" (:mode appstate) "waypoints")}
-             (d/div {:className "layout-sidebar"}
-                    (Sidebar (:sidebar (:viewmodel appstate))))
-             (d/div {:className "layout-main"})))
-
-(defn rerender [appstate]
-  (q/render (App @appstate)
+(defn- render [handlers appstate]
+  (q/render (App handlers @appstate)
             (.querySelector js/document ".container")))
 
-(defn listen-for-actions [{input :channel-in
-                           output :channel-out}]
+(defn- listen-for-actions [{input    :channel-in
+                           output   :channel-out
+                           handlers :handlers}]
   (go-loop []
     (let [{type :type payload :payload} (<! input)]
       (case type
-        :updated-viewmodel (rerender (:appstate payload))
+        :updated-viewmodel (render handlers (:appstate payload))
         nil))
     (recur)))
 
 (defn init [config]
-  (actions/init config)
-  (listen-for-actions config))
+  (let [handlers (actions/init config)
+        config (assoc config :handlers handlers)]
+    (listen-for-actions config)))

@@ -37,7 +37,8 @@
   (let [course-id (:course-id (:level @appstate))
         course ((:courses @store) course-id)
         viewmodel {:cards (map #(assoc %1 :type :checkpoint) (vals (course :checkpoints)))
-                   :sidebar course
+                   :sidebar {:level :course
+                             :course course}
                    :topbar [{:level :course
                              :title (course :goal)
                              :course-id course-id}]}]
@@ -52,7 +53,8 @@
                              (map #(get (:courses @store) %1)))]
     (if (every? identity (map :id collection))
       (refresh-viewmodel appstate {:cards (map #(assoc %1 :type :course) collection)
-                                   :sidebar {:collection-names [:featured :new :popular]}
+                                   :sidebar {:level :collection
+                                             :collection-names [:featured :new :popular]}
                                    :topbar [{:level :collection
                                             :title collection-name
                                              :collection-name collection-name}]})

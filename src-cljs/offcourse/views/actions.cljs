@@ -4,37 +4,34 @@
 (defn init [{output :channel-out}]
   (let [>>! (partial >>! output)]
 
-    (defn set-mode! [mode]
-      (>>! :requested-mode-switch
-           :mode mode))
+    {:set-mode         (fn [mode]
+                         (>>! :requested-mode-switch
+                              :mode mode))
 
-    (defn toggle-mode! []
-      (>>! :requested-mode-toggle))
+     :toggle-mode      (fn []
+                         (>>! :requested-mode-toggle))
 
-    (defn toggle-done [course-id checkpoint-id]
-      (>>! :requested-done-toggle
-           :course-id course-id
-           :checkpoint-id checkpoint-id))
+     :toggle-done      (fn [course-id checkpoint-id]
+                         (>>! :requested-done-toggle
+                              :course-id course-id
+                              :checkpoint-id checkpoint-id))
 
-    (defn go-to-collection [collection-name]
-      (>>! :requested-level
-           :level :collection
-           :collection-name collection-name))
+     :go-to-collection (fn [collection-name]
+                         (>>! :requested-level
+                              :level :collection
+                              :collection-name collection-name))
 
-    (defn go-to-course [course-id]
-      (>>! :requested-level
-           :level :course
-           :course-id course-id))
+     :go-to-course     (fn [course-id]
+                         (>>! :requested-level
+                              :level :course
+                              :course-id course-id))
 
-    (defn go-to-checkpoint [course-id checkpoint-id]
-      (>>! :requested-level
-           :level :checkpoint
-           :course-id course-id
-           :checkpoint-id checkpoint-id))
+     :go-to-checkpoint (fn [course-id checkpoint-id]
+                         (>>! :requested-level
+                              :level :checkpoint
+                              :course-id course-id
+                              :checkpoint-id checkpoint-id))
 
-    (defn refresh []
-      (>>! :refresh))
-
-    (defn go-to [payload]
-      (>>! :requested-level
-           :payload payload))))
+     :go-to            (fn [payload]
+                         (>>! :requested-level
+                              :payload payload))}))
