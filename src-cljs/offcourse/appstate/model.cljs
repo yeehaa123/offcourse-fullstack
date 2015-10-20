@@ -24,6 +24,11 @@
   (respond :requested-toggle-done
            :payload payload))
 
+(defn toggle-highlight [payload]
+  (respond :requested-toggle-highlight
+           :payload payload))
+
+
 (defn set-mode [appstate {mode :mode}]
   (swap! appstate assoc-in [:mode] mode))
 

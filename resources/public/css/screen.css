@@ -285,14 +285,14 @@ textarea {
     font-family: NittyBold;
     margin-bottom: 0.625rem; }
 
-.card_section-map {
+.card_section-map, .card_section-checkbox {
   height: 15.3125rem;
   padding: 0; }
-  .card_section-map div {
+  .card_section-map div, .card_section-checkbox div {
     width: 100%;
     height: 100%;
     background-color: #000000; }
-  .card_section-map .complete {
+  .card_section-map .complete, .card_section-checkbox .complete {
     background-color: #E5CF39; }
 
 .card_section-map h1, .card_section-nav h1 {

@@ -8,11 +8,12 @@
   (go-loop []
     (let [{type :type payload :payload} (<! input)]
       (case type
-        :requested-data        (>! output (model/get-data store payload))
-        :fetched-collection    (>! output (model/update-collections store payload))
-        :fetched-course        (>! output (model/update-course store payload))
-        :fetched-resource      (>! output (model/augment-checkpoint store payload))
-        :requested-toggle-done (>! output (model/toggle-done store payload))
+        :requested-data             (>! output (model/get-data store payload))
+        :fetched-collection         (>! output (model/update-collections store payload))
+        :fetched-course             (>! output (model/update-course store payload))
+        :fetched-resource           (>! output (model/augment-checkpoint store payload))
+        :requested-toggle-done      (>! output (model/toggle-done store payload))
+        :requested-toggle-highlight (>! output (model/toggle-highlight store payload))
         nil))
     (recur)))
 

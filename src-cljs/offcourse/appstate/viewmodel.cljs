@@ -9,12 +9,12 @@
   (respond :updated-viewmodel
            :appstate appstate))
 
+
 (defn refresh-viewmodel [appstate viewmodel]
   (do
     (swap! appstate assoc-in [:viewmodel] viewmodel)
     (respond :updated-viewmodel
              :appstate appstate)))
-
 
 (defn refresh-checkpoint [appstate {store :store}]
   (let [level (:level @appstate)
@@ -23,7 +23,10 @@
         course ((:courses @store) course-id)
         checkpoint (get (course :checkpoints) checkpoint-id)
         viewmodel {:cards nil
-                   :sidebar checkpoint
+                   :sidebar {:level :checkpoint
+                             :item (assoc checkpoint :course-id course-id)
+                             :schema {:checkbox :completed
+                                      :title :task}}
                    :topbar [{:level :course
                              :title (course :goal)
                              :course-id course-id
@@ -38,7 +41,10 @@
         course ((:courses @store) course-id)
         viewmodel {:cards (map #(assoc %1 :type :checkpoint) (vals (course :checkpoints)))
                    :sidebar {:level :course
-                             :course course}
+                             :item course
+                             :schema {:map nil
+                                       :title :goal
+                                       :list :checkpoints}}
                    :topbar [{:level :course
                              :title (course :goal)
                              :course-id course-id}]}]

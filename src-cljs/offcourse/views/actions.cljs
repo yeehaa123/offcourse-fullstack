@@ -16,6 +16,11 @@
                               :course-id course-id
                               :checkpoint-id checkpoint-id))
 
+     :highlight       (fn [course-id checkpoint-id]
+                        (>>! :requested-highlight-toggle
+                             :course-id course-id
+                             :checkpoint-id checkpoint-id))
+
      :go-to-collection (fn [collection-name]
                          (>>! :requested-level
                               :level :collection

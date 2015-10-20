@@ -3,64 +3,14 @@
             [offcourse.views.components.todo-list :refer [TodoList]]
             [offcourse.helpers.css :as css]))
 
-(comment (defn section [child]
-           (let [type (:type (meta child))]
-             [:div
-              {:class (css/type-classes "card_section" type)}
-              child]))
 
-         (defn layout []
-           (let [this (r/current-component)
-                 children (r/children this)]
-             [:section.card
-              (map-indexed (fn [index child]
-                             ^{:key index} [section child])
-                           children)]))
-
-         (defn browse-course-button [{on-click :on-click}]
+(comment (defn browse-course-button [{on-click :on-click}]
            [:div.btn.btn-inverse.browse
             {:on-click #(on-click)} "Open"])
 
          (defn browse-checkpoint-button [{on-click :on-click}]
            [:div.btn.btn-inverse.browse
-            {:on-click #(on-click)} "Open"])
-
-         (defn sidebar-cards [item handlers]
-           (let [id (item :id)
-                 type (item :type)
-                 handlers (bind-handlers handlers id)]
-             (case type
-               :course      [layout
-
-                             ^{:type :title}  [:h1 (item :goal)]
-                             ^{:type :list}   [todo-list (sort-by :id (vals (item :checkpoints))) handlers]]
-               :checkpoint  [layout
-                             ^{:type :map}    [:div {:class (if (:completed item) "complete" "incomplete")}]
-                             ^{:type :title}  [:h1 (item :task)]
-                             ^{:type :title}  [:h1 (:title (:resource item))]
-                             ^{:type :url}    [:p (:url (:resource item))]])))
-
-         (defn main-cards [item handlers]
-           (let [id (item :id)
-                 type (item :type)
-                 handlers (bind-handlers handlers id)]
-             (case type
-               :course      [layout
-                             ^{:type :map}    [:div]
-                             ^{:type :title}  [:h1 (item :goal)]
-                             ^{:type :list}   [todo-list (sort-by :id (vals (item :checkpoints))) handlers]
-                             ^{:type :button} [browse-course-button {:on-click (handlers :go-to-course)}]]
-               :checkpoint  [layout
-                             ^{:type :map}    [:div {:class (if (:completed item) "complete" "incomplete")}]
-                             ^{:type :title}  [:h1 (item :task)]
-                             ^{:type :title}  [:h1 (:title (:resource item))]
-                             ^{:type :url}    [:p (:url (:resource item))]
-                             ^{:type :button} [browse-checkpoint-button {:on-click (:go-to-checkpoint handlers)}]])))
-
-         (defn card [item handlers context]
-           (case context
-             :sidebar (sidebar-cards item handlers)
-             :cards (main-cards item handlers))))
+            {:on-click #(on-click)} "Open"]))
 
 (defn Title [title]
   (d/h1 {} title))
@@ -68,11 +18,21 @@
 (defn Map []
   (d/div))
 
-(defn Card [{:keys [id goal checkpoints]} handlers]
+(defn Checkbox [course-id checkbox-id completed? {:keys [toggle-done]}]
+  (println course-id checkbox-id)
+  (let [completed (if completed? "complete" "incomplete")]
+    (d/div {:className completed
+            :onClick #(toggle-done course-id checkbox-id)})))
+
+(defn CardSection [index [type data-key] item handlers]
+  (d/div {:key index
+          :className (css/type-classes "card_section" type)}
+         (case type
+           :map (Map)
+           :checkbox (Checkbox (:course-id item) (:id item ) (data-key item) handlers)
+           :title (Title (data-key item))
+           :list (TodoList (:id item) (data-key item) handlers))))
+
+(defn Card [schema item handlers]
   (d/section {:className (css/classes "card")}
-             (d/div {:className (css/type-classes "card_section" :map)}
-                    (Map))
-             (d/div {:className (css/type-classes "card_section" :title)}
-                    (Title goal))
-             (d/div {:className (css/type-classes "card_section" :list)}
-                    (TodoList id checkpoints handlers))))
+             (map-indexed #(CardSection %1 %2 item handlers) schema)))

@@ -19,9 +19,10 @@
        :checkpoint [card (assoc item :type :checkpoint) {} :sidebar]
        :initial nil)])))
 
-(defn Sidebar [{:keys [level collection-names course]} handlers]
+(defn Sidebar [{:keys [level collection-names schema item]} handlers]
   (d/section {:className (css/classes "sidebar")}
              (Logo handlers)
              (case level
                :collection (Collections-Navigation collection-names handlers)
-               :course (Card course handlers))))
+               :course (Card schema item handlers)
+               :checkpoint (Card schema item handlers))))

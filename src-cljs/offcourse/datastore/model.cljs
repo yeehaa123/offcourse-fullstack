@@ -30,6 +30,15 @@
              :checkpoint-id checkpoint-id
              :store store)))
 
+(defn toggle-highlight [store {course-id :course-id
+                          checkpoint-id :checkpoint-id}]
+  (do
+    (swap! store update-in [:courses course-id :checkpoints checkpoint-id :highlighted] not)
+    (respond :updated-checkpoint
+             :course-id course-id
+             :checkpoint-id checkpoint-id
+             :store store)))
+
 (defn augment-checkpoint [store {course-id :course-id
                                  checkpoint-id :checkpoint-id
                                  resource :resource}]

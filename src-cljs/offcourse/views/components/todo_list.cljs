@@ -5,18 +5,29 @@
 (defn Checkbox [completed {:keys [toggle-done]}]
   (let [completed (if completed "complete" "incomplete")]
     (d/span {:className (css/classes "checkbox" completed)
-             :onClick #(toggle-done)})))
+             :onClick toggle-done})))
 
-(defn TodoListItem [[id completed title] {:keys [toggle-done]}]
-  (let [toggle-done (partial toggle-done id)]
+(defn TodoListItem [[id completed highlighted title]
+                    {:keys [toggle-done go-to-checkpoint highlight]}]
+  (let [highlighted (if highlighted "highlighted" "not-highlighted")
+        toggle-done (partial toggle-done id)
+        go-to-checkpoint (partial go-to-checkpoint id)
+        highlight (partial highlight id)]
     (d/li {:key id
-           :className (css/classes "todolist_item")}
+           :className (css/classes "todolist_item" highlighted)
+           :onMouseEnter highlight
+           :onMouseLeave highlight}
           (d/p {}
                (Checkbox completed {:toggle-done toggle-done})
-               (d/span {} title)))))
+               (d/span {:onClick go-to-checkpoint} title)))))
 
-(defn TodoList [id items {:keys [toggle-done]}]
-  (let [toggle-done (partial toggle-done id)]
+(defn TodoList [id items {:keys [toggle-done go-to-checkpoint highlight]}]
+  (let [toggle-done (partial toggle-done id)
+        go-to-checkpoint (partial go-to-checkpoint id)
+        highlight (partial highlight id)]
     (d/ul {:className (css/classes "todolist")}
-          (for [[_ {:keys [id completed task]}] items]
-            (TodoListItem [id completed task] {:toggle-done toggle-done})))))
+          (for [[_ {:keys [id completed highlighted task]}] items]
+            (TodoListItem [id completed highlighted task]
+                          {:toggle-done toggle-done
+                           :go-to-checkpoint go-to-checkpoint
+                           :highlight highlight})))))
