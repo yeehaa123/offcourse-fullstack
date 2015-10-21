@@ -32,6 +32,7 @@
                               :course-id course-id))
 
      :go-to-checkpoint (fn [course-id checkpoint-id]
+                         (println course-id checkpoint-id)
                          (>>! :requested-level
                               :level :checkpoint
                               :course-id course-id

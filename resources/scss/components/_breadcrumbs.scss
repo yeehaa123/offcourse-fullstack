@@ -1,7 +1,7 @@
 .breadcrumbs {
   display: block;
 }
-.layout-topbar .btn {
+.topbar .btn {
   display: inline-block;
   font-family: NittyNormal;
   font-weight: 300;
@@ -17,7 +17,7 @@
   margin-right: rem-calc(10px);
 }
 
-.layout-topbar .btn:hover {
+.topbar .btn:hover {
   color: $red;
 }
 

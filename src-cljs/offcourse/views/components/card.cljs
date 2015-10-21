@@ -19,7 +19,6 @@
   (d/div))
 
 (defn Checkbox [course-id checkbox-id completed? {:keys [toggle-done]}]
-  (println course-id checkbox-id)
   (let [completed (if completed? "complete" "incomplete")]
     (d/div {:className completed
             :onClick #(toggle-done course-id checkbox-id)})))
@@ -34,5 +33,6 @@
            :list (TodoList (:id item) (data-key item) handlers))))
 
 (defn Card [schema item handlers]
-  (d/section {:className (css/classes "card")}
+  (d/section {:key (:id item)
+              :className (css/classes "card")}
              (map-indexed #(CardSection %1 %2 item handlers) schema)))

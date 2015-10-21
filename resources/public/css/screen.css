@@ -35,6 +35,9 @@ p {
   p:last-of-type {
     margin-bottom: 0rem; }
 
+button:focus {
+  outline: 0; }
+
 ul {
   list-style: none; }
 
@@ -101,11 +104,11 @@ textarea {
   min-width: 26.25rem;
   max-width: 26.25rem; }
 
-.layout-main {
+.layout-right {
   flex-direction: column;
   flex: 1; }
 
-.layout-content {
+.layout-main {
   display: block;
   height: auto; }
 
@@ -314,7 +317,7 @@ textarea {
 .breadcrumbs {
   display: block; }
 
-.layout-topbar .btn {
+.topbar .btn {
   display: inline-block;
   font-family: NittyNormal;
   font-weight: 300;
@@ -329,7 +332,7 @@ textarea {
   background-color: #FFFFFF;
   margin-right: 0.625rem; }
 
-.layout-topbar .btn:hover {
+.topbar .btn:hover {
   color: #E34D2F; }
 
 .btn.btn-is-active {

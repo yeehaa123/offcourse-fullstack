@@ -1,14 +1,19 @@
 (ns offcourse.views.containers.cards
-  (:require [reagent.session :as session]
-            [offcourse.actions.index :as actions]
-            [offcourse.views.components.card :refer [card]]))
+  (:require [offcourse.views.components.card :refer [Card]]
+            [quiescent.dom :as d]))
 
-(defn cards [appstate]
-  (let [collection (sort-by :id (:cards (:viewmodel @appstate)))
-        course-id (:course-id (:level @appstate))
-        handlers {:check-done actions/toggle-done
-                  :go-to-course actions/go-to-course
-                  :go-to-checkpoint (partial actions/go-to-checkpoint course-id)}]
-    [:section.cards
-     (for [item collection]
-       ^{:key (item :id)}[card item handlers :cards])]))
+(defn Cards [cards-data handlers]
+  (let [level (:level cards-data)
+        course-id (:id (:course cards-data))
+        collection (case level
+                     :collection (sort-by :id (:courses cards-data))
+                     :course (map #(assoc %1 :course-id course-id)
+                                  (vals (:checkpoints (:course cards-data))))
+                     nil)
+        handlers {:toggle-done (:toggle-done handlers)
+                  :go-to-course (:go-to-course handlers)
+                  :highlight (:highlight handlers)
+                  :go-to-checkpoint (:go-to-checkpoint handlers)}]
+    (d/section {:className "cards"}
+               (for [item collection]
+                 (Card (:schema cards-data) item handlers)))))

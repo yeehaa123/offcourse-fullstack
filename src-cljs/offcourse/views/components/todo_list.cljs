@@ -2,6 +2,7 @@
   (:require [offcourse.helpers.css :as css]
             [quiescent.dom :as d]))
 
+
 (defn Checkbox [completed {:keys [toggle-done]}]
   (let [completed (if completed "complete" "incomplete")]
     (d/span {:className (css/classes "checkbox" completed)
@@ -20,6 +21,7 @@
           (d/p {}
                (Checkbox completed {:toggle-done toggle-done})
                (d/span {:onClick go-to-checkpoint} title)))))
+
 
 (defn TodoList [id items {:keys [toggle-done go-to-checkpoint highlight]}]
   (let [toggle-done (partial toggle-done id)

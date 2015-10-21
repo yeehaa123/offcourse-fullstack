@@ -39,7 +39,10 @@
 (defn refresh-course [appstate {store :store}]
   (let [course-id (:course-id (:level @appstate))
         course ((:courses @store) course-id)
-        viewmodel {:cards (map #(assoc %1 :type :checkpoint) (vals (course :checkpoints)))
+        viewmodel {:main     {:level :course
+                              :course course
+                              :schema {:checkbox :completed
+                                       :title :task}}
                    :sidebar {:level :course
                              :item course
                              :schema {:map nil
@@ -58,12 +61,16 @@
                              collection-name
                              (map #(get (:courses @store) %1)))]
     (if (every? identity (map :id collection))
-      (refresh-viewmodel appstate {:cards (map #(assoc %1 :type :course) collection)
+      (refresh-viewmodel appstate {:main    {:level :collection
+                                             :courses (map #(assoc %1 :type :course) collection)
+                                             :schema {:map nil
+                                                      :title :goal
+                                                      :list :checkpoints}}
                                    :sidebar {:level :collection
                                              :collection-names [:featured :new :popular]}
-                                   :topbar [{:level :collection
-                                            :title collection-name
-                                             :collection-name collection-name}]})
+                                   :topbar  [{:level :collection
+                                              :title collection-name
+                                              :collection-name collection-name}]})
       (respond :ignore))))
 
 (defn refresh [appstate payload]

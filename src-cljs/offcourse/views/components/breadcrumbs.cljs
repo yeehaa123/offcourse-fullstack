@@ -1,20 +1,24 @@
 (ns offcourse.views.components.breadcrumbs
-  (:require [clojure.string :as string]))
+  (:require [clojure.string :as string]
+            [quiescent.dom :as d]))
 
-(defn breadcrumb [crumb {on-click :on-click}]
+(defn Breadcrumb [crumb {on-click :go-to}]
   (let [title (as-> crumb $
                 (:title $)
                 (name $)
                 (string/split $ #" ")
                 (map string/capitalize $)
                 (string/join " " $))
-        link? (:link crumb)]
-    (if link?
-      [:li.btn.btn-level {:on-click #(on-click crumb)} title]
-      [:li.btn.btn-level title])))
+        link? (:link crumb)
+        options {:key (:level crumb)
+                 :className "btn btn-level"}
+        options (if link?
+                  (assoc options :onClick #(on-click crumb))
+                  options)]
+      (d/li options title)))
 
-(defn breadcrumbs [crumbs handlers]
-  [:nav.breadcrumbs
-   [:ul
-    (for [crumb crumbs]
-      ^{:key (:level crumb)} [breadcrumb crumb handlers])]])
+(defn Breadcrumbs [crumbs handlers]
+  (d/nav {:className "breadcrumbs"}
+         (d/ul {}
+               (for [crumb crumbs]
+                 (Breadcrumb crumb handlers)))))
