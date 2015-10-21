@@ -1,14 +1,9 @@
 (ns offcourse.appstate.viewmodel
   (:require [offcourse.models.action :refer [respond]]))
 
-(defn update-cards [courses course]
-  (let [courses (remove #(== (course :id) (:id %1)) courses)]
-    (conj courses (assoc course :type :course))))
-
 (defn force-refresh [appstate]
   (respond :updated-viewmodel
            :appstate appstate))
-
 
 (defn refresh-viewmodel [appstate viewmodel]
   (do
@@ -21,36 +16,16 @@
         course-id (:course-id level)
         checkpoint-id (:checkpoint-id level)
         course ((:courses @store) course-id)
-        checkpoint (get (course :checkpoints) checkpoint-id)
-        viewmodel {:cards nil
-                   :sidebar {:level :checkpoint
-                             :item (assoc checkpoint :course-id course-id)
-                             :schema {:checkbox :completed
-                                      :title :task}}
-                   :topbar [{:level :course
-                             :title (course :goal)
-                             :course-id course-id
-                             :link true}
-                            {:level :checkpoint
-                             :title (checkpoint :task)
-                             :checkpoint-id checkpoint-id}]}]
+        viewmodel {:level :checkpoint
+                   :course course
+                   :checkpoint-id checkpoint-id}]
     (refresh-viewmodel appstate viewmodel)))
 
 (defn refresh-course [appstate {store :store}]
   (let [course-id (:course-id (:level @appstate))
         course ((:courses @store) course-id)
-        viewmodel {:main     {:level :course
-                              :course course
-                              :schema {:checkbox :completed
-                                       :title :task}}
-                   :sidebar {:level :course
-                             :item course
-                             :schema {:map nil
-                                       :title :goal
-                                       :list :checkpoints}}
-                   :topbar [{:level :course
-                             :title (course :goal)
-                             :course-id course-id}]}]
+        viewmodel {:level :course
+                   :course course}]
     (refresh-viewmodel appstate viewmodel)))
 
 (defn refresh-collection [appstate {store :store}]
@@ -59,19 +34,33 @@
         collection      (->> @store
                              :collections
                              collection-name
-                             (map #(get (:courses @store) %1)))]
-    (if (every? identity (map :id collection))
-      (refresh-viewmodel appstate {:main    {:level :collection
-                                             :courses (map #(assoc %1 :type :course) collection)
-                                             :schema {:map nil
-                                                      :title :goal
-                                                      :list :checkpoints}}
-                                   :sidebar {:level :collection
-                                             :collection-names [:featured :new :popular]}
-                                   :topbar  [{:level :collection
-                                              :title collection-name
-                                              :collection-name collection-name}]})
+                             (map (fn [id] [id (get (:courses @store) id)]))
+                             (into {}))
+        viewmodel       {:level :collection
+                         :collection-name collection-name
+                         :collection collection
+                         :collection-names [:featured :new :popular]}]
+    (if (every? identity (map :id (vals collection)))
+      (refresh-viewmodel appstate viewmodel)
       (respond :ignore))))
+
+(defn highlight-collection [appstate {:keys [course-id checkpoint-id]}]
+  (let [viewmodel (:viewmodel @appstate)
+        viewmodel (update-in viewmodel [:collection course-id :checkpoints
+                                        checkpoint-id :highlighted] not)]
+    (refresh-viewmodel appstate viewmodel)))
+
+(defn highlight-course [appstate {:keys [course-id checkpoint-id]}]
+  (let [viewmodel (:viewmodel @appstate)
+        viewmodel (update-in viewmodel [:course :checkpoints
+                                        checkpoint-id :highlighted] not)]
+    (refresh-viewmodel appstate viewmodel)))
+
+(defn toggle-highlight [appstate payload]
+  (let [{type :type :as level} (:level @appstate)]
+    (case type
+      :collection (highlight-collection appstate payload)
+      :course (highlight-course appstate payload))))
 
 (defn refresh [appstate payload]
   (let [{type :type :as level} (:level @appstate)]

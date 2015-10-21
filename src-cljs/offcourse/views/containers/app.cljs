@@ -5,15 +5,12 @@
             [offcourse.views.containers.cards :refer [Cards]]
             [quiescent.dom :as d]))
 
-(defn App [handlers appstate]
-  (d/section {:className (css/classes "app" (:mode appstate) "waypoints")}
+(defn App [handlers {:keys [viewmodel mode]}]
+  (d/section {:className (css/classes "app" mode "waypoints")}
              (d/div {:className "layout-sidebar"}
-                    (Sidebar (:sidebar (:viewmodel appstate))
-                             handlers))
+                    (Sidebar viewmodel handlers))
              (d/div {:className "layout-right"}
                     (d/div {:className "layout-topbar"}
-                           (Topbar (:topbar (:viewmodel appstate))
-                                   handlers))
+                           (Topbar viewmodel handlers))
                     (d/div {:className "layout-main"}
-                           (Cards (:main (:viewmodel appstate))
-                                  handlers)))))
+                           (Cards viewmodel handlers)))))

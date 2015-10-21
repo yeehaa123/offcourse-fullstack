@@ -32,6 +32,7 @@
   background-color: $inverseColor;
 }
 
+
 .sidebar .card {
   background-color: $inverseColor;
   justify-content: flex-start; 
@@ -66,6 +67,10 @@
   .complete {
     background-color: $learnColor;
   }
+}
+
+.card-is-highlighted {
+    transform: scale(1.1);
 }
 
 .card_section-map, .card_section-nav {

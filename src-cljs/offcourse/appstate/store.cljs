@@ -14,7 +14,7 @@
                                     (model/set-level store payload))
         :requested-level            (>! output (model/switch-route payload))
         :requested-done-toggle      (>! output (model/toggle-done payload))
-        :requested-highlight-toggle (>! output (model/toggle-highlight payload))
+        :requested-highlight-toggle (>! output (viewmodel/toggle-highlight store payload))
         :requested-mode-toggle      (model/toggle-mode store)
         :requested-mode-switch      (model/set-mode store payload)
         :updated-course             (>! output (viewmodel/refresh store payload))

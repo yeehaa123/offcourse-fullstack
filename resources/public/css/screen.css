@@ -298,6 +298,9 @@ textarea {
   .card_section-map .complete, .card_section-checkbox .complete {
     background-color: #E5CF39; }
 
+.card-is-highlighted {
+  transform: scale(1.1); }
+
 .card_section-map h1, .card_section-nav h1 {
   display: none; }
 

@@ -7,10 +7,17 @@
             [quiescent.dom :as d]
             [offcourse.views.actions :as actions]))
 
-(defn Sidebar [{:keys [level collection-names schema item]} handlers]
-  (d/section {:className (css/classes "sidebar")}
-             (Logo handlers)
-             (case level
-               :collection (Collections-Navigation collection-names handlers)
-               :course (Card schema item handlers)
-               :checkpoint (Card schema item handlers))))
+(def schema
+  {:checkpoint {:checkbox :completed
+                :title :task}
+   :course     {:map nil
+                :title :goal
+                :list :checkpoints}})
+
+(defn Sidebar [{:keys [level collection-names course checkpoint-id]} handlers]
+    (d/section {:className (css/classes "sidebar")}
+               (Logo handlers)
+               (case level
+                 :collection (Collections-Navigation collection-names handlers)
+                 :course (Card (level schema) course handlers)
+                 :checkpoint (Card (level schema) (get-in course [:checkpoints checkpoint-id]) handlers))))

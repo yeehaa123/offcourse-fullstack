@@ -17,8 +17,27 @@
                   options)]
       (d/li options title)))
 
-(defn Breadcrumbs [crumbs handlers]
+(defn createCrumbs [{:keys [level collection-name course checkpoint-id]}]
+  (case level
+    :collection [{:level level
+                  :title collection-name
+                  :collection-name collection-name}]
+    :course     [{:level level
+                  :title (:goal course)
+                  :course-id (:id course)}]
+    :checkpoint [{:level :course
+                  :title (:goal course)
+                  :course-id (:id course)
+                  :link true}
+                 {:level level
+                  :title (:task (get-in course [:checkpoints checkpoint-id]))
+                  :checkpoint-id checkpoint-id}]))
+
+(defn Breadcrumbs [viewmodel handlers]
+  (let [crumbs (createCrumbs viewmodel)]
   (d/nav {:className "breadcrumbs"}
          (d/ul {}
                (for [crumb crumbs]
-                 (Breadcrumb crumb handlers)))))
+                 (Breadcrumb crumb handlers))))))
+
+

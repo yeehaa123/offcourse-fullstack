@@ -33,6 +33,7 @@
            :list (TodoList (:id item) (data-key item) handlers))))
 
 (defn Card [schema item handlers]
-  (d/section {:key (:id item)
-              :className (css/classes "card")}
-             (map-indexed #(CardSection %1 %2 item handlers) schema)))
+  (let [highlighted (if (:highlighted item) "highlighted" "not-highlighted")]
+        (d/section {:key (:id item)
+                    :className (css/classes "card" highlighted)}
+                   (map-indexed #(CardSection %1 %2 item handlers) schema))))
