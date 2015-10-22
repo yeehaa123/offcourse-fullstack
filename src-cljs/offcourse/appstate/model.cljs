@@ -5,137 +5,68 @@
 (defrecord AppState [level mode course-collections viewmodel])
 
 (defn new-appstate []
-  (reagent/atom (map->AppState {:level {:type :initial}
-                                :mode :learn
-                                :collections {:featured []
-                                              :popular []
-                                              :new []}
-                                :viewmodel {:cards []
-                                            :sidebar {}
-                                            :topbar {}}})))
+  (map->AppState {:level {:type :initial}
+                  :mode :learn
+                  :collections {:featured []
+                                :popular []
+                                :new []}
+                  :viewmodel {:cards []
+                              :sidebar {}
+                              :topbar {}}}))
 
-(defn set-level [appstate payload]
-  (swap! appstate assoc :level payload))
+(defn set-mode [appstate mode]
+  (assoc-in appstate [:mode] mode))
 
-(defn toggle-done [payload]
-  (respond :requested-toggle-done
-           :payload payload))
-
-(defn set-mode [appstate {mode :mode}]
-  (swap! appstate assoc-in [:mode] mode)
-  (respond :updated-appstate
-           :appstate appstate))
+(defn set-level [appstate level]
+  (assoc appstate :level level))
 
 (defn toggle-mode [appstate]
-  (swap! appstate update-in [:mode] #(if (= %1 :learn) :curate :learn)))
+  (update-in appstate [:mode] #(if (= %1 :learn) :curate :learn)))
 
-(defn get-data [payload]
-  (respond :requested-data
-           :payload payload))
-
-(defn commit-data [appstate {:keys [course-id checkpoint-id] :as payload}]
-  (let [course (:course (:viewmodel @appstate))
-        checkpoint (get (:checkpoints course) checkpoint-id)]
-    (respond :requested-commit
-             :payload (assoc payload :course-id (:id course) :checkpoint checkpoint))))
-
-(defn update-collections [appstate {:keys [collection-name course-ids]}]
-  (let [collections (:collections @appstate)]
-    (swap! appstate update-in [:collections collection-name] (fn [_] course-ids))))
-
-(defn switch-route [payload]
-  (respond :requested-route
-            :payload payload))
-
-(defn force-refresh [appstate]
-  (respond :updated-viewmodel
-           :appstate appstate))
-
-(defn refresh-viewmodel [appstate viewmodel]
-  (do
-    (swap! appstate assoc-in [:viewmodel] viewmodel)
-    (respond :updated-viewmodel
-             :appstate appstate)))
-
-(defn refresh-checkpoint [appstate {store :store}]
-  (let [level (:level @appstate)
-        checkpoint-id (:checkpoint-id level)
-        course-id (:course-id level)
-        course ((:courses @store) course-id)
-        viewmodel {:level :checkpoint
-                   :course course
-                   :checkpoint-id checkpoint-id}]
-    (if (get-in course [:checkpoints checkpoint-id])
-      (refresh-viewmodel appstate viewmodel)
-      (respond :redirect))))
-
-(defn add-new-checkpoint [appstate {store :store}]
-  (let [level (:level @appstate)
-        checkpoint-id (:checkpoint-id level)
-        course-id (:course-id level)
-        course ((:courses @store) course-id)
-        viewmodel {:level :checkpoint
+(defn add-checkpoint [appstate course]
+  (let [viewmodel {:level :checkpoint
                    :course (assoc-in course [:checkpoints :new]
                                      {:task "Do Something new"
                                       :url "bla.com"})
-                   :checkpoint-id checkpoint-id}]
-    (do
-      (swap! appstate assoc-in [:viewmodel] viewmodel)
-      (swap! appstate assoc :mode :curate)
-      (respond :updated-appstate
-               :appstate appstate))))
+                   :checkpoint-id :new}]
+    (assoc-in appstate [:viewmodel] viewmodel)))
 
-(defn update-checkpoint [appstate payload]
-  (let [level (:level @appstate)
-        checkpoint-id (:checkpoint-id level)]
+(defn refresh-checkpoint [{:keys [level] :as appstate} course]
+  (let  [checkpoint-id (:checkpoint-id level)
+         viewmodel {:level :checkpoint
+                    :course course
+                    :checkpoint-id checkpoint-id}]
     (if (= :new checkpoint-id)
-      (add-new-checkpoint appstate payload)
-      (refresh-checkpoint appstate payload))))
+      (add-checkpoint appstate course)
+      (assoc-in appstate [:viewmodel] viewmodel))))
 
-(defn refresh-course [appstate {store :store}]
-  (let [course-id (:course-id (:level @appstate))
-        course ((:courses @store) course-id)
-        viewmodel {:level :course
-                   :course course}]
-    (refresh-viewmodel appstate viewmodel)))
+(defn update-checkpoint [{:keys [level] :as appstate} course]
+  (let  [checkpoint-id (:checkpoint-id level)]
+    (if (= :new checkpoint-id)
+      (add-checkpoint appstate course)
+      (refresh-checkpoint appstate course))))
 
-(defn refresh-collection [appstate {store :store}]
-  (let [level (:level @appstate)
-        collection-name (:collection-name level)
-        collection      (->> @store
-                             :collections
-                             collection-name
-                             (map (fn [id] [id (get (:courses @store) id)]))
-                             (into {}))
+;; collection-names shouldn't be hard-coded
+
+(defn refresh-collection [{:keys [level] :as appstate} collection]
+  (let [collection-name (:collection-name level)
         viewmodel       {:level :collection
                          :collection-name collection-name
                          :collection collection
                          :collection-names [:featured :new :popular]}]
-    (if (every? identity (map :id (vals collection)))
-      (refresh-viewmodel appstate viewmodel)
-      (respond :ignore))))
+    (assoc-in appstate [:viewmodel] viewmodel)))
+
+(defn refresh-course [appstate course]
+  (let [viewmodel {:level :course
+                   :course course}]
+    (assoc-in appstate [:viewmodel] viewmodel)))
+
 
 (defn highlight-collection [appstate {:keys [course-id checkpoint-id highlight]}]
-  (let [viewmodel (:viewmodel @appstate)
-        viewmodel (update-in viewmodel [:collection course-id :checkpoints
-                                        checkpoint-id :highlighted] (fn [] highlight))]
-    (refresh-viewmodel appstate viewmodel)))
+  (update-in appstate [:viewmodel :collection course-id :checkpoints checkpoint-id :highlighted] (fn [] highlight)))
 
 (defn highlight-course [appstate {:keys [course-id checkpoint-id highlight]}]
-  (let [viewmodel (:viewmodel @appstate)
-        viewmodel (update-in viewmodel [:course :checkpoints
-                                        checkpoint-id :highlighted] (fn [] highlight))]
-    (refresh-viewmodel appstate viewmodel)))
+  (update-in appstate [:viewmodel :course :checkpoints checkpoint-id :highlighted] (fn [] highlight)))
 
-(defn toggle-highlight [appstate payload]
-  (let [{type :type :as level} (:level @appstate)]
-    (case type
-      :collection (highlight-collection appstate payload)
-      :course (highlight-course appstate payload))))
-
-(defn refresh [appstate payload]
-  (let [{type :type :as level} (:level @appstate)]
-    (case type
-      :collection (refresh-collection appstate payload)
-      :course (refresh-course appstate payload)
-      :checkpoint (update-checkpoint appstate payload))))
+(defn update-collections [appstate {:keys [collection-name course-ids]}]
+  (update-in appstate [:collections collection-name] (fn [_] course-ids)))

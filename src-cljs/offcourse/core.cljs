@@ -3,7 +3,7 @@
             [cljs.core.async :refer [merge pipeline chan mult tap]]
             [offcourse.views.index :as views]
             [offcourse.actions.index :as actions]
-            [offcourse.appstate.store :as appstate]
+            [offcourse.appstate.index :as appstate]
             [offcourse.datastore.store :as datastore]
             [offcourse.logger.service :as logger]
             [offcourse.user.service :as user]

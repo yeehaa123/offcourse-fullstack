@@ -44,7 +44,7 @@
   (case level
     :collection (name (:collection-name location-data))
     :course (course-token location-data)
-    :checkpoint (checkpoint-token location-data)\
+    :checkpoint (checkpoint-token location-data)
     :home nil))
 
 (defn nav! [location-data]
@@ -56,7 +56,7 @@
     (let [{type :type payload :payload} (<! input)]
       (case type
         :requested-route (nav! payload)
-        :redirect (nav! {:level :home})
+        :not-found-resource (nav! {:level :home})
         nil))
     (recur)))
 

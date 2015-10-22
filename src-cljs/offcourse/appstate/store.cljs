@@ -1,31 +1,72 @@
 (ns offcourse.appstate.store
-  (:require-macros [cljs.core.async.macros :refer [go-loop]])
   (:require [offcourse.appstate.model :as model]
-            [cljs.core.async :refer [>! <!]]))
+            [offcourse.appstate.utils :as utils]
+            [offcourse.models.action :refer [respond]]))
 
-(defn listen-for-actions [appstate {input :channel-in
-                                 output :channel-out}]
-  (go-loop []
-    (let [{type :type payload :payload} (<! input)]
-      (case type
-        :added-checkpoint           (>! output (model/switch-route
-                                                (assoc payload :level :course)))
-        :requested-resource         (do
-                                      (>! output (model/get-data payload))
-                                      (model/set-level appstate payload))
-        :requested-commit           (>! output (model/commit-data appstate payload))
-        :requested-level            (>! output (model/switch-route payload))
-        :requested-done-toggle      (>! output (model/toggle-done payload))
-        :requested-highlight-toggle (>! output (model/toggle-highlight appstate payload))
-        :requested-mode-toggle      (model/toggle-mode appstate)
-        :requested-mode-switch      (model/set-mode appstate payload)
-        :updated-course             (>! output (model/refresh appstate payload))
-        :updated-checkpoint         (>! output (model/refresh appstate payload))
-        :checked-datastore          (>! output (model/refresh appstate payload))
-        :refresh                    (>! output (model/force-refresh appstate))
-        nil))
-    (recur)))
+(def appstate (atom (model/new-appstate)))
 
-(defn init [config]
-  (let [appstate (model/new-appstate)]
-  (listen-for-actions appstate config)))
+(defn- update-appstate! [fn]
+  (do
+    (swap! appstate fn)
+    (respond :updated-appstate
+             :appstate @appstate)))
+
+(defn- refresh-checkpoint [{store :store}]
+  (let [level (:level @appstate)
+        course (utils/get-course @appstate @store)
+        checkpoint-id (:checkpoint-id (:level @appstate))
+        checkpoint (utils/get-checkpoint checkpoint-id course)]
+    (if (or checkpoint (= checkpoint-id :new))
+      (update-appstate! #(model/update-checkpoint %1 course))
+      (respond :not-found-resource))))
+
+(defn- refresh-collection [{store :store}]
+  (let [collection (utils/get-collection @appstate @store)]
+    (if (every? identity (map :id (vals collection)))
+      (update-appstate! #(model/refresh-collection %1 collection))
+      (respond :not-fetched-collection))))
+
+(defn- refresh-course [{store :store}]
+  (let [course (utils/get-course @appstate @store)]
+    (if course
+      (update-appstate! #(model/refresh-course %1 course))
+      (respond :not-found-resource))))
+
+;; Public API
+
+(defn set-mode [{mode :mode}]
+  (update-appstate! #(model/set-mode %1 mode)))
+
+(defn toggle-mode []
+  (update-appstate! #(model/toggle-mode %1)))
+
+(defn update-collections [payload]
+  (update-appstate! #(model/update-collections %1 payload)))
+
+(defn set-level [payload]
+  (update-appstate! #(model/set-level %1 payload)))
+
+(defn refresh [payload]
+  (let [{type :type :as level} (:level @appstate)]
+    (case type
+      :collection (refresh-collection payload)
+      :course (refresh-course payload)
+      :checkpoint (refresh-checkpoint payload))))
+
+(defn toggle-highlight [payload]
+  (let [{type :type :as level} (:level @appstate)]
+    (case type
+      :collection (update-appstate! #(model/highlight-collection %1 payload))
+      :course (update-appstate! #(model/highlight-course %1 payload)))))
+
+(defn commit-data [{:keys [course-id checkpoint-id] :as payload}]
+  (let [course (:course (:viewmodel @appstate))
+        checkpoint (get (:checkpoints course) checkpoint-id)
+        payload (assoc payload :course-id course-id
+                               :checkpoint checkpoint)]
+    (respond :requested-commit
+             :payload payload)))
+
+(defn force-refresh []
+  (respond :reloaded-appstate
+           :appstate @appstate))
