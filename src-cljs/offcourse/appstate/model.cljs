@@ -14,9 +14,6 @@
                                             :sidebar {}
                                             :topbar {}}})))
 
-(defn -toggle-mode [mode]
-  (if (= mode :learn) :curate :learn))
-
 (defn set-level [appstate payload]
   (swap! appstate assoc :level payload))
 
@@ -30,7 +27,7 @@
            :appstate appstate))
 
 (defn toggle-mode [appstate]
-  (swap! appstate update-in [:mode] -toggle-mode))
+  (swap! appstate update-in [:mode] #(if (= %1 :learn) :curate :learn)))
 
 (defn get-data [payload]
   (respond :requested-data
@@ -68,7 +65,9 @@
         viewmodel {:level :checkpoint
                    :course course
                    :checkpoint-id checkpoint-id}]
-    (refresh-viewmodel appstate viewmodel)))
+    (if (get-in course [:checkpoints checkpoint-id])
+      (refresh-viewmodel appstate viewmodel)
+      (respond :redirect))))
 
 (defn add-new-checkpoint [appstate {store :store}]
   (let [level (:level @appstate)
