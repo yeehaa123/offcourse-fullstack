@@ -9,10 +9,12 @@
 
 (def schema
   {:checkpoint {:checkbox :completed
-                :title :task}
+                :title :task
+                :commit-checkpoint-button :id}
    :course     {:map nil
                 :title :goal
-                :list :checkpoints}})
+                :list :checkpoints
+                :add-checkpoint-button :id}})
 
 (defn Sidebar [{:keys [level collection-names course checkpoint-id]} handlers]
     (d/section {:className (css/classes "sidebar")}
@@ -20,4 +22,7 @@
                (case level
                  :collection (Collections-Navigation collection-names handlers)
                  :course (Card (level schema) course handlers)
-                 :checkpoint (Card (level schema) (get-in course [:checkpoints checkpoint-id]) handlers))))
+                 :checkpoint (Card (level schema)
+                                   (assoc (get-in course [:checkpoints checkpoint-id])
+                                          :course-id (:id course))
+                                          handlers))))

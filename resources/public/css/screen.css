@@ -295,8 +295,6 @@ textarea {
     width: 100%;
     height: 100%;
     background-color: #000000; }
-  .card_section-map .complete, .card_section-checkbox .complete {
-    background-color: #E5CF39; }
 
 .card-is-highlighted {
   transform: scale(1.1); }
@@ -316,6 +314,12 @@ textarea {
   padding: 0 1.875rem; }
   .card_section-nav button {
     margin-top: 0; }
+
+.app-is-learn .complete {
+  background-color: #E5CF39; }
+
+.app-is-curate .complete {
+  background-color: #E34D2F; }
 
 .breadcrumbs {
   display: block; }

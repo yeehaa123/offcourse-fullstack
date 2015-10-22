@@ -18,10 +18,16 @@
 (defn update-vals [vals f map]
   (reduce #(update-in % [%2] f) map vals))
 
+(defn convertRouteParams [id]
+  (cond
+    (= "new" id) (keyword id)
+    (= nil id) nil
+    :default (js/parseInt id)))
+
 (defn response [channel type & args]
   (let [payload (->> args
                      (zipmap (type arguments))
-                     (update-vals [:course-id :checkpoint-id] js/parseInt)
+                     (update-vals [:course-id :checkpoint-id] convertRouteParams)
                      (into {:type type}))]
     (>>! channel :requested-resource
                  :payload payload)))

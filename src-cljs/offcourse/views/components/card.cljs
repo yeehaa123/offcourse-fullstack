@@ -13,12 +13,21 @@
             {:on-click #(on-click)} "Open"]))
 
 (defn Button
-  ([course-id {:keys [go-to-course go-to-checkpoint]}]
+  ([course-id {:keys [go-to-course]}]
    (d/div {:className "btn btn-inverse browse"
            :onClick #(go-to-course course-id)} "Open"))
-  ([course-id checkpoint-id {:keys [go-to-course go-to-checkpoint]}]
+  ([course-id checkpoint-id {:keys [go-to-checkpoint]}]
    (d/div {:className "btn btn-inverse browse"
            :onClick #(go-to-checkpoint course-id checkpoint-id)} "Open")))
+
+(defn AddCheckpointButton [course-id {:keys [go-to-checkpoint]}]
+   (d/div {:className "btn btn-inverse browse"
+           :onClick #(go-to-checkpoint course-id "new")} "Add Checkpoint"))
+
+(defn CommitCheckpointButton [course-id checkpoint-id {:keys [commit-checkpoint]}]
+  (d/div {:className "btn btn-inverse browse"
+          :onClick #(commit-checkpoint course-id (if checkpoint-id checkpoint-id :new))}
+          "Commit"))
 
 (defn Title [title]
   (d/h1 {} title))
@@ -40,7 +49,9 @@
            :title (Title (data-key item))
            :list (TodoList (:id item) (data-key item) handlers)
            :course-button (Button (data-key item) handlers)
-           :checkpoint-button (Button (:course-id item) (data-key item) handlers))))
+           :checkpoint-button (Button (:course-id item) (data-key item) handlers)
+           :add-checkpoint-button (AddCheckpointButton (data-key item) handlers)
+           :commit-checkpoint-button (CommitCheckpointButton (:course-id item) (data-key item) handlers))))
 
 (defn Card [schema item handlers]
   (let [highlighted (if (:highlighted item) "highlighted" "not-highlighted")]

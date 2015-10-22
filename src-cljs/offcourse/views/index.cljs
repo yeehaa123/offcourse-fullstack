@@ -17,6 +17,7 @@
     (let [{type :type payload :payload} (<! input)]
       (case type
         :updated-viewmodel (render handlers (:appstate payload))
+        :updated-appstate (render handlers (:appstate payload))
         nil))
     (recur)))
 

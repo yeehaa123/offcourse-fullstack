@@ -64,9 +64,6 @@
     background-color: $baseColor;
   }
 
-  .complete {
-    background-color: $learnColor;
-  }
 }
 
 .card-is-highlighted {
@@ -97,4 +94,12 @@
   button {
     margin-top: 0;
   }
+}
+
+.app-is-learn .complete {
+    background-color: $learnColor;
+}
+
+.app-is-curate .complete {
+    background-color: $curateColor;
 }

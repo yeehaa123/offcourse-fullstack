@@ -67,6 +67,27 @@
       (respond :checked-datastore
                :store store))))
 
+(defn add-checkpoint [store {:keys [course-id checkpoint]}]
+  (let [course (get (:courses @store) course-id)
+        max-id (apply max (keys (:checkpoints course)))
+        id     (inc max-id)
+        checkpoint (assoc checkpoint :id id)]
+    (do
+      (swap! store assoc-in [:courses course-id :checkpoints id] checkpoint)
+      (respond :added-checkpoint
+               :checkpoint-id id
+               :course-id course-id
+               :store store))))
+
+(defn update-checkpoint [store {:keys [checkpoint-id] :as payload}]
+  (if (= checkpoint-id :new)
+    (add-checkpoint store payload)
+    (respond :ignore)))
+
+(defn commit-data [store {type :type :as payload}]
+  (case type
+    :checkpoint (update-checkpoint store payload)))
+
 (defn get-data [store {type :type :as payload}]
   (case type
     :collection (get-collection store payload)

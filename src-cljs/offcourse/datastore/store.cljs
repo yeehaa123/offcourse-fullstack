@@ -9,6 +9,7 @@
     (let [{type :type payload :payload} (<! input)]
       (case type
         :requested-data             (>! output (model/get-data store payload))
+        :requested-commit           (>! output (model/commit-data store payload))
         :fetched-collection         (>! output (model/update-collections store payload))
         :fetched-course             (>! output (model/update-course store payload))
         :fetched-resource           (>! output (model/augment-checkpoint store payload))

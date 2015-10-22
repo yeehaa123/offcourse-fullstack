@@ -28,7 +28,6 @@
                               :collection-name collection-name))
 
      :go-to-course     (fn [course-id]
-                         (println course-id)
                          (>>! :requested-level
                               :level :course
                               :course-id course-id))
@@ -38,6 +37,12 @@
                               :level :checkpoint
                               :course-id course-id
                               :checkpoint-id checkpoint-id))
+
+     :commit-checkpoint (fn [course-id checkpoint-id]
+                          (>>! :requested-commit
+                               :type :checkpoint
+                               :course-id course-id
+                               :checkpoint-id checkpoint-id))
 
      :go-to            (fn [payload]
                          (>>! :requested-level
