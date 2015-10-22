@@ -1,6 +1,5 @@
 (ns offcourse.appstate.model
-  (:require [reagent.core :as reagent]
-            [offcourse.models.action :refer [respond]]))
+  (:require [offcourse.models.action :refer [respond]]))
 
 (defrecord AppState [level mode course-collections viewmodel])
 
