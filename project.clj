@@ -25,7 +25,6 @@
                  [org.postgresql/postgresql "9.4-1201-jdbc41"]
                  [org.clojure/clojurescript "1.7.122" :scope "provided"]
                  [org.clojure/tools.reader "0.9.2"]
-                 [cljsjs/react "0.13.3-1"]
                  [secretary "1.2.3"]
                  [org.clojure/core.async "0.1.346.0-17112a-alpha"]
                  [cljs-ajax "0.3.14"]
@@ -44,12 +43,14 @@
 
   :plugins [[lein-environ "1.0.0"]
             [migratus-lein "0.1.7"]
-            [lein-cljsbuild "1.0.6"]]
+            [lein-cljsbuild "1.0.6"]
+            [lein-sassc "0.10.4"]]
   :sassc [{:src "resources/scss/screen.scss"
            :output-to "resources/public/css/screen.css"
            :style "nested"
            :import-path "resources/scss"}]
 
+  :hooks [leiningen.sassc]
   :clean-targets ^{:protect false} [:target-path [:cljsbuild :builds :app :compiler :output-dir] [:cljsbuild :builds :app :compiler :output-to]]
   :cljsbuild
   {:builds
