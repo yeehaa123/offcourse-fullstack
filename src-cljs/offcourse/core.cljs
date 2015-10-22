@@ -11,6 +11,7 @@
             [offcourse.history.service :as history]))
 
 (defn init! []
+  (println "initialized")
   (let [actions-appstate   (chan)
         actions-log        (chan)
         actions-out        (chan)
