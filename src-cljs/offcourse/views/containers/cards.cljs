@@ -4,10 +4,12 @@
 
 (def schema
   {:course         {:checkbox :completed
-                    :title :task}
+                    :title :task
+                    :checkpoint-button :id}
    :collection     {:map nil
                     :title :goal
-                    :list :checkpoints}})
+                    :list :checkpoints
+                    :course-button :id}})
 
 (defn Cards [{:keys [level course collection]} handlers]
   (let [course-id (:id course)

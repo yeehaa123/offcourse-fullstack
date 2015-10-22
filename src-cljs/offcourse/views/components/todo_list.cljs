@@ -16,8 +16,8 @@
         highlight (partial highlight id)]
     (d/li {:key id
            :className (css/classes "todolist_item" highlighted)
-           :onMouseEnter highlight
-           :onMouseLeave highlight}
+           :onMouseEnter #(highlight true)
+           :onMouseLeave #(highlight false)}
           (d/p {}
                (Checkbox completed {:toggle-done toggle-done})
                (d/span {:onClick go-to-checkpoint} title)))))

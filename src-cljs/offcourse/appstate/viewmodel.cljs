@@ -44,16 +44,16 @@
       (refresh-viewmodel appstate viewmodel)
       (respond :ignore))))
 
-(defn highlight-collection [appstate {:keys [course-id checkpoint-id]}]
+(defn highlight-collection [appstate {:keys [course-id checkpoint-id highlight]}]
   (let [viewmodel (:viewmodel @appstate)
         viewmodel (update-in viewmodel [:collection course-id :checkpoints
-                                        checkpoint-id :highlighted] not)]
+                                        checkpoint-id :highlighted] (fn [] highlight))]
     (refresh-viewmodel appstate viewmodel)))
 
-(defn highlight-course [appstate {:keys [course-id checkpoint-id]}]
+(defn highlight-course [appstate {:keys [course-id checkpoint-id highlight]}]
   (let [viewmodel (:viewmodel @appstate)
         viewmodel (update-in viewmodel [:course :checkpoints
-                                        checkpoint-id :highlighted] not)]
+                                        checkpoint-id :highlighted] (fn [] highlight))]
     (refresh-viewmodel appstate viewmodel)))
 
 (defn toggle-highlight [appstate payload]

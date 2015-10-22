@@ -12,6 +12,14 @@
            [:div.btn.btn-inverse.browse
             {:on-click #(on-click)} "Open"]))
 
+(defn Button
+  ([course-id {:keys [go-to-course go-to-checkpoint]}]
+   (d/div {:className "btn btn-inverse browse"
+           :onClick #(go-to-course course-id)} "Open"))
+  ([course-id checkpoint-id {:keys [go-to-course go-to-checkpoint]}]
+   (d/div {:className "btn btn-inverse browse"
+           :onClick #(go-to-checkpoint course-id checkpoint-id)} "Open")))
+
 (defn Title [title]
   (d/h1 {} title))
 
@@ -30,7 +38,9 @@
            :map (Map)
            :checkbox (Checkbox (:course-id item) (:id item ) (data-key item) handlers)
            :title (Title (data-key item))
-           :list (TodoList (:id item) (data-key item) handlers))))
+           :list (TodoList (:id item) (data-key item) handlers)
+           :course-button (Button (data-key item) handlers)
+           :checkpoint-button (Button (:course-id item) (data-key item) handlers))))
 
 (defn Card [schema item handlers]
   (let [highlighted (if (:highlighted item) "highlighted" "not-highlighted")]

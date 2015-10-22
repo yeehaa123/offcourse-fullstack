@@ -16,10 +16,11 @@
                               :course-id course-id
                               :checkpoint-id checkpoint-id))
 
-     :highlight       (fn [course-id checkpoint-id]
+     :highlight       (fn [course-id checkpoint-id highlight]
                         (>>! :requested-highlight-toggle
                              :course-id course-id
-                             :checkpoint-id checkpoint-id))
+                             :checkpoint-id checkpoint-id
+                             :highlight highlight))
 
      :go-to-collection (fn [collection-name]
                          (>>! :requested-level
@@ -27,12 +28,12 @@
                               :collection-name collection-name))
 
      :go-to-course     (fn [course-id]
+                         (println course-id)
                          (>>! :requested-level
                               :level :course
                               :course-id course-id))
 
      :go-to-checkpoint (fn [course-id checkpoint-id]
-                         (println course-id checkpoint-id)
                          (>>! :requested-level
                               :level :checkpoint
                               :course-id course-id
