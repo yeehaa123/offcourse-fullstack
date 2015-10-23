@@ -38,18 +38,3 @@
       (go
         (>! output (fetch-resource {:course-id course-id
                                     :checkpoint checkpoint}))))))
-
-(defn listen-for-actions [{input :channel-in
-                           output :channel-out}]
-  (go-loop []
-    (let [{type :type payload :payload} (<! input)]
-      (case type
-        :updated-collection   (fetch-courses output payload)
-        :updated-course       (fetch-resources output payload)
-        :not-found-collection (>! output (fetch-collection payload))
-        :not-found-course     (>! output (fetch-course payload))
-        nil))
-    (recur)))
-
-(defn init [config]
-  (listen-for-actions config))

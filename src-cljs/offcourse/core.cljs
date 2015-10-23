@@ -1,10 +1,10 @@
 (ns offcourse.core
-  (:require [offcourse.api.service :as api]
+  (:require [offcourse.api.index :as api]
             [cljs.core.async :refer [merge pipeline chan mult tap]]
             [offcourse.views.index :as views]
             [offcourse.actions.index :as actions]
             [offcourse.appstate.index :as appstate]
-            [offcourse.datastore.store :as datastore]
+            [offcourse.datastore.index :as datastore]
             [offcourse.logger.service :as logger]
             [offcourse.user.service :as user]
             [offcourse.routes :as router]

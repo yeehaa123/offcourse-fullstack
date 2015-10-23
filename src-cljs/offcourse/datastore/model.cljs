@@ -4,92 +4,23 @@
 (defrecord DataStore [collections courses])
 
 (defn new-datastore []
-  (atom(->DataStore {} {})))
+  (->DataStore {} {}))
 
-(defn update-collections [store {collection-name :collection-name
-                                 collection-ids :collection-ids}]
-  (do
-    (swap! store assoc-in [:collections collection-name] collection-ids)
-    (respond :updated-collection
-             :collection-name collection-name
-             :course-ids collection-ids)))
+(defn update-collections [store collection-name collection-ids]
+  (assoc-in store [:collections collection-name] collection-ids))
 
-(defn update-course [store {course :course}]
-  (do
-    (swap! store assoc-in [:courses (:id course)] course)
-    (respond :updated-course
-             :course-id (:id course)
-             :store store)))
+(defn update-course [store course]
+  (assoc-in store [:courses (:id course)] course))
 
-(defn toggle-done [store {course-id :course-id
-                          checkpoint-id :checkpoint-id}]
-  (do
-    (swap! store update-in [:courses course-id :checkpoints checkpoint-id :completed] not)
-    (respond :updated-checkpoint
-             :course-id course-id
-             :checkpoint-id checkpoint-id
-             :store store)))
+(defn add-checkpoint [store course-id checkpoint-id checkpoint]
+    (assoc-in store [:courses course-id :checkpoints checkpoint-id] checkpoint))
 
-(defn toggle-highlight [store {course-id :course-id
-                          checkpoint-id :checkpoint-id}]
-  (do
-    (swap! store update-in [:courses course-id :checkpoints checkpoint-id :highlighted] not)
-    (respond :updated-checkpoint
-             :course-id course-id
-             :checkpoint-id checkpoint-id
-             :store store)))
+(defn toggle-done [store course-id checkpoint-id]
+  (update-in store [:courses course-id :checkpoints checkpoint-id :completed] not))
 
-(defn augment-checkpoint [store {course-id :course-id
-                                 checkpoint-id :checkpoint-id
-                                 resource :resource}]
-  (do
-    (swap! store update-in [:courses course-id :checkpoints checkpoint-id]
-           #(assoc %1 :url (:url resource)
-                   :resource resource))
-    (respond :updated-checkpoint
-             :checkpoint-id checkpoint-id
-             :course-id course-id
-             :store store)))
+(defn add-resource [checkpoint resource]
+  (assoc checkpoint :url (:url resource)
+                    :resource resource))
 
-(defn get-course [store {course-id :course-id}]
-  (let [course (get (:courses @store) course-id)]
-    (if-not course
-      (respond :not-found-course
-               :course-id course-id)
-      (respond :checked-datastore
-               :store store))))
-
-(defn get-collection [store {collection-name :collection-name}]
-  (let [collections (:collections @store)]
-    (if-not (collection-name collections)
-      (respond :not-found-collection
-               :collection-name collection-name)
-      (respond :checked-datastore
-               :store store))))
-
-(defn add-checkpoint [store {:keys [course-id checkpoint]}]
-  (let [course (get (:courses @store) course-id)
-        max-id (apply max (keys (:checkpoints course)))
-        id     (inc max-id)
-        checkpoint (assoc checkpoint :id id)]
-    (do
-      (swap! store assoc-in [:courses course-id :checkpoints id] checkpoint)
-      (respond :added-checkpoint
-               :checkpoint-id id
-               :course-id course-id
-               :store store))))
-
-(defn update-checkpoint [store {:keys [checkpoint-id] :as payload}]
-  (if (= checkpoint-id :new)
-    (add-checkpoint store payload)
-    (respond :ignore)))
-
-(defn commit-data [store {type :type :as payload}]
-  (case type
-    :checkpoint (update-checkpoint store payload)))
-
-(defn get-data [store {type :type :as payload}]
-  (case type
-    :collection (get-collection store payload)
-    :course     (get-course store payload)
-    :checkpoint (get-course store payload)))
+(defn augment-checkpoint [store course-id checkpoint-id resource]
+  (update-in store [:courses course-id :checkpoints checkpoint-id] #(add-resource %1 resource)))
