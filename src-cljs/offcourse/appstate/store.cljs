@@ -47,7 +47,6 @@
   (update-appstate! #(model/set-level %1 payload)))
 
 (defn refresh [payload]
-  ; (println payload)
   (let [{type :type :as level} (:level @appstate)]
     (case type
       :collection (refresh-collection payload)

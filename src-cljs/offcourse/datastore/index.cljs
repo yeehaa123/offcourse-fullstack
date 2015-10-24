@@ -7,7 +7,6 @@
                                  output :channel-out}]
   (go-loop []
     (let [{type :type payload :payload} (<! input)]
-      (println type)
       (case type
         :requested-data             (>! output (store/get-data payload))
         :requested-commit           (>! output (store/commit-data payload))

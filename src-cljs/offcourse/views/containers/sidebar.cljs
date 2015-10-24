@@ -10,6 +10,7 @@
 (def schema
   {:checkpoint {:checkbox :completed
                 :title :task
+                :info :title
                 :commit-checkpoint-button :id}
    :course     {:map nil
                 :title :goal

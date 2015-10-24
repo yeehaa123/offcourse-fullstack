@@ -1,8 +1,10 @@
 (ns offcourse.api.service
   (:require-macros [cljs.core.async.macros :refer [go go-loop]])
-  (:require        [cljs.core.async :refer [timeout <! >!]]
+  (:require        [cljs.core.async :refer [chan timeout <! >!]]
                    [offcourse.api.fake-data :as fake-data]
                    [offcourse.models.action :refer [respond]]))
+
+(def internal (chan))
 
 (defn fetch-collection [{collection-name :collection-name}]
   (let [collections {:featured [0 1 2 3]
@@ -36,9 +38,19 @@
              :checkpoint-id checkpoint-id
              :resource resource)))
 
-(defn fetch-resources [output {:keys [course-id store] :as payload}]
+(defn fetch-resources [{:keys [course-id store] :as payload}]
   (let [checkpoints (vals (:checkpoints (get (:courses @store) course-id)))]
     (doseq [checkpoint checkpoints]
       (go
-        (>! output (fetch-resource {:course-id course-id
-                                    :checkpoint checkpoint}))))))
+        (<! (timeout (rand-int 1000)))
+        (>! internal (respond :requested-resource
+                              :course-id course-id
+                              :checkpoint checkpoint))))))
+
+(defn fetch-data [{:keys [type] :as payload}]
+  (case type
+    :collection (fetch-collection payload)
+    :course     (fetch-course payload)
+    :resources  (do
+                  (fetch-resources payload)
+                  (respond :ignore))))

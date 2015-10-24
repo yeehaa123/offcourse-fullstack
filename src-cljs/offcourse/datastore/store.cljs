@@ -58,10 +58,13 @@
   (let [course (get (:courses @store) course-id)
         has-no-resources? (not-any? :resource (:checkpoints course))]
     (if-not course
-      (respond :not-found-course
-               :course-id course-id)
+      (respond :not-found-data
+               :type :course
+               :course-id course-id
+               :store store)
       (if has-no-resources?
-        (respond :updated-course
+        (respond :not-found-data
+                 :type :resources
                  :course-id course-id
                  :store store)
         (respond :checked-datastore
@@ -70,8 +73,10 @@
 (defn get-collection [{collection-name :collection-name}]
   (let [collections (:collections @store)]
     (if-not (collection-name collections)
-      (respond :not-found-collection
-               :collection-name collection-name)
+      (respond :not-found-data
+               :type :collection
+               :collection-name collection-name
+               :store store)
       (respond :checked-datastore
                :store store))))
 
