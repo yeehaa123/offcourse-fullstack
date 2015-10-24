@@ -23,6 +23,13 @@
              :course-id (:id course)
              :store store)))
 
+(defn update-courses [{courses :courses}]
+  (do
+    (update-datastore! #(model/update-courses %1 courses))
+    (respond :updated-courses
+             :courses courses
+             :store store)))
+
 (defn toggle-done [{course-id :course-id
                     checkpoint-id :checkpoint-id}]
   (do
@@ -40,13 +47,25 @@
              :course-id course-id
              :store store)))
 
+(defn update-datastore [{:keys [type] :as payload}]
+  (case type
+    :collection (update-collections payload)
+    :course     (update-course payload)
+    :courses    (update-courses payload)
+    :resource   (augment-checkpoint payload)))
+
 (defn get-course [{course-id :course-id}]
-  (let [course (get (:courses @store) course-id)]
+  (let [course (get (:courses @store) course-id)
+        has-no-resources? (not-any? :resource (:checkpoints course))]
     (if-not course
       (respond :not-found-course
                :course-id course-id)
-      (respond :checked-datastore
-               :store store))))
+      (if has-no-resources?
+        (respond :updated-course
+                 :course-id course-id
+                 :store store)
+        (respond :checked-datastore
+                 :store store)))))
 
 (defn get-collection [{collection-name :collection-name}]
   (let [collections (:collections @store)]

@@ -20,6 +20,7 @@
         :requested-mode-toggle      (store/toggle-mode)
         :requested-mode-switch      (store/set-mode payload)
         :updated-course             (>! output (store/refresh payload))
+        :updated-courses            (>! output (store/refresh payload))
         :updated-checkpoint         (>! output (store/refresh payload))
         :checked-datastore          (>! output (store/refresh payload))
         :added-checkpoint           (>! output (service/return-to-course payload))

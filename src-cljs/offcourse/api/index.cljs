@@ -8,7 +8,7 @@
   (go-loop []
     (let [{type :type payload :payload} (<! input)]
       (case type
-        :updated-collection   (service/fetch-courses output payload)
+        :updated-collection   (>! output (service/fetch-courses payload))
         :updated-course       (service/fetch-resources output payload)
         :not-found-collection (>! output (service/fetch-collection payload))
         :not-found-course     (>! output (service/fetch-course payload))

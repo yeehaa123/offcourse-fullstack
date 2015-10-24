@@ -12,6 +12,9 @@
 (defn update-course [store course]
   (assoc-in store [:courses (:id course)] course))
 
+(defn update-courses [store courses]
+  (reduce update-course store courses))
+
 (defn add-checkpoint [store course-id checkpoint-id checkpoint]
     (assoc-in store [:courses course-id :checkpoints checkpoint-id] checkpoint))
 

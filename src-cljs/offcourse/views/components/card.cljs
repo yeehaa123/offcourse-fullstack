@@ -48,6 +48,7 @@
            :map (Map)
            :checkbox (Checkbox (:course-id item) (:id item ) (data-key item) handlers)
            :title (Title (data-key item))
+           :info (Title (data-key (:resource item)))
            :list (TodoList (:id item) (data-key item) handlers)
            :course-button (Button (data-key item) handlers)
            :checkpoint-button (Button (:course-id item) (data-key item) handlers)
