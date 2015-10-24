@@ -8,9 +8,9 @@
   (go-loop []
     (let [[{type :type payload :payload}] (alts! [input internal])]
       (case type
-        :updated-data         (>! output (service/fetch-data payload))
         :not-found-data       (>! output (service/find-data payload))
         :requested-resource   (>! output (service/fetch-resource payload))
+        :checked-datastore    (>! output (service/fetch-updates payload))
         nil))
     (recur)))
 

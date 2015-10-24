@@ -66,3 +66,8 @@
                   (let [course (get (:courses @store) course-id)]
                     (fetch-resources course)
                     (respond :ignore)))))
+
+(defn fetch-updates [{:keys [type] :as payload}]
+  (when (= type :course)
+    (fetch-resources payload))
+  (respond :ignore))

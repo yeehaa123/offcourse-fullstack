@@ -20,13 +20,11 @@
       (update-appstate! #(model/update-checkpoint %1 course))
       (respond :not-found-resource))))
 
-(defn- refresh-collection [{store :store}]
+(defn- refresh-collection [{:keys [store]}]
   (let [collection (utils/get-collection @appstate @store)]
-    (if (every? identity (map :id (vals collection)))
-      (update-appstate! #(model/refresh-collection %1 collection))
-      (respond :not-fetched-collection))))
+    (update-appstate! #(model/refresh-collection %1 collection))))
 
-(defn- refresh-course [{store :store}]
+(defn- refresh-course [{:keys [store]}]
   (let [course (utils/get-course @appstate @store)]
     (if course
       (update-appstate! #(model/refresh-course %1 course))

@@ -16,7 +16,8 @@
   (reduce update-course store courses))
 
 (defn add-checkpoint [store course-id checkpoint-id checkpoint]
-    (assoc-in store [:courses course-id :checkpoints checkpoint-id] checkpoint))
+  (let [checkpoint (assoc checkpoint :id checkpoint-id)]
+    (assoc-in store [:courses course-id :checkpoints checkpoint-id] checkpoint)))
 
 (defn toggle-done [store course-id checkpoint-id]
   (update-in store [:courses course-id :checkpoints checkpoint-id :completed] not))
