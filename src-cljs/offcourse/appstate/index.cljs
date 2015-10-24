@@ -23,7 +23,6 @@
         :updated-courses            (>! output (store/refresh payload))
         :updated-checkpoint         (>! output (store/refresh payload))
         :checked-datastore          (>! output (store/refresh payload))
-        :not-found-data             (>! output (store/refresh payload))
         :added-checkpoint           (>! output (service/return-to-course payload))
         :reloaded-code              (>! output (store/force-refresh))
         nil))
