@@ -1,5 +1,7 @@
 (ns offcourse.datastore.model
-  (:require [offcourse.models.action :refer [respond]]))
+  (:require [offcourse.models.action :refer [respond]]
+            [offcourse.models.course :as co]
+            [offcourse.models.checkpoint :as cp]))
 
 (defrecord DataStore [collections courses])
 
@@ -15,16 +17,14 @@
 (defn update-courses [store courses]
   (reduce update-course store courses))
 
-(defn add-checkpoint [store course-id checkpoint-id checkpoint]
-  (let [checkpoint (assoc checkpoint :id checkpoint-id)]
-    (assoc-in store [:courses course-id :checkpoints checkpoint-id] checkpoint)))
+(defn add-checkpoint [store course-id checkpoint]
+  (update-in store [:courses course-id] #(co/add-checkpoint %1 checkpoint)))
 
 (defn toggle-done [store course-id checkpoint-id]
-  (update-in store [:courses course-id :checkpoints checkpoint-id :completed] not))
-
-(defn add-resource [checkpoint resource]
-  (assoc checkpoint :url (:url resource)
-                    :resource resource))
+  (update-in store [:courses course-id] #(co/toggle-done %1 checkpoint-id)))
 
 (defn augment-checkpoint [store course-id checkpoint-id resource]
-  (update-in store [:courses course-id :checkpoints checkpoint-id] #(add-resource %1 resource)))
+  (update-in store [:courses course-id] #(co/augment-checkpoint %1 checkpoint-id resource)))
+
+(defn find-course [store course-id]
+  (get (:courses store) course-id))

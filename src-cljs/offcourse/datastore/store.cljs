@@ -1,5 +1,6 @@
 (ns offcourse.datastore.store
   (:require [offcourse.datastore.model :as model]
+            [offcourse.models.course :as c]
             [clojure.set :as set]
             [offcourse.models.action :refer [respond]]
             [offcourse.datastore.helpers :as helpers]))
@@ -43,10 +44,8 @@
   (update-and-respond! #(model/augment-checkpoint %1 course-id checkpoint-id resource)))
 
 (defn- add-checkpoint [{:keys [course-id checkpoint]}]
-  (let [course (get (:courses @store) course-id)
-        max-id (apply max (keys (:checkpoints course)))
-        id     (inc max-id)]
-    (add-and-respond! #(model/add-checkpoint %1 course-id id checkpoint) course-id)))
+  (let [course (model/find-course @store course-id)]
+    (add-and-respond! #(model/add-checkpoint %1 course-id checkpoint) course-id)))
 
 (defn- save-checkpoint [{:keys [checkpoint-id] :as payload}]
   (if (= checkpoint-id :new)
@@ -60,8 +59,7 @@
       (helpers/respond-not-found :collection {:collection-name collection-name}))))
 
 (defn- get-course [{:keys [course-id]}]
-  (let [course (get (:courses @store) course-id)
-        needs-resources? (not (every? :resource (vals (:checkpoints course))))]
+  (let [course (model/find-course @store course-id)]
     (if course
       (helpers/respond-checked :course {:course-id course-id})
       (helpers/respond-not-found :course {:course-id course-id}))))

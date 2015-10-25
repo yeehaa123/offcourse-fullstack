@@ -1,6 +1,7 @@
 (ns offcourse.appstate.store
   (:require [offcourse.appstate.model :as model]
             [offcourse.appstate.utils :as utils]
+            [offcourse.models.course :as c]
             [offcourse.models.action :refer [respond]]))
 
 (def appstate (atom (model/new-appstate)))
@@ -15,7 +16,7 @@
   (let [level (:level @appstate)
         course (utils/get-course @appstate @store)
         checkpoint-id (:checkpoint-id (:level @appstate))
-        checkpoint (utils/get-checkpoint checkpoint-id course)]
+        checkpoint (c/find-checkpoint course checkpoint-id)]
     (if (or checkpoint (= checkpoint-id :new))
       (update-appstate! #(model/update-checkpoint %1 course))
       (respond :not-found-resource))))
@@ -38,9 +39,6 @@
 (defn toggle-mode []
   (update-appstate! #(model/toggle-mode %1)))
 
-(defn update-collections [payload]
-  (update-appstate! #(model/update-collections %1 payload)))
-
 (defn set-level [payload]
   (update-appstate! #(model/set-level %1 payload)))
 
@@ -59,7 +57,7 @@
 
 (defn commit-data [{:keys [course-id checkpoint-id] :as payload}]
   (let [course (:course (:viewmodel @appstate))
-        checkpoint (get (:checkpoints course) checkpoint-id)
+        checkpoint (c/find-checkpoint course checkpoint-id)
         payload (assoc payload :course-id course-id
                                :checkpoint checkpoint)]
     (respond :requested-commit
