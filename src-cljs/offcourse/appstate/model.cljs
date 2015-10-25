@@ -1,17 +1,17 @@
 (ns offcourse.appstate.model
-  (:require [offcourse.models.action :refer [respond]]))
+  (:require [offcourse.models.action :refer [respond]]
+            [offcourse.models.course :as course]
+            [offcourse.models.checkpoint :refer [new-checkpoint]]))
 
 (defrecord AppState [level mode course-collections viewmodel])
 
 (defn new-appstate []
-  (map->AppState {:level {:type :initial}
-                  :mode :learn
+  (map->AppState {:level       {:type :initial}
+                  :mode        :learn
                   :collections {:featured []
                                 :popular []
                                 :new []}
-                  :viewmodel {:cards []
-                              :sidebar {}
-                              :topbar {}}}))
+                  :viewmodel   {}}))
 
 (defn set-mode [appstate mode]
   (assoc-in appstate [:mode] mode))
@@ -23,11 +23,10 @@
   (update-in appstate [:mode] #(if (= %1 :learn) :curate :learn)))
 
 (defn add-checkpoint [appstate course]
-  (let [viewmodel {:level :checkpoint
-                   :course (assoc-in course [:checkpoints :new]
-                                     {:task "Do Something new"
-                                      :url "bla.com"})
-                   :checkpoint-id :new}]
+  (let [checkpoint (new-checkpoint)
+        viewmodel {:level :checkpoint
+                   :course (course/add-checkpoint course (new-checkpoint))
+                   :checkpoint-id (:id checkpoint)}]
     (assoc-in appstate [:viewmodel] viewmodel)))
 
 (defn refresh-checkpoint [{:keys [level] :as appstate} course]

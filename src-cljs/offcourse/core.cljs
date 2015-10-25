@@ -36,6 +36,10 @@
         api-out-mult       (mult api-out)
 
         router-out         (chan)
+        router-log         (chan)
+        router-appstate    (chan)
+        router-out-mult    (mult router-out)
+
         history-in         (chan)
 
         views-in           (chan)
@@ -44,11 +48,11 @@
         views-out          (chan)
         views-out-mult     (mult views-out)
 
-        appstate-in        (merge [router-out actions-appstate
+        appstate-in        (merge [router-appstate actions-appstate
                                    datastore-appstate views-appstate])
         datastore-in       (merge [appstate-datastore api-datastore])
         api-in             datastore-api
-        logger-in          (merge [actions-log api-log user-out appstate-log
+        logger-in          (merge [actions-log router-log api-log user-out appstate-log
                                    views-log datastore-log] 10)]
 
     (tap actions-out-mult actions-appstate)
@@ -65,6 +69,9 @@
 
     (tap api-out-mult api-datastore)
     (tap api-out-mult api-log)
+
+    (tap router-out-mult router-log)
+    (tap router-out-mult router-appstate)
 
     (tap views-out-mult views-appstate)
     (tap views-out-mult views-log)

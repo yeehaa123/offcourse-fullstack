@@ -25,7 +25,7 @@
            :onClick #(go-to-checkpoint course-id "new")} "Add Checkpoint"))
 
 (defn CommitCheckpointButton [course-id checkpoint-id {:keys [commit-checkpoint]}]
-  (when (= checkpoint-id nil)
+  (when (= checkpoint-id :new)
     (d/div {:className "btn btn-inverse browse"
             :onClick #(commit-checkpoint course-id (if checkpoint-id checkpoint-id :new))}
            "Add To Course")))

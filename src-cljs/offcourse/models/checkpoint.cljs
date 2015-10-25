@@ -1,19 +1,8 @@
 (ns offcourse.models.checkpoint)
 
-(defn find-checkpoint [checkpoints id]
-  (first (filter #(== id (:id %1)) checkpoints)))
+(defrecord Checkpoint [id task url])
 
-(defn remove-checkpoint [checkpoints id]
-  (remove #(= (%1 :id) id) checkpoints))
-
-(defn add-checkpoint [checkpoints checkpoint]
-  (conj checkpoints checkpoint))
-
-(defn toggle-done [checkpoints id]
-  (-> checkpoints
-      (find-checkpoint id)
-      (update-in [:completed] not)))
-
-(defn update-checkpoints [checkpoints checkpoint]
-  (let [checkpoints (remove #(== (checkpoint :id) (:id %1)) checkpoints)]
-    (conj checkpoints checkpoint)))
+(defn new-checkpoint []
+  (map->Checkpoint {:id :new
+                    :task "Do Something Different"
+                    :url "bla.com"}))
