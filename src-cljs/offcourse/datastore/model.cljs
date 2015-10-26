@@ -29,4 +29,4 @@
   (update-cache store #(cl/augment-checkpoint %1 course-id checkpoint-id resource)))
 
 (defn find-course [store course-id]
-  (find-course (:courses @store) course-id))
+  (cl/find-course (:courses store) course-id))

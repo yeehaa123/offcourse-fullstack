@@ -27,3 +27,6 @@
 
 (defn augment-checkpoint [course checkpoint-id resource]
   (update-in course [:checkpoints checkpoint-id] #(cp/add-resource %1 resource)))
+
+(defn highlight [course checkpoint-id highlight]
+  (update-in course [:checkpoints checkpoint-id :highlighted] (fn [] highlight)))
