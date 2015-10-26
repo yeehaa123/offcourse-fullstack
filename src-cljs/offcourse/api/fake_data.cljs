@@ -2,7 +2,9 @@
   (:require [offcourse.models.checkpoint :as cp]
             [offcourse.models.course :as co]))
 
-(def urls ["facebook.com" "google.com" "yahoo.com"])
+(def urls ["facebook.com"
+           "google.com"
+           "yahoo.com"])
 
 (def raw-courses [{:goal "Become a Frontend Ninja"
                    :checkpoints [{:task "Install React"

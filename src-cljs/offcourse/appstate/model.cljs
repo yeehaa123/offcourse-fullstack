@@ -3,9 +3,7 @@
             [offcourse.models.course :as co]
             [offcourse.models.checkpoint :as cp]
             [offcourse.models.collection :as cl]
-            [offcourse.appstate.viewmodel :refer [new-collection-vm
-                                                  new-checkpoint-vm
-                                                  new-course-vm]]))
+            [offcourse.appstate.viewmodel :as vm]))
 
 (defrecord AppState [level mode course-collections viewmodel])
 
@@ -13,6 +11,12 @@
   (map->AppState {:level       {:type :initial}
                   :mode        :learn
                   :viewmodel   {}}))
+
+(defn set-viewmodel [appstate viewmodel]
+  (assoc-in appstate [:viewmodel] viewmodel))
+
+(defn update-viewmodel [appstate fn]
+  (update-in appstate [:viewmodel] fn))
 
 (defn set-mode [appstate mode]
   (assoc-in appstate [:mode] mode))
@@ -23,17 +27,14 @@
 (defn toggle-mode [appstate]
   (update-in appstate [:mode]
              #(if (= %1 :learn) :curate :learn)))
-
 (defn add-checkpoint [appstate course]
   (let [checkpoint (cp/temp-checkpoint)
         course (co/add-temp-checkpoint course checkpoint)]
-    (assoc-in appstate [:viewmodel]
-              (new-checkpoint-vm course (:id checkpoint)))))
+    (set-viewmodel appstate (vm/new-checkpoint course (:id checkpoint)))))
 
 (defn refresh-checkpoint [{:keys [level] :as appstate} course]
   (let  [checkpoint-id (:checkpoint-id level)]
-    (assoc-in appstate [:viewmodel]
-              (new-checkpoint-vm course checkpoint-id))))
+   (set-viewmodel appstate (vm/new-checkpoint course checkpoint-id))))
 
 (defn update-checkpoint [{:keys [level] :as appstate} course]
   (let  [checkpoint-id (:checkpoint-id level)]
@@ -43,16 +44,15 @@
 
 (defn refresh-collection [{:keys [level] :as appstate} collection]
   (let [collection-name (:collection-name level)]
-    (assoc-in appstate [:viewmodel]
-              (new-collection-vm collection-name collection))))
+    (set-viewmodel appstate (vm/new-collection collection-name collection))))
 
 (defn refresh-course [appstate course]
-    (assoc-in appstate [:viewmodel] (new-course-vm course)))
+    (assoc-in appstate [:viewmodel] (vm/new-course course)))
 
 (defn highlight-collection [appstate {:keys [course-id checkpoint-id highlight]}]
-  (update-in appstate [:viewmodel :collection]
-             #(cl/highlight %1 course-id checkpoint-id highlight)))
+  (update-viewmodel appstate
+                    #(vm/highlight-collection %1 course-id checkpoint-id highlight)))
 
 (defn highlight-course [appstate {:keys [checkpoint-id highlight]}]
-  (update-in appstate [:viewmodel :course]
-             #(co/highlight %1 checkpoint-id highlight)))
+  (update-viewmodel appstate
+                    #(vm/highlight-course %1 checkpoint-id highlight)))
