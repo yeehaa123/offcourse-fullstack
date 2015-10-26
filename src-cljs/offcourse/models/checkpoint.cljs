@@ -1,11 +1,12 @@
 (ns offcourse.models.checkpoint)
 
-(defrecord Checkpoint [id task url])
+(defrecord Checkpoint [id task url completed])
 
 (defn temp-checkpoint []
   (map->Checkpoint {:id :new
                     :task "Do Something Different"
-                    :url "bla.com"}))
+                    :url "bla.com"
+                    :completed false}))
 
 (defn new-checkpoint [checkpoint checkpoint-id]
     (map->Checkpoint (assoc checkpoint :id checkpoint-id)))

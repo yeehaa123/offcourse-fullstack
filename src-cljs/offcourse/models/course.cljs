@@ -1,6 +1,11 @@
 (ns offcourse.models.course
   (:require [offcourse.models.checkpoint :as cp]))
 
+(defrecord Course [id goal checkpoints])
+
+(defn new-course [course id]
+  (assoc course :id id))
+
 (defn add-temp-checkpoint [course checkpoint]
   (assoc-in course [:checkpoints :new] checkpoint))
 

@@ -1,4 +1,6 @@
-(ns offcourse.api.fake-data)
+(ns offcourse.api.fake-data
+  (:require [offcourse.models.checkpoint :as cp]
+            [offcourse.models.course :as co]))
 
 (def urls ["facebook.com" "google.com" "yahoo.com"])
 
@@ -11,8 +13,7 @@
                                   :completed false}]}
                   {:goal "Improve your Backend Chops"
                    :checkpoints [{:task "Install Node"
-                                  :completed true
-                                  :resource {:url "http://facebook.com"}}
+                                  :completed true}
                                  {:task "Set up a Route"
                                   :completed false}
                                  {:task "Add some Middleware"
@@ -42,8 +43,7 @@
 
 
 (defn index-checkpoint [checkpoint index]
-  [index (assoc checkpoint :id index
-                           :url (rand-nth urls))])
+  [index (cp/new-checkpoint (assoc checkpoint :url (rand-nth urls)) index)])
 
 (defn index-checkpoints [checkpoints]
   (->> checkpoints
@@ -52,7 +52,7 @@
 
 (defn index-course [course index]
   (let [checkpoints (index-checkpoints (:checkpoints course))]
-    [index (assoc course :id index :checkpoints checkpoints)]))
+    [index (assoc (co/new-course course index) :checkpoints checkpoints)]))
 
 (defn indexed-courses [courses]
   (->> courses
