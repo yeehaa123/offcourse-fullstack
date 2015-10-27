@@ -7,9 +7,10 @@
                            output :channel-out}]
   (go-loop []
     (let [[{type :type payload :payload}] (alts! [input internal])]
+      (println type)
       (case type
         :not-found-data       (>! output (service/find-data payload))
-        :requested-resource   (>! output (service/fetch-resource payload))
+        :requested-data       (>! output (service/fetch-resource payload))
         :checked-datastore    (>! output (service/fetch-updates payload))
         nil))
     (recur)))

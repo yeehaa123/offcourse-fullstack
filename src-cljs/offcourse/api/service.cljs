@@ -2,6 +2,7 @@
   (:require-macros [cljs.core.async.macros :refer [go go-loop]])
   (:require        [cljs.core.async :refer [chan timeout <! >!]]
                    [offcourse.api.fake-data :as fake-data]
+                   [offcourse.models.collection :as co]
                    [offcourse.models.action :refer [respond]]))
 
 (def internal (chan))
@@ -21,7 +22,8 @@
     (doseq [checkpoint checkpoints]
       (go
         (<! (timeout (rand-int 1000)))
-        (>! internal (respond :requested-resource
+        (>! internal (respond :requested-data
+                              :type :resource
                               :course-id (:id course)
                               :checkpoint checkpoint))))))
 
@@ -67,7 +69,8 @@
                     (fetch-resources course)
                     (respond :ignore)))))
 
-(defn fetch-updates [{:keys [type] :as payload}]
-  (when (= type :course)
-    (fetch-resources payload))
-  (respond :ignore))
+(defn fetch-updates [{:keys [type store course-id] :as payload}]
+  (let [course (co/find-course (:courses @store) course-id)]
+    (when (= type :course)
+      (fetch-resources course))
+    (respond :ignore)))

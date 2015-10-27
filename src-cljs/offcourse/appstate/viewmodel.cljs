@@ -1,6 +1,5 @@
 (ns offcourse.appstate.viewmodel
   (:require [offcourse.models.course :as co]
-            [offcourse.models.checkpoint :as cp]
             [offcourse.models.collection :as cl]))
 
 (defrecord CheckpointViewmodel [level course checkpoint-id])
@@ -23,7 +22,9 @@
                              :collection-names [:featured :new :popular]}))
 
 (defn highlight-course [viewmodel checkpoint-id highlight]
-  (update-in viewmodel [:course] #(co/highlight %1 checkpoint-id highlight)))
+  (update-in viewmodel [:course]
+             #(co/highlight %1 checkpoint-id highlight)))
 
 (defn highlight-collection [viewmodel course-id checkpoint-id highlight]
-  (update-in viewmodel [:collection] #(cl/highlight %1 course-id checkpoint-id highlight)))
+  (update-in viewmodel [:collection]
+             #(cl/highlight %1 course-id checkpoint-id highlight)))

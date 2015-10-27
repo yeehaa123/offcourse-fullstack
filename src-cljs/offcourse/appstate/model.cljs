@@ -2,7 +2,6 @@
   (:require [offcourse.models.action :refer [respond]]
             [offcourse.models.course :as co]
             [offcourse.models.checkpoint :as cp]
-            [offcourse.models.collection :as cl]
             [offcourse.appstate.viewmodel :as vm]))
 
 (defrecord AppState [level mode course-collections viewmodel])
@@ -27,6 +26,7 @@
 (defn toggle-mode [appstate]
   (update-in appstate [:mode]
              #(if (= %1 :learn) :curate :learn)))
+
 (defn add-checkpoint [appstate course]
   (let [checkpoint (cp/temp-checkpoint)
         course (co/add-temp-checkpoint course checkpoint)]
