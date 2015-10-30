@@ -1,6 +1,6 @@
 (ns offcourse.logger.service
   (:require-macros [cljs.core.async.macros :refer [go-loop]])
-  (:require [cljs.core.async :refer [>! <!]]
+  (:require [cljs.core.async :refer [>! tap chan <! merge]]
             [ajax.core :refer [PUT]]))
 
 
@@ -19,12 +19,14 @@
                        :ip (:ip payload)
                        :checkpoint-id (:checkpoint-id payload)}})))
 
-(defn listen-for-actions [{input :channel-in}]
+(defn listen-for-actions [input]
   (go-loop []
     (let [{type :type :as action} (<! input)]
       (println type)
       ;; (store-logs action)
       (recur))))
 
-(defn init [config]
-  (listen-for-actions config))
+(defn init [inputs]
+  (let [inputs (map #(tap %1 (chan)) inputs)
+        input (merge inputs 10)]
+    (listen-for-actions input)))

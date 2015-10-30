@@ -1,8 +1,13 @@
 (ns offcourse.actions.index
-  (:require [offcourse.models.action :refer [>>!]]))
+  (:require [cljs.core.async :refer [>! chan mult alts!]]
+            [offcourse.models.action :refer [>>!]]))
 
-(defn init [{output :channel-out}]
-  (let [>>! (partial >>! output)]
+(def channel (chan))
+(def out (mult channel))
+
+(defn init []
+  (let [>>! (partial >>! channel)]
+
 
     (defn refresh []
       (>>! :reloaded-code))))

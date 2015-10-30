@@ -1,10 +1,14 @@
 (ns offcourse.routes
-  (:require [clojure.string :as string]
+  (:require [cljs.core.async :refer [>! chan mult alts!]]
+            [clojure.string :as string]
             [offcourse.actions.index :as actions]
             [secretary.core :as secretary
              :include-macros true
              :refer-macros [defroute]]
             [offcourse.models.action :refer [>>!]]))
+
+(def channel (chan))
+(def out (mult channel))
 
 (def route-names {:home       "/"
                   :checkpoint "/courses/:course-id/checkpoints/:checkpoint-id"
@@ -24,25 +28,24 @@
     (= nil id) nil
     :default (js/parseInt id)))
 
-(defn response [channel type & args]
+(defn response [type & args]
   (let [payload (->> args
                      (zipmap (type arguments))
                      (update-vals [:course-id :checkpoint-id] convertRouteParams)
                      (into {:type type}))]
     (>>! channel :requested-resource
-                 :payload payload)))
+         :payload payload)))
 
-(defn init [{output :channel-out}]
-  (let [response (partial response output)]
+(defn init []
 
-    (defroute (:checkpoint route-names) {course-id :course-id checkpoint-id :checkpoint-id}
-      (response :checkpoint course-id checkpoint-id))
+  (defroute (:checkpoint route-names) {course-id :course-id checkpoint-id :checkpoint-id}
+    (response :checkpoint course-id checkpoint-id))
 
-    (defroute (:course route-names) {course-id :course-id}
-      (response :course course-id))
+  (defroute (:course route-names) {course-id :course-id}
+    (response :course course-id))
 
-    (defroute (:collection route-names) {collection-name :collection-name}
-      (response :collection (keyword collection-name)))
+  (defroute (:collection route-names) {collection-name :collection-name}
+    (response :collection (keyword collection-name)))
 
-    (defroute (:home route-names) []
-      (response :collection :featured))))
+  (defroute (:home route-names) []
+    (response :collection :featured)))

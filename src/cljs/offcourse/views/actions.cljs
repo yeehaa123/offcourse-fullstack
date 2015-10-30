@@ -1,7 +1,7 @@
 (ns offcourse.views.actions
   (:require [offcourse.models.action :refer [>>!]]))
 
-(defn init [{output :channel-out}]
+(defn init [output]
   (let [>>! (partial >>! output)]
 
     {:set-mode         (fn [mode]

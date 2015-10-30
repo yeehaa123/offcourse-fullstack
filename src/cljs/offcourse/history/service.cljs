@@ -2,7 +2,7 @@
   (:require-macros [cljs.core.async.macros :refer [go-loop]])
   (:require [secretary.core :as secretary :refer-macros [defroute]]
             [goog.events]
-            [cljs.core.async :refer [>! <!]])
+            [cljs.core.async :refer [>! tap merge chan <!]])
 (:import [goog.history Html5History EventType]))
 
 (defn get-token []
@@ -51,7 +51,7 @@
   (let [token (str "/" (create-token location-data))]
     (.setToken history token)))
 
-(defn listen-for-actions [{input :channel-in}]
+(defn listen-for-actions [input]
   (go-loop []
     (let [{type :type payload :payload} (<! input)]
       (case type
@@ -60,11 +60,13 @@
         nil))
     (recur)))
 
-(defn init! [config]
-  (defonce history
-    (doto (make-history)
-      (goog.events/listen EventType.NAVIGATE
-                          ;; wrap in a fn to allow live reloading
-                          #(handle-url-change %))
-      (.setEnabled true)))
-  (listen-for-actions config))
+(defn init! [inputs]
+  (let [inputs (map #(tap %1 (chan)) inputs)
+        input (merge inputs)]
+    (defonce history
+      (doto (make-history)
+        (goog.events/listen EventType.NAVIGATE
+                            ;; wrap in a fn to allow live reloading
+                            #(handle-url-change %))
+        (.setEnabled true)))
+    (listen-for-actions input)))

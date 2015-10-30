@@ -1,35 +1,39 @@
 (ns offcourse.user.service
   (:require-macros [cljs.core.async.macros :refer [go go-loop]])
-  (:require [cljs.core.async :refer [>! chan alts!]]
+  (:require [cljs.core.async :refer [>! chan merge mult tap alts!]]
             [ajax.core :refer [GET]]
             [offcourse.models.action :refer [respond]]))
+
+(def channel (chan))
+(def out (mult (chan)))
 
 (def user (atom {:ip nil
                  :location {}}))
 
-(defn listen-for-actions [{input :channel-in}]
+(defn listen-for-actions [input]
   (go-loop []
     (let [{type :type payload :payload} (<! input)]
-      (println payload))
+                                        ;(println payload)
+      )
     (recur)))
 
-(defn handle-location [channel position]
+(defn handle-location [position]
   (go
     (let [coords {:longitude (.-longitude js/position.coords)
                   :latitude (.-latitude js/position.coords)}]
       (>! channel (respond :found-location
                            :location coords)))))
 
-(defn handle-ip [channel response]
+(defn handle-ip [response]
   (go
     (>! channel (respond :found-ip
                          :ip (:ip response)))))
 
-(defn init [{output :channel-out :as config}]
-  (let [handle-ip (partial handle-ip output)
-        handle-location (partial handle-location output)]
+(defn init [inputs]
+  (let [inputs (map #(tap %1 (chan)) inputs)
+        input (merge inputs)]
     (do
-      (listen-for-actions config)
+      (listen-for-actions input)
       (GET "https://api.ipify.org?format=json" {:response-format :json
                                                 :keywords? true
                                                 :handler handle-ip})

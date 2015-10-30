@@ -11,92 +11,32 @@
             [offcourse.history.service :as history]))
 
 (defn init! []
-  (let [actions-appstate   (chan)
-        actions-log        (chan)
-        actions-out        (chan)
-        actions-out-mult   (mult actions-out)
+  (actions/init)
 
-        appstate-datastore (chan)
-        appstate-log       (chan)
-        appstate-out       (chan)
-        appstate-out-mult  (mult appstate-out)
+  (router/init)
 
-        user-in            (chan)
-        user-out           (chan)
+  (appstate/init       [router/out
+                        actions/out
+                        datastore/out
+                        views/out])
 
-        datastore-appstate (chan)
-        datastore-api      (chan)
-        datastore-log      (chan)
-        datastore-out      (chan)
-        datastore-out-mult (mult datastore-out)
+  (user/init           [appstate/out])
 
-        api-datastore      (chan)
-        api-log            (chan)
-        api-out            (chan)
-        api-out-mult       (mult api-out)
+  (datastore/init      [appstate/out
+                        api/out])
 
-        router-out         (chan)
-        router-log         (chan)
-        router-appstate    (chan)
-        router-out-mult    (mult router-out)
+  (api/init            [datastore/out])
 
-        history-in         (chan)
+  (history/init!       [appstate/out])
 
-        views-in           (chan)
-        views-appstate     (chan)
-        views-log          (chan)
-        views-out          (chan)
-        views-out-mult     (mult views-out)
+  (views/init          [appstate/out])
 
-        appstate-in        (merge [router-appstate actions-appstate
-                                   datastore-appstate views-appstate])
-        datastore-in       (merge [appstate-datastore api-datastore])
-        api-in             datastore-api
-        logger-in          (merge [actions-log router-log api-log user-out appstate-log
-                                   views-log datastore-log] 10)]
-
-    (tap actions-out-mult actions-appstate)
-    (tap actions-out-mult actions-log)
-
-    (tap appstate-out-mult appstate-datastore)
-    (tap appstate-out-mult history-in)
-    (tap appstate-out-mult views-in)
-    (tap appstate-out-mult appstate-log)
-
-    (tap datastore-out-mult datastore-api)
-    (tap datastore-out-mult datastore-appstate)
-    (tap datastore-out-mult datastore-log)
-
-    (tap api-out-mult api-datastore)
-    (tap api-out-mult api-log)
-
-    (tap router-out-mult router-log)
-    (tap router-out-mult router-appstate)
-
-    (tap views-out-mult views-appstate)
-    (tap views-out-mult views-log)
-
-    (actions/init        {:channel-out  actions-out})
-
-    (router/init         {:channel-out  router-out})
-
-    (appstate/init       {:channel-in   appstate-in
-                          :channel-out  appstate-out})
-
-    (user/init           {:channel-in   user-in
-                          :channel-out  user-out})
-
-    (datastore/init      {:channel-in   datastore-in
-                          :channel-out  datastore-out})
-
-    (api/init            {:channel-in   api-in
-                          :channel-out  api-out})
-
-    (history/init!       {:channel-in   history-in})
-
-
-    (views/init          {:channel-in   views-in
-                          :channel-out  views-out})
-
-    (logger/init         {:channel-in   logger-in})))
-
+  (logger/init         [actions/out
+                        router/out
+                        api/out
+                        user/out
+                        appstate/out
+                        views/out
+                        datastore/out]))
+(defn reload []
+  (actions/refresh))
