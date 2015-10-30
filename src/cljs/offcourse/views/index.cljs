@@ -11,7 +11,7 @@
 (def out (mult channel))
 (def handlers (actions/init channel))
 
-(defn- render [handlers appstate]
+(defn- render [appstate handlers]
   (q/render (App handlers appstate)
             (.querySelector js/document "#app"))
   (respond :rendered-view))

@@ -25,6 +25,8 @@
         :checked-datastore          (>! channel (store/refresh payload))
         :added-checkpoint           (>! channel (service/return-to-course payload))
         :reloaded-code              (>! channel (store/force-refresh))
+        :requested-authentication   (>! channel (service/request-authentication payload))
+        :authenticated-user         (>! channel (store/set-user payload))
         nil))
     (recur)))
 

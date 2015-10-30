@@ -60,7 +60,7 @@
         nil))
     (recur)))
 
-(defn init! [inputs]
+(defn init [inputs]
   (let [inputs (map #(tap %1 (chan)) inputs)
         input (merge inputs)]
     (defonce history

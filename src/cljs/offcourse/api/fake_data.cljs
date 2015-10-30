@@ -4,7 +4,8 @@
 
 (def urls ["facebook.com"
            "google.com"
-           "yahoo.com"])
+           "yahoo.com"
+           "offcourse.io"])
 
 (def raw-courses [{:goal "Become a Frontend Ninja"
                    :checkpoints [{:task "Install React"

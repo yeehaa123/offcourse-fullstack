@@ -66,3 +66,6 @@
 (defn force-refresh []
   (respond :reloaded-appstate
            :appstate @appstate))
+
+(defn set-user [{:keys [user-id]}]
+  (update-appstate! #(model/set-user-id %1 user-id)))

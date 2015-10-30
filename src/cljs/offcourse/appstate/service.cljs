@@ -15,3 +15,7 @@
 
 (defn return-to-course [payload]
   (switch-route (assoc payload :level :course)))
+
+(defn request-authentication [payload]
+  (respond :requested-authentication
+           :user-id "yeehaa"))

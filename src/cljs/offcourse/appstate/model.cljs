@@ -7,7 +7,8 @@
 (defrecord AppState [level mode course-collections viewmodel])
 
 (defn new-appstate []
-  (map->AppState {:level       {:type :initial}
+  (map->AppState {:user-id     :unknown
+                  :level       {:type :initial}
                   :mode        :learn
                   :viewmodel   {}}))
 
@@ -19,6 +20,9 @@
 
 (defn set-mode [appstate mode]
   (assoc-in appstate [:mode] mode))
+
+(defn set-user-id [appstate user-id]
+  (assoc-in appstate [:user-id] user-id))
 
 (defn set-level [appstate level]
   (assoc appstate :level level))
