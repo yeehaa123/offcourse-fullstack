@@ -1,5 +1,10 @@
 (ns offcourse.models.fake-data)
 
+(def checkpoint {:id :new
+                 :task "Do Something Different"
+                 :url "bla.com"
+                 :completed false})
+
 (def text
   "# Lorem Ipsum Dolor
 
@@ -13,3 +18,45 @@
 
   Suspendisse sit amet tellus neque. Duis et purus ac justo consequat pulvinar. Integer lobortis arcu justo, at ullamcorper sem maximus quis. Duis a augue cursus, posuere felis ac, imperdiet lectus. Vestibulum egestas, neque a consequat pellentesque, metus dui vulputate ex, eu laoreet nunc enim ut felis. Ut placerat eget orci in dictum. Mauris rutrum faucibus mauris at interdum. Morbi eget libero sit amet urna venenatis condimentum.")
 
+
+(def courses [{:goal "Become a Frontend Ninja"
+               :checkpoints [{:task "Install React"
+                              :completed true}
+                             {:task "Build a Component"
+                              :completed false}
+                             {:task "Create an App"
+                              :completed false}]}
+              {:goal "Improve your Backend Chops"
+               :checkpoints [{:task "Install Node"
+                              :completed true}
+                             {:task "Set up a Route"
+                              :completed false}
+                             {:task "Add some Middleware"
+                              :completed false}
+                             {:task "Build an API"
+                              :completed false}]}
+              {:goal "Get More Street Cred"
+               :checkpoints [{:task "Talk Dirty with Reika"
+                              :completed false}
+                             {:task "Pair with Greg"
+                              :completed false}
+                             {:task "Scheme with Charlotte"
+                              :completed false}
+                             {:task "Brawl with Yeehaa"
+                              :completed false}]}
+              {:goal "Make DevOps Your Thing"
+               :checkpoints [{:task "Tame the Command Line"
+                              :completed false}
+                             {:task "Just Git It"
+                              :completed false}
+                             {:task "Try a PAAS"
+                              :completed false}
+                             {:task "Make Containers"
+                              :completed false}
+                             {:task "Do it All"
+                              :completed false}]}])
+
+(def urls ["facebook.com"
+           "google.com"
+           "yahoo.com"
+           "offcourse.io"])

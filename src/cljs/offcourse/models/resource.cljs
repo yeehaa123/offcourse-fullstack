@@ -3,5 +3,8 @@
 
 (defrecord Resource [url title content])
 
-(defn new [url title]
-  (Resource. url title fake-data/text))
+(defn new
+  ([resource] (map->Resource resource))
+  ([url title] (Resource. url title fake-data/text))
+  ([url title content] (Resource. url title content)))
+

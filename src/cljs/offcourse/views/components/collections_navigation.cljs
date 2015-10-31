@@ -4,7 +4,7 @@
             [quiescent.dom :as d]))
 
 (defn Collection-Button [collection-name {on-click :go-to-collection}]
-  (d/button {:className "btn btn-inverse browse"
+  (d/button {:className "btn btn-inverse btn-nav btn-browse"
              :onClick #(on-click collection-name)}
             (string/capitalize (name collection-name))))
 

@@ -28,9 +28,9 @@
                               :checkpoint checkpoint))))))
 
 (defn fetch-collection [{collection-name :collection-name}]
-  (let [collections {:featured #{0 1 2 3}
-                     :popular #{0 2}
-                     :new #{1}}
+  (let [collections {:featured (into #{} (take 10 (iterate inc 1)))
+                     :popular (into #{} (take 5 (iterate inc 2)))
+                     :new (into #{} (take 4 (iterate inc 4)))}
         collection-ids (collection-name collections)]
     (respond :fetched-data
              :type :collection

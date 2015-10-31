@@ -4,6 +4,6 @@
 
 (defn Logo [{:keys [go-to-collection]}]
   (d/section {:className (css/classes "logo")}
-             (d/button {:className (css/classes "textbar")
+             (d/button {:className (css/classes "textbar title")
                         :onClick #(go-to-collection :featured)}
                        "Offcourse_")))

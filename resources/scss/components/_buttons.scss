@@ -1,28 +1,43 @@
 .btn {
-  font-family: NittyBold;
-  text-align: center;
-  font-size: rem-calc(16);
-  height: $baseUnit * 1.5;
-  width: 100%;
-  background: $inverseColor;
-  padding: rem-calc(10) rem-calc(20);
-  margin-top: $baseUnit / 3;
-  text-decoration: none;
-  border: none;
+    display: flex;
+    font-family: $buttonFont;
+    font-size: rem-calc(16);
+    height: $baseUnit * 1.5;
+    width: 100%;
+    background: $inverseColor;
+    padding: rem-calc(10) rem-calc(20);
+    margin-top: $baseUnit / 3;
+    text-decoration: none;
+    justify-content: center;
+    align-items: center;
+    border: none;
 
-  &:hover {
-    color: $highlightColor;
-  }
+    &:hover {
+        color: $highlightColor;
+    }
 
-  &:disabled {
-    color: $lightBaseColor;
-    background-color: $betweenBaseColor;
-  }
+    &:disabled {
+        color: $lightBaseColor;
+        background-color: $betweenBaseColor;
+    }
 
-  &.btn-is-active {
-    background-color: $baseColor;
-    color: $inverseColor;
-  }
+    &.btn-is-active {
+        background-color: $baseColor;
+        color: $inverseColor;
+    }
+}
+
+.btn-light {
+    font-family: $buttonFontLight;
+}
+
+.btn.btn-right {
+    margin-right: 0;
+}
+
+.btn-nav {
+    margin-bottom: $baseUnit / 3;
+    margin-top: 0;
 }
 
 .btn.btn-inverse {

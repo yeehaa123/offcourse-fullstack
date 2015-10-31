@@ -11,7 +11,7 @@
                 (string/join " " $))
         link? (:link crumb)
         options {:key (:level crumb)
-                 :className "btn btn-level"}
+                 :className "btn btn-light btn-level"}
         options (if link?
                   (assoc options :onClick #(on-click crumb))
                   options)]

@@ -3,7 +3,6 @@
 }
 .topbar .btn {
   display: inline-block;
-  font-family: NittyNormal;
   font-weight: 300;
   font-size: rem-calc(22);
   line-height: rem-calc(30);
@@ -28,6 +27,10 @@
 
 .btn.btn-is-active:hover{
   color: $inverseColor;
+}
+
+.btn.btn-authenticate {
+    margin-right: 0;
 }
 
 .topbar {

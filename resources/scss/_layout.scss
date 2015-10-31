@@ -18,12 +18,16 @@
 
 .layout-right {
   flex-direction: column;
+  width: auto;
   flex: 1;
 }
 
 .layout-main {
   display: block;
-  height: auto;
+  height: 100%;
+  padding-bottom: 100px;
+  margin-left: $baseUnit;
+  margin-right: $baseUnit;
 }
 
 .layout-topbar {

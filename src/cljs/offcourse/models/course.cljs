@@ -1,14 +1,29 @@
 (ns offcourse.models.course
-  (:require [offcourse.models.checkpoint :as cp]))
+  (:require [offcourse.models.checkpoint :as cp]
+            [offcourse.models.fake-data :as fake-data]))
 
 (defrecord Course [id curator-id goal checkpoints date-created date-modified])
 
-(defn new [id curator-id goal checkpoints]
-  (let [now (.getTime (js/Date.))]
-    (Course. id curator-id goal checkpoints now now)))
+(defn index-checkpoint [index {:keys [task completed]}]
+  [index (cp/new index task (rand-nth fake-data/urls) completed)])
 
-(defn new-course [course id]
-  (assoc course :id id))
+(defn index-checkpoints [checkpoints]
+  (->> checkpoints
+       (map-indexed #(index-checkpoint %1 %2))
+       (into {})))
+
+(defn generate-fake-course []
+  (-> fake-data/courses
+      rand-nth
+      (assoc :id :new)
+      (update-in [:checkpoints] index-checkpoints)))
+
+(defn new
+  ([] (generate-fake-course))
+  ([course id] (assoc course :id id))
+  ([id curator-id goal checkpoints]
+   (let [now (.getTime (js/Date.))]
+     (Course. id curator-id goal checkpoints now now))))
 
 (defn add-temp-checkpoint [course checkpoint]
   (assoc-in course [:checkpoints :new] checkpoint))
@@ -17,7 +32,7 @@
   (inc (apply max (keys (:checkpoints course)))))
 
 (defn add-checkpoint [course checkpoint]
-  (let [checkpoint (cp/new-checkpoint checkpoint (next-checkpoint-id course))]
+  (let [checkpoint (cp/new checkpoint (next-checkpoint-id course))]
     (assoc-in course [:checkpoints (:id checkpoint)] checkpoint)))
 
 (defn find-checkpoint [course checkpoint-id]

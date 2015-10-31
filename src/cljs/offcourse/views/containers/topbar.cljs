@@ -6,10 +6,10 @@
 
 (defn AuthenticationButton [user {:keys [get-authorized]}]
   (if (= user :unknown)
-    (d/div {:className "btn btn-authenticate"
+    (d/div {:className "btn btn-light btn-right"
             :onClick #(get-authorized)}
            "Authenticate")
-    (d/div {:className "btn btn-authenticate"}
+    (d/div {:className "btn btn-light btn-right"}
            (str/capitalize user))))
 
 (defn Topbar [viewmodel user-id handlers]

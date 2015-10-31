@@ -1,5 +1,10 @@
 @import 'functions.scss';
 
+$baseFont: NittiGrotesk;
+$titleFont: NittiGroteskBold;
+$buttonFont: NittiBold;
+$buttonFontLight: NittiNormal;
+
 $baseUnit: rem-calc(30);
 $halfUnit: rem-calc(15);
 $thirdUnit: rem-calc(10);
@@ -8,6 +13,7 @@ $twoThirdUnit: rem-calc(20);
 $sidebarWidth: 14 * $baseUnit;
 $cardWidth: 14 * $baseUnit;
 $imageHeight: ($cardWidth / 12) * 7;
+
 
 @import 'colors';
 @import 'typography';

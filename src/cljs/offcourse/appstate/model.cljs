@@ -32,7 +32,7 @@
              #(if (= %1 :learn) :curate :learn)))
 
 (defn add-checkpoint [appstate course]
-  (let [checkpoint (cp/temp-checkpoint)
+  (let [checkpoint (cp/new)
         course (co/add-temp-checkpoint course checkpoint)]
     (set-viewmodel appstate (vm/new-checkpoint course (:id checkpoint)))))
 
