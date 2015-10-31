@@ -12,6 +12,7 @@
                  [compojure "1.4.0"]
                  [hiccup "1.0.5"]
                  [environ "1.0.1"]
+                 [markdown-clj "0.9.77"]
                  [org.clojure/clojurescript "1.7.145" :scope "provided"]
                  [org.clojure/core.async "0.1.346.0-17112a-alpha"]
                  [cljs-ajax "0.3.14"]

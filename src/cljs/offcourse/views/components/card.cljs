@@ -3,15 +3,6 @@
             [offcourse.views.components.todo-list :refer [TodoList]]
             [offcourse.helpers.css :as css]))
 
-
-(comment (defn browse-course-button [{on-click :on-click}]
-           [:div.btn.btn-inverse.browse
-            {:on-click #(on-click)} "Open"])
-
-         (defn browse-checkpoint-button [{on-click :on-click}]
-           [:div.btn.btn-inverse.browse
-            {:on-click #(on-click)} "Open"]))
-
 (defn Button
   ([course-id {:keys [go-to-course]}]
    (d/div {:className "btn btn-inverse browse"
@@ -57,6 +48,6 @@
 
 (defn Card [schema item handlers]
   (let [highlighted (if (:highlighted item) "highlighted" "not-highlighted")]
-        (d/section {:key (:id item)
-                    :className (css/classes "card" highlighted)}
-                   (map-indexed #(CardSection %1 %2 item handlers) schema))))
+    (d/section {:key (:id item)
+                :className (css/classes "card" highlighted)}
+               (map-indexed #(CardSection %1 %2 item handlers) schema))))
