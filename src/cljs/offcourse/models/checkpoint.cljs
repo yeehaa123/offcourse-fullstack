@@ -8,6 +8,9 @@
                     :url "bla.com"
                     :completed false}))
 
+(defn new [id task url completed]
+  (Checkpoint. id task url completed))
+
 (defn new-checkpoint [checkpoint checkpoint-id]
     (map->Checkpoint (assoc checkpoint :id checkpoint-id)))
 

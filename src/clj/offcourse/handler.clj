@@ -35,7 +35,7 @@
      [:meta {:charset "utf-8"}]]
     [:body
      mount-target
-     (include-js "js/app_devcards.js")]]))
+     (include-js "/js/app_devcards.js")]]))
 
 (defroutes routes
   (GET "/" [] home-page)

@@ -14,7 +14,7 @@
 
 (defn- refresh-checkpoint [{store :store}]
   (let [level (:level @appstate)
-        course (utils/get-course @appstate @store)
+        course (utils/get-course @appstate store)
         checkpoint-id (:checkpoint-id (:level @appstate))
         checkpoint (co/find-checkpoint course checkpoint-id)]
     (if (or checkpoint (= checkpoint-id :new))
@@ -22,11 +22,11 @@
       (respond :not-found-resource))))
 
 (defn- refresh-collection [{:keys [store]}]
-  (let [collection (utils/get-collection @appstate @store)]
+  (let [collection (utils/get-collection @appstate store)]
     (update-appstate! #(model/refresh-collection %1 collection))))
 
 (defn- refresh-course [{:keys [store]}]
-  (let [course (utils/get-course @appstate @store)]
+  (let [course (utils/get-course @appstate store)]
     (if course
       (update-appstate! #(model/refresh-course %1 course))
       (respond :not-found-resource))))

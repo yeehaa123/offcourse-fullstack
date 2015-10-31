@@ -1,7 +1,11 @@
 (ns offcourse.models.course
   (:require [offcourse.models.checkpoint :as cp]))
 
-(defrecord Course [id goal checkpoints])
+(defrecord Course [id curator-id goal checkpoints date-created date-modified])
+
+(defn new [id curator-id goal checkpoints]
+  (let [now (.getTime (js/Date.))]
+    (Course. id curator-id goal checkpoints now now)))
 
 (defn new-course [course id]
   (assoc course :id id))

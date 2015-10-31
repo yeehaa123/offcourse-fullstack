@@ -48,6 +48,7 @@
 
 (defn Card [schema item handlers]
   (let [highlighted (if (:highlighted item) "highlighted" "not-highlighted")]
+    (println item)
     (d/section {:key (:id item)
                 :className (css/classes "card" highlighted)}
                (map-indexed #(CardSection %1 %2 item handlers) schema))))

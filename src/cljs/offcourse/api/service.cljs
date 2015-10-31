@@ -38,7 +38,7 @@
              :collection-ids collection-ids)))
 
 (defn fetch-course [{course-id :course-id :as payload}]
-  (let [course (get fake-data/courses course-id)]
+  (let [course (co/find-course fake-data/courses course-id)]
     (do
       (fetch-resources course)
       (respond :fetched-data
@@ -46,7 +46,7 @@
                :course course))))
 
 (defn fetch-courses [{course-ids :course-ids}]
-  (let [courses (map #(get fake-data/courses %1) course-ids)]
+  (let [courses (map #(co/find-course fake-data/courses %1) course-ids)]
     (respond :fetched-data
              :type :courses
              :courses courses)))
@@ -65,12 +65,12 @@
     :courses    (fetch-courses payload)
     :course     (fetch-course payload)
     :resources  (do
-                  (let [course (get (:courses @store) course-id)]
+                  (let [course (co/find-course (:courses store) course-id)]
                     (fetch-resources course)
                     (respond :ignore)))))
 
 (defn fetch-updates [{:keys [type store course-id] :as payload}]
-  (let [course (co/find-course (:courses @store) course-id)]
+  (let [course (co/find-course (:courses store) course-id)]
     (when (= type :course)
       (fetch-resources course))
     (respond :ignore)))
