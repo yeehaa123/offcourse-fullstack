@@ -10,7 +10,9 @@
   {:dangerouslySetInnerHTML {:__html (md->html content)}})
 
 (defn Viewer [checkpoint]
-  (d/section (markdown (:content (:resource checkpoint)))))
+  (if-let [content (:content (:resource checkpoint))]
+    (d/section (markdown content))
+    (d/section {} "Waiting")))
 
 (defn App [{:keys [viewmodel user-id mode]} handlers]
   (d/section {:className (css/classes "app" mode "waypoints")}
