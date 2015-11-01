@@ -64,8 +64,11 @@
 
 }
 
-.card-is-highlighted {
-    transform: scale(1.1);
+.card:hover, .card-is-highlighted {
+  box-shadow: 3px 2px 5px 0px rgba(212,212,212,1);
+}
+.sidebar .card:hover {
+    box-shadow: none;
 }
 
 .card_section-map, .card_section-nav {

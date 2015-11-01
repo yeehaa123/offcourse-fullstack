@@ -9,6 +9,11 @@
   transition: background-color 0.4s ease;
 }
 
+.sidebar:hover {
+  box-shadow: 3px 2px 5px 0px rgba(212,212,212,1);
+}
+
+
 .app-is-learn.app-is-waypoints .sidebar {
   background-color: $learnColor;
 }

@@ -26,13 +26,11 @@
   (d/h1 {} title))
 
 (defn Meta [key item]
-  (d/div {}
-         (d/p {}
-              (d/em {} (str (str/capitalize (name key)) ": "))
-              (str/capitalize item))
-         (d/p {}
-              (d/em {} (str "Learners: "))
-                    (rand-int 100000))))
+  (when item
+    (d/div {}
+           (d/p {}
+                (d/em {} (str (str/capitalize (name key)) ": "))
+                (str/capitalize item)))))
 
 (defn Tags []
   (d/p {}
@@ -55,7 +53,7 @@
            :checkbox (Checkbox (:course-id item) (:id item ) (data-key item) handlers)
            :title (Title (data-key item))
            :info (Title (data-key (:resource item)))
-           :meta (Meta data-key (data-key item))
+           :meta (Meta data-key (or (data-key item) (data-key (:resource item))))
            :list (TodoList (:id item) (data-key item) handlers)
            :tags (Tags)
            :course-button (Button (data-key item) handlers)
