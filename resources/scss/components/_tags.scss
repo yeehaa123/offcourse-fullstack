@@ -1,9 +1,13 @@
 .tag {
   display: inline-block;
-  height: 30px;
+  height: 25px;
   margin-right: 5px;
   margin-bottom: 5px;
   font-size: rem-calc(13);
-  padding: 6px 10px;
-  background-color: $lightBaseColor;
+  padding: 2px 10px;
+  border: 1px solid black;
+}
+
+.app-is-learn .tag:hover {
+    background-color: $learnColor;
 }

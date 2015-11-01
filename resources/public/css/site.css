@@ -31,6 +31,10 @@
 h1, h2, h3, h4, h5, h6, .title {
   font-family: NittiGroteskBold; }
 
+em {
+  font-family: NittiGroteskBold;
+  font-style: normal; }
+
 p, li, textarea {
   font-size: 1rem;
   line-height: 1.25rem; }
@@ -219,7 +223,6 @@ textarea {
   width: 100%;
   background: #FFFFFF;
   padding: 0.625rem 1.25rem;
-  margin-top: 0.625rem;
   text-decoration: none;
   justify-content: center;
   align-items: center;
@@ -283,7 +286,6 @@ textarea {
   margin: 0;
   min-width: 26.25rem;
   max-width: 26.25rem;
-  padding-bottom: 1.875rem;
   margin-bottom: 1.875rem;
   margin-right: 1.875rem; }
 
@@ -303,8 +305,10 @@ textarea {
   .card_section h1 {
     padding: 0;
     font-size: 1rem;
-    line-height: 1.375rem;
-    margin-bottom: 0.625rem; }
+    line-height: 1.375rem; }
+
+.card_section-meta p {
+  margin-bottom: 0; }
 
 .card_section-map, .card_section-checkbox {
   height: 15.3125rem;
@@ -716,9 +720,12 @@ textarea {
 
 .tag {
   display: inline-block;
-  height: 30px;
+  height: 25px;
   margin-right: 5px;
   margin-bottom: 5px;
   font-size: 0.8125rem;
-  padding: 6px 10px;
-  background-color: #f4f6f4; }
+  padding: 2px 10px;
+  border: 1px solid black; }
+
+.app-is-learn .tag:hover {
+  background-color: #E5CF39; }

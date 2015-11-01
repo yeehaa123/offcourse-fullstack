@@ -1,7 +1,8 @@
 (ns offcourse.views.components.card
-  (:require [quiescent.dom :as d]
+  (:require [clojure.string :as str]
+            [offcourse.helpers.css :as css]
             [offcourse.views.components.todo-list :refer [TodoList]]
-            [offcourse.helpers.css :as css]))
+            [quiescent.dom :as d]))
 
 (defn Button
   ([course-id {:keys [go-to-course]}]
@@ -24,6 +25,20 @@
 (defn Title [title]
   (d/h1 {} title))
 
+(defn Meta [key item]
+  (d/div {}
+         (d/p {}
+              (d/em {} (str (str/capitalize (name key)) ": "))
+              (str/capitalize item))
+         (d/p {}
+              (d/em {} (str "Learners: "))
+                    (rand-int 100000))))
+
+(defn Tags []
+  (d/p {}
+       (map-indexed #(d/span {:key %1
+                              :className "tag"} %2)
+                    ["React" "DevOps" "CSS"])))
 (defn Map []
   (d/div))
 
@@ -40,14 +55,19 @@
            :checkbox (Checkbox (:course-id item) (:id item ) (data-key item) handlers)
            :title (Title (data-key item))
            :info (Title (data-key (:resource item)))
+           :meta (Meta data-key (data-key item))
            :list (TodoList (:id item) (data-key item) handlers)
+           :tags (Tags)
            :course-button (Button (data-key item) handlers)
            :checkpoint-button (Button (:course-id item) (data-key item) handlers)
            :add-checkpoint-button (AddCheckpointButton (data-key item) handlers)
-           :commit-checkpoint-button (CommitCheckpointButton (:course-id item) (data-key item) handlers))))
+           :commit-checkpoint-button (CommitCheckpointButton (:course-id item)
+                                                             (data-key item) handlers))))
 
 (defn Card [schema item handlers]
   (let [highlighted (if (:highlighted item) "highlighted" "not-highlighted")]
     (d/section {:key (:id item)
                 :className (css/classes "card" highlighted)}
                (map-indexed #(CardSection %1 %2 item handlers) schema))))
+
+

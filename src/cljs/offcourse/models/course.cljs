@@ -16,6 +16,7 @@
   (-> fake-data/courses
       rand-nth
       (assoc :id :new)
+      (assoc :curator (rand-nth ["yeehaa" "greg"]))
       (update-in [:checkpoints] index-checkpoints)))
 
 (defn new

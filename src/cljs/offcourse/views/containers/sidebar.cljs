@@ -8,14 +8,16 @@
             [offcourse.views.actions :as actions]))
 
 (def schema
-  {:checkpoint {:checkbox :completed
-                :title :task
-                :info :title
-                :commit-checkpoint-button :id}
-   :course     {:map nil
-                :title :goal
-                :list :checkpoints
-                :add-checkpoint-button :id}})
+  {:checkpoint [[:checkbox :completed]
+                [:title :task]
+                [:info :title]
+                [:commit-checkpoint-button :id]]
+   :course     [[:map nil]
+                [:title :goal]
+                [:meta :curator]
+                [:list :checkpoints]
+                [:tags nil]
+                [:add-checkpoint-button :id]]})
 
 (defn Sidebar [{:keys [level collection-names course checkpoint-id]} handlers]
     (d/section {:className (css/classes "sidebar")}

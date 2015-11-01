@@ -3,14 +3,17 @@
             [quiescent.dom :as d]))
 
 (def schema
-  {:collection     {:map nil
-                    :title :goal
-                    :list :checkpoints
-                    :course-button :id}
-   :course         {:checkbox :completed
-                    :title :task
-                    :info :title
-                    :checkpoint-button :id}})
+  {:collection     [[:map nil]
+                    [:title :goal]
+                    [:meta :curator]
+                    [:list :checkpoints]
+                    [:tags nil]
+                    [:course-button :id]]
+
+   :course         [[:checkbox :completed]
+                    [:title :task]
+                    [:info :title]
+                    [:checkpoint-button :id]]})
 
 (defn Cards [{:keys [level course collection]} handlers]
   (let [course-id (:id course)

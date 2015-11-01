@@ -17,7 +17,6 @@
   margin: 0;
   min-width: $cardWidth;
   max-width: $cardWidth;
-  padding-bottom: $baseUnit;
   margin-bottom: $baseUnit;
   margin-right: $baseUnit;
 }
@@ -44,8 +43,13 @@
     padding: 0;
     font-size: rem-calc(16);
     line-height: rem-calc(22);
-    margin-bottom: $baseUnit / 3;
   }
+}
+
+.card_section-meta {
+    p {
+        margin-bottom: 0;
+    }
 }
 
 .card_section-map, .card_section-checkbox {
