@@ -5,6 +5,8 @@
 
 (defn new
   ([resource] (map->Resource resource))
-  ([url title] (Resource. url title fake-data/text))
+  ([url _]
+   (let [{:keys [title text]} (fake-data/content)]
+     (Resource. url title text)))
   ([url title content] (Resource. url title content)))
 

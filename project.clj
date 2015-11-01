@@ -18,6 +18,7 @@
                  [cljs-ajax "0.3.14"]
                  [quiescent "0.2.0-RC2"]
                  [secretary "1.2.3"]
+                 [env/faker "0.4.0"]
                  [devcards "0.2.0-8"]]
 
   :plugins [[lein-environ "1.0.1"]

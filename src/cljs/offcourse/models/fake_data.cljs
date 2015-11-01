@@ -1,23 +1,35 @@
-(ns offcourse.models.fake-data)
+(ns offcourse.models.fake-data
+  (:require [clojure.string :as str]
+            [faker.lorem :as lorem]))
 
 (def checkpoint {:id :new
                  :task "Do Something Different"
                  :url "bla.com"
                  :completed false})
 
-(def text
-  "# Lorem Ipsum Dolor
+(defn rand-int-between [min max]
+  (let [dev (- max min)]
+    (+ (rand-int dev) min)))
 
-  sit amet, consectetur adipiscing elit. Quisque tellus ligula, consequat ut accumsan quis, vulputate vel massa. Maecenas interdum convallis lorem a auctor. Pellentesque sagittis, odio sit amet pulvinar pretium, massa ligula dapibus orci, non laoreet leo neque dignissim libero. Vestibulum a congue metus. Cras ultrices elit quis turpis pharetra, ut dictum sem tincidunt. Quisque id lectus sed elit auctor commodo ac non nunc. Nullam ut mauris pellentesque, pellentesque lacus nec, cursus augue. Donec in viverra diam. Cras non ultrices libero. Curabitur a suscipit quam. Praesent posuere magna iaculis quam imperdiet porta. Donec tristique lacus et faucibus efficitur. Pellentesque nec nisl ultricies, malesuada metus nec, facilisis nibh.
+(defn make-title []
+  (->> (lorem/words)
+       (take (rand-int-between 3 8))
+       (map #(str/capitalize %1))
+       (str/join " ")))
 
-  Donec et lobortis nulla. Donec gravida sollicitudin est at interdum. Suspendisse non placerat risus. Duis sit amet dapibus lacus, a viverra turpis. Nulla mattis diam vitae turpis pulvinar, ac convallis magna porttitor. Phasellus laoreet leo vitae faucibus convallis. Maecenas luctus leo tellus, eget mollis felis efficitur in. Donec egestas interdum lorem, a scelerisque mauris feugiat non. Pellentesque ultrices accumsan posuere. Nunc velit est, auctor id eros eu, laoreet malesuada est. Sed orci turpis, tempus vel orci sit amet, fringilla egestas augue. In egestas turpis nec metus mattis ultrices. Nullam dapibus nulla eget ante posuere, eget dignissim odio lacinia. Quisque condimentum tempus orci. Donec quam massa, sagittis sed gravida eget, ultrices id magna.
+(def body
+  (->> (lorem/paragraphs (rand-int-between 8 15))
+       (take (rand-int-between 10 40))))
 
-  Aliquam erat volutpat. Vestibulum ut hendrerit metus. Mauris malesuada ultricies eros, eget suscipit eros fermentum et. Vivamus condimentum dapibus lacus, eget auctor leo porttitor eu. Duis efficitur sodales purus quis faucibus. Pellentesque eu convallis eros, id auctor felis. Nam consectetur feugiat lectus, at ultrices dui lobortis eu. Sed aliquet nisi in metus viverra, quis pretium ipsum rhoncus. Suspendisse luctus lectus sapien, a iaculis tortor egestas nec. Nulla venenatis placerat euismod. Integer ornare dui non volutpat egestas. Sed faucibus sed lorem at ultrices. Donec nec pulvinar erat. Morbi imperdiet posuere nulla, nec pulvinar lectus. Phasellus posuere auctor dui, eget dignissim nisi placerat nec.
+(defn make-text [title]
+  (->> (conj body (str "# " title))
+       (str/join "\n\n")))
 
-  Suspendisse erat ex, finibus sit amet tincidunt vel, vulputate at leo. Vestibulum vel euismod lacus, ornare condimentum quam. Phasellus interdum nisi lorem, sed iaculis erat luctus non. Duis augue diam, semper a fringilla vitae, lacinia quis arcu. Vestibulum varius ipsum orci, quis molestie massa viverra quis. Morbi gravida dolor vitae eros ornare, non sollicitudin leo ullamcorper. Sed vestibulum nisi sed ex tempor, nec auctor libero lobortis. Nulla facilisi. Nulla lacus mi, dictum sit amet ipsum at, ultricies euismod turpis. In eu libero urna. Praesent congue iaculis quam, eget rutrum ligula auctor quis. Praesent iaculis sapien dui, vel dapibus lectus rutrum volutpat.
-
-  Suspendisse sit amet tellus neque. Duis et purus ac justo consequat pulvinar. Integer lobortis arcu justo, at ullamcorper sem maximus quis. Duis a augue cursus, posuere felis ac, imperdiet lectus. Vestibulum egestas, neque a consequat pellentesque, metus dui vulputate ex, eu laoreet nunc enim ut felis. Ut placerat eget orci in dictum. Mauris rutrum faucibus mauris at interdum. Morbi eget libero sit amet urna venenatis condimentum.")
-
+(defn content []
+  (let [title (make-title)
+        text (make-text title)]
+    {:title title
+     :text text}))
 
 (def courses [{:goal "Become a Frontend Ninja"
                :checkpoints [{:task "Install React"

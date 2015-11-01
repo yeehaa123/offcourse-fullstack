@@ -3,6 +3,7 @@
   (:require        [cljs.core.async :refer [chan timeout <! >!]]
                    [offcourse.api.fake-data :as fake-data]
                    [offcourse.models.collection :as co]
+                   [markdown.core :refer [md->html]]
                    [offcourse.models.action :refer [respond]]))
 
 (def internal (chan))
@@ -10,7 +11,8 @@
 (defn fetch-resource [{:keys [course-id checkpoint]}]
   (let [checkpoint-id (:id checkpoint)
         checkpoint-url (:url checkpoint)
-        resource (get fake-data/resources checkpoint-url)]
+        resource (get fake-data/resources checkpoint-url)
+        resource (update-in resource [:content] md->html)]
     (respond :fetched-data
              :type :resource
              :course-id course-id

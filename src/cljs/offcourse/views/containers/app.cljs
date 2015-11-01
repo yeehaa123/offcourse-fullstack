@@ -3,16 +3,14 @@
             [offcourse.views.containers.sidebar :refer [Sidebar]]
             [offcourse.views.containers.topbar :refer [Topbar]]
             [offcourse.views.containers.cards :refer [Cards]]
-            [markdown.core :refer [md->html]]
             [quiescent.dom :as d]))
 
-(defn markdown [content]
-  {:dangerouslySetInnerHTML {:__html (md->html content)}})
-
 (defn Viewer [checkpoint]
-  (if-let [content (:content (:resource checkpoint))]
-    (d/section (markdown content))
-    (d/section {} "Waiting")))
+  (d/section {:className "viewer"}
+             (if-let [content (:content (:resource checkpoint))]
+               (d/article {:className "content"
+                       :dangerouslySetInnerHTML {:__html content}})
+               (d/div {} "Waiting"))))
 
 (defn App [{:keys [viewmodel user-id mode]} handlers]
   (d/section {:className (css/classes "app" mode "waypoints")}
