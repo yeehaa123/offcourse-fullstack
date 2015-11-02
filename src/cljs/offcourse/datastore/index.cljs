@@ -1,7 +1,8 @@
 (ns offcourse.datastore.index
   (:require-macros [cljs.core.async.macros :refer [go-loop]])
   (:require        [cljs.core.async :refer [>! chan tap merge mult <!]]
-                   [offcourse.datastore.store :as store]))
+                   [offcourse.datastore.store :as store]
+                   [offcourse.api.index :as api]))
 
 (def channel (chan))
 (def out (mult channel))
@@ -12,7 +13,9 @@
       (case type
         :requested-data             (>! channel (store/get-data payload))
         :requested-commit           (>! channel (store/commit-data payload))
-        :fetched-data               (>! channel (store/update-datastore payload))
+        :fetched-data               (do
+                                      (>! channel (store/update-datastore payload))
+                                      (>! channel (store/check-resources payload)))
         :requested-toggle-done      (>! channel (store/toggle-done payload))
         nil))
     (recur)))

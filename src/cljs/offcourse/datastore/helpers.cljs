@@ -11,7 +11,7 @@
              :course-id course-id
              :store @store))
 
-  (defn respond-not-found [type {:keys [course-id course-ids collection-name]}]
+  (defn respond-not-found [type {:keys [course-id course-ids collection-name urls]}]
     (case type
       :collection (respond :not-found-data
                            :type type
@@ -24,7 +24,10 @@
       :course     (respond :not-found-data
                            :type type
                            :course-id course-id
-                           :store @store)))
+                           :store @store)
+      :resources  (respond :not-found-data
+                           :type type
+                           :urls urls)))
 
   (defn respond-checked [type {:keys [course-id collection-name]}]
     (case type

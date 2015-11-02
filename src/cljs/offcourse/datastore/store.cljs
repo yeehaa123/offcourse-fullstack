@@ -64,6 +64,11 @@
       (helpers/respond-checked :course {:course-id course-id})
       (helpers/respond-not-found :course {:course-id course-id}))))
 
+(defn fetch-resources [{:keys [course]}]
+  (let [checkpoints (vals (:checkpoints course))
+        urls (map :url checkpoints)]
+    (helpers/respond-not-found :resources {:urls urls})))
+
 ;; Public API
 
 (defn commit-data [{type :type :as payload}]
@@ -81,4 +86,12 @@
     :collection (update-collections payload)
     :course     (update-course payload)
     :courses    (update-courses payload)
-    :resource   (augment-checkpoint payload)))
+    :resource   (augment-checkpoint payload)
+    :resources  (do
+                  (println (keys payload))
+                  (respond :ignore))))
+
+(defn check-resources [{:keys [type] :as payload}]
+  (case type
+    :course (fetch-resources payload)
+    (respond :ignore)))

@@ -11,10 +11,12 @@
      :toggle-mode       (fn []
                           (>>! :requested-mode-toggle))
 
-     :toggle-done       (fn [course-id checkpoint-id]
-                          (>>! :requested-done-toggle
-                               :course-id course-id
-                               :checkpoint-id checkpoint-id))
+     :toggle-done       (fn [course-id checkpoint-id event]
+                          (do
+                            (.stopPropagation event)
+                            (>>! :requested-done-toggle
+                                 :course-id course-id
+                                 :checkpoint-id checkpoint-id)))
 
      :highlight         (fn [course-id checkpoint-id highlight]
                           (>>! :requested-highlight-toggle
@@ -32,7 +34,8 @@
                                :level :course
                                :course-id course-id))
 
-     :go-to-checkpoint  (fn [course-id checkpoint-id]
+     :go-to-checkpoint  (fn [course-id checkpoint-id event]
+                          (.stopPropagation event)
                           (>>! :requested-level
                                :level :checkpoint
                                :course-id course-id

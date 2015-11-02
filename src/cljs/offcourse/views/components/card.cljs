@@ -43,7 +43,7 @@
 (defn Checkbox [course-id checkbox-id completed? {:keys [toggle-done]}]
   (let [completed (if completed? "complete" "incomplete")]
     (d/div {:className completed
-            :onClick #(toggle-done course-id checkbox-id)})))
+            :onClick #(toggle-done course-id checkbox-id %1)})))
 
 (defn CardSection [index [type data-key] item handlers]
   (d/div {:key index
@@ -65,7 +65,8 @@
 (defn Card [schema item handlers]
   (let [highlighted (if (:highlighted item) "highlighted" "not-highlighted")]
     (d/section {:key (:id item)
-                :className (css/classes "card" highlighted)}
+                :className (css/classes "card" highlighted)
+                :onClick #((:go-to-course handlers) (:id item))}
                (map-indexed #(CardSection %1 %2 item handlers) schema))))
 
 

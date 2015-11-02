@@ -7,8 +7,7 @@
                     [:title :goal]
                     [:meta :curator]
                     [:list :checkpoints]
-                    [:tags nil]
-                    [:course-button :id]]
+                    [:tags nil]]
 
    :course         [[:checkbox :completed]
                     [:title :task]
