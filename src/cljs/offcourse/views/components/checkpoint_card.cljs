@@ -1,26 +1,25 @@
 (ns offcourse.views.components.checkpoint-card
   (:require [quiescent.dom :as d]
-            [offcourse.views.components.temp-components
-             :refer [Map Title Meta Tags CardSection]]
+            [offcourse.views.components.temp-components :refer [Map Title Meta Tags CardSection GoToButton]]
             [offcourse.helpers.css :as css]))
 
-(defn GoToButton
-  ([course-id {:keys [go-to-course]}]
-   (d/div {:className "btn btn-inverse browse"
-           :onClick #(go-to-course course-id)} "Open"))
-  ([course-id checkpoint-id {:keys [go-to-checkpoint]}]
-   (d/div {:className "btn btn-inverse browse"
-           :onClick #(go-to-checkpoint course-id checkpoint-id)} "Open")))
-
 (defn CheckpointCard [{:keys [highlighted task id]}
-                      {:keys [course-id course-goal]}
+                      {:keys [course-id goal]}
                       {:keys [url title content]}
-                      {:keys [go-to-checkpoint] :as handlers}]
+                      {:keys [go-to-checkpoint] :as handlers}
+                      in-sidebar?]
   (let [highlighted (if highlighted "highlighted" "not-highlighted")
-        sections [[:map (Map)]
-                  [:title (Title task)]
-                  [:meta (Meta :title title)]
-                  [:tags (Tags ["React" "Angular" "FrontEnd"])]]]
+        basic   [[:map (Map)]
+                 [:title (Title task)]
+                 [:meta (if in-sidebar?
+                          (Meta :title title
+                                :url url
+                                :goal goal)
+                          (Meta :title title
+                                :url url))]
+                 [:tags (Tags ["React" "Angular" "FrontEnd"])]]
+        extra    [:course-button (GoToButton course-id handlers)]
+        sections (if in-sidebar? (conj basic extra) basic)]
     (d/section {:key id
                 :className (css/classes "card" highlighted)
                 :onClick #(go-to-checkpoint course-id id %1)}

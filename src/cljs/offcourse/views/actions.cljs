@@ -29,7 +29,8 @@
                                :level :collection
                                :collection-name collection-name))
 
-     :go-to-course      (fn [course-id]
+     :go-to-course      (fn [course-id event]
+                          (.stopPropagation event)
                           (>>! :requested-level
                                :level :course
                                :course-id course-id))

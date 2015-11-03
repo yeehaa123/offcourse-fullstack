@@ -15,8 +15,7 @@
                                :forks 23)]
                   [:list (TodoList id checkpoints handlers)]
                   [:tags (Tags ["React" "Angular" "FrontEnd"])]]]
-
     (d/section {:key id
                 :className (css/classes "card" highlighted)
-                :onClick #(go-to-course id)}
+                :onClick #(go-to-course id %1)}
                (map-indexed #(CardSection %1 %2) sections))))

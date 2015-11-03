@@ -28,3 +28,11 @@
   (d/div {:key index
           :className (css/type-classes "card_section" type)}
          component))
+
+(defn GoToButton
+  ([course-id {:keys [go-to-course]}]
+   (d/div {:className "btn btn-inverse browse"
+           :onClick #(go-to-course course-id %1)} "Go To Course"))
+  ([course-id checkpoint-id {:keys [go-to-checkpoint]}]
+   (d/div {:className "btn btn-inverse browse"
+           :onClick #(go-to-checkpoint course-id checkpoint-id %1)} "Open")))
