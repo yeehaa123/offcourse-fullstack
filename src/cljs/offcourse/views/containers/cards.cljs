@@ -11,8 +11,7 @@
 
    :course         [[:checkbox :completed]
                     [:title :task]
-                    [:meta :title]
-                    [:checkpoint-button :id]]})
+                    [:meta :title]]})
 
 (defn Cards [{:keys [level course collection]} handlers]
   (let [course-id (:id course)

@@ -62,11 +62,13 @@
            :commit-checkpoint-button (CommitCheckpointButton (:course-id item)
                                                              (data-key item) handlers))))
 
-(defn Card [schema item handlers]
-  (let [highlighted (if (:highlighted item) "highlighted" "not-highlighted")]
+(defn Card [schema {:keys [highlighted course-id id] :as item}
+            {:keys [go-to-course go-to-checkpoint] :as handlers}]
+  (let [highlighted (if highlighted "highlighted" "not-highlighted")
+        go-to (if course-id (partial go-to-checkpoint course-id id) (partial go-to-course id))]
     (d/section {:key (:id item)
                 :className (css/classes "card" highlighted)
-                :onClick #((:go-to-course handlers) (:id item))}
+                :onClick go-to}
                (map-indexed #(CardSection %1 %2 item handlers) schema))))
 
 
