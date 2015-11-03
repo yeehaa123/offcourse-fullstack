@@ -6,14 +6,16 @@
 (defrecord CourseViewmodel [level course])
 (defrecord CollectionViewmodel [level collection collection-name collection-names])
 
-(defn new-checkpoint [course checkpoint-id]
+(defn new-checkpoint [course checkpoint-id & resource]
   (map->CheckpointViewmodel {:level :checkpoint
                              :course course
-                             :checkpoint-id checkpoint-id}))
+                             :checkpoint (co/find-checkpoint course checkpoint-id)
+                             :resource (or (first resource) :unknown)}))
 
-(defn new-course [course]
+(defn new-course [course resources]
   (map->CheckpointViewmodel {:level :course
-                             :course course}))
+                             :course course
+                             :resources resources}))
 
 (defn new-collection [collection-name collection]
   (map->CollectionViewmodel {:level :collection

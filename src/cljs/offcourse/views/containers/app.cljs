@@ -3,15 +3,11 @@
             [offcourse.views.containers.sidebar :refer [Sidebar]]
             [offcourse.views.containers.topbar :refer [Topbar]]
             [offcourse.views.containers.cards :refer [Cards]]
+            [offcourse.views.components.collection-view :refer [CollectionView]]
+            [offcourse.views.components.course-view :refer [CourseView]]
+            [offcourse.views.components.viewer :refer [Viewer]]
             [markdown.core :refer [md->html]]
             [quiescent.dom :as d]))
-
-(defn Viewer [checkpoint]
-  (d/section {:className "viewer"}
-             (if-let [content (:content (:resource checkpoint))]
-               (d/article {:className "content"
-                       :dangerouslySetInnerHTML {:__html (md->html content)}})
-               (d/div {} "Waiting"))))
 
 (defn App [{:keys [viewmodel user-id mode]} handlers]
   (d/section {:className (css/classes "app" mode "waypoints")}
@@ -21,9 +17,8 @@
                     (d/div {:className "layout-topbar"}
                            (Topbar viewmodel user-id handlers))
                     (d/div {:className "layout-main"}
-                           (let [{:keys [checkpoint-id course]} viewmodel
-                                 checkpoints (:checkpoints course)
-                                 checkpoint (get checkpoints checkpoint-id)]
+                           (let [{:keys [course resource]} viewmodel]
                              (case (:level viewmodel)
-                               :checkpoint (Viewer checkpoint)
-                               (Cards viewmodel handlers)))))))
+                               :collection (CollectionView viewmodel handlers)
+                               :course (CourseView viewmodel handlers)
+                               :checkpoint (Viewer resource)))))))

@@ -17,7 +17,7 @@
                   options)]
       (d/li options title)))
 
-(defn createCrumbs [{:keys [level collection-name course checkpoint-id]}]
+(defn createCrumbs [{:keys [level collection-name course checkpoint]}]
   (case level
     :collection [{:level level
                   :title collection-name
@@ -30,8 +30,8 @@
                   :course-id (:id course)
                   :link true}
                  {:level level
-                  :title (:task (get-in course [:checkpoints checkpoint-id]))
-                  :checkpoint-id checkpoint-id}]))
+                  :title (:task checkpoint)
+                  :checkpoint-id (:id checkpoint)}]))
 
 (defn Breadcrumbs [viewmodel handlers]
   (let [crumbs (createCrumbs viewmodel)]

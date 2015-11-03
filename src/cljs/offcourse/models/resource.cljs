@@ -10,3 +10,10 @@
      (Resource. url title text)))
   ([url title content] (Resource. url title content)))
 
+(defn find-resource [collection url]
+  (get collection url))
+
+(defn find-resources [collection urls]
+  (->> urls
+       (map (fn [url][url (get collection url)]))
+       (into {})))

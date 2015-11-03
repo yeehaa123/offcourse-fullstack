@@ -2,6 +2,7 @@
   (:require [offcourse.models.action :refer [respond]]
             [offcourse.models.course :as co]
             [offcourse.models.checkpoint :as cp]
+            [offcourse.models.resource :as r]
             [offcourse.appstate.viewmodel :as vm]))
 
 (defrecord AppState [level mode course-collections viewmodel])
@@ -36,22 +37,25 @@
         course (co/add-temp-checkpoint course checkpoint)]
     (set-viewmodel appstate (vm/new-checkpoint course (:id checkpoint)))))
 
-(defn refresh-checkpoint [{:keys [level] :as appstate} course]
+(defn refresh-checkpoint [{:keys [level] :as appstate} course resources]
   (let  [checkpoint-id (:checkpoint-id level)
-         checkpoint (co/find-checkpoint course checkpoint-id)]
-   (set-viewmodel appstate (vm/new-checkpoint course checkpoint-id))))
+         {:keys [url]} (co/find-checkpoint course checkpoint-id)
+         resource (r/find-resource resources url)]
+   (set-viewmodel appstate (vm/new-checkpoint course checkpoint-id resource))))
 
-(defn update-checkpoint [appstate course checkpoint-id]
+(defn update-checkpoint [appstate course checkpoint-id resources]
   (if (= :new checkpoint-id)
     (add-checkpoint appstate course)
-    (refresh-checkpoint appstate course)))
+    (refresh-checkpoint appstate course resources)))
 
 (defn refresh-collection [{:keys [level] :as appstate} collection]
   (let [collection-name (:collection-name level)]
     (set-viewmodel appstate (vm/new-collection collection-name collection))))
 
-(defn refresh-course [appstate course]
-    (assoc-in appstate [:viewmodel] (vm/new-course course)))
+(defn refresh-course [appstate course resources]
+  (let [urls (into #{} (co/get-resource-urls course))
+        resources (r/find-resources resources urls)]
+    (assoc-in appstate [:viewmodel] (vm/new-course course resources))))
 
 (defn highlight-collection [appstate {:keys [course-id checkpoint-id highlight]}]
   (update-viewmodel appstate

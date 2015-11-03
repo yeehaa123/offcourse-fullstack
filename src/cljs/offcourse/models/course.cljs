@@ -39,6 +39,13 @@
 (defn find-checkpoint [course checkpoint-id]
   (get (:checkpoints course) checkpoint-id))
 
+(defn get-resource-urls [course]
+  (->> course
+       :checkpoints
+       vals
+       (map :url)
+       (into #{})))
+
 (defn needs-resources? [course]
   (not (every? :resource (vals (:checkpoints course)))))
 
