@@ -175,6 +175,15 @@ textarea {
   user-select: none;
   transition: background-color 0.4s ease; }
 
+.logo .title::after {
+  content: "_"; }
+
+.logo:hover .title::after {
+  content: none; }
+
+.logo:hover .title::before {
+  content: "_"; }
+
 .sidebar {
   display: flex;
   width: 100%;

@@ -14,7 +14,7 @@
 
 (defn AddCheckpointButton [course-id {:keys [go-to-checkpoint]}]
    (d/div {:className "btn btn-inverse browse"
-           :onClick #(go-to-checkpoint course-id "new")} "Add Checkpoint"))
+           :onClick #(go-to-checkpoint course-id "new" %1)} "Add Checkpoint"))
 
 (defn CommitCheckpointButton [course-id checkpoint-id {:keys [commit-checkpoint]}]
   (when (= checkpoint-id :new)
@@ -70,5 +70,3 @@
                 :className (css/classes "card" highlighted)
                 :onClick go-to}
                (map-indexed #(CardSection %1 %2 item handlers) schema))))
-
-

@@ -22,7 +22,8 @@
 
 (defn Sidebar [{:keys [level collection-names course checkpoint-id]} handlers]
     (d/section {:className (css/classes "sidebar")}
-               (Logo handlers)
+               (d/div {:className "sidebar-logo"}
+               (Logo handlers))
                (case level
                  :collection (Collections-Navigation collection-names handlers)
                  :course (Card (level schema) course handlers)
