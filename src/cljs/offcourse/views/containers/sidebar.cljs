@@ -10,6 +10,7 @@
 (def schema
   {:checkpoint [[:checkbox :completed]
                 [:title :task]
+                [:meta :goal]
                 [:info :title]
                 [:commit-checkpoint-button :id]]
    :course     [[:map nil]
@@ -27,5 +28,6 @@
                  :course (Card (level schema) course handlers)
                  :checkpoint (Card (level schema)
                                    (assoc (get-in course [:checkpoints checkpoint-id])
-                                          :course-id (:id course))
+                                          :course-id (:id course)
+                                          :goal (:goal course))
                                           handlers))))

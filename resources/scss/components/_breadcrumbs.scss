@@ -17,7 +17,8 @@
 }
 
 .topbar .btn:hover {
-  color: $red;
+  background-color: $baseColor;
+  color: $inverseColor;
 }
 
 .btn.btn-is-active {

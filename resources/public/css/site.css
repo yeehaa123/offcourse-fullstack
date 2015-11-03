@@ -370,7 +370,8 @@ textarea {
   margin-right: 0.625rem; }
 
 .topbar .btn:hover {
-  color: #E34D2F; }
+  background-color: #000000;
+  color: #FFFFFF; }
 
 .btn.btn-is-active {
   background-color: #000000;

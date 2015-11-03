@@ -8,7 +8,7 @@
   (if (= user :unknown)
     (d/div {:className "btn btn-light btn-right"
             :onClick #(get-authorized)}
-           "Authenticate")
+           "Log In")
     (d/div {:className "btn btn-light btn-right"}
            (str/capitalize user))))
 
