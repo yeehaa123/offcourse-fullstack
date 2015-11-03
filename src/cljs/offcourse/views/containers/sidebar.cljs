@@ -23,7 +23,7 @@
     (d/section {:className (css/classes "sidebar")}
                (Logo handlers)
                (case level
-                 :collection nil
+                 :collection (Collections-Navigation collection-names handlers)
                  :course (Card (level schema) course handlers)
                  :checkpoint (Card (level schema)
                                    (assoc (get-in course [:checkpoints checkpoint-id])

@@ -249,6 +249,9 @@ textarea {
   margin-bottom: 0.625rem;
   margin-top: 0; }
 
+.btn-full {
+  width: 100%; }
+
 .btn.btn-inverse {
   background: #000000;
   color: #FFFFFF; }

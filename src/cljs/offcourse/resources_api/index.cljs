@@ -11,7 +11,7 @@
     (let [{type :type payload :payload} (<! input)]
       (case type
         :not-found-data (go
-                          (<! (timeout (rand-int 3000)))
+                          #_(<! (timeout (rand-int 5000)))
                           (>! channel (service/fetch payload)))
         nil))
     (recur)))

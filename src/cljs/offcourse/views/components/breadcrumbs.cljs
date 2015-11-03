@@ -35,9 +35,6 @@
 
 (defn Breadcrumbs [viewmodel handlers]
   (let [crumbs (createCrumbs viewmodel)]
-  (d/nav {:className "breadcrumbs"}
-         (d/ul {}
-               (for [crumb crumbs]
-                 (Breadcrumb crumb handlers))))))
-
-
+    (d/nav {:className "breadcrumbs"}
+           (d/ul {}
+               (map #(Breadcrumb %1 handlers) crumbs)))))
