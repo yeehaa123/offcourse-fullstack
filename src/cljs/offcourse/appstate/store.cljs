@@ -16,9 +16,11 @@
   (let [level (:level @appstate)
         course (utils/get-course @appstate store)
         checkpoint-id (:checkpoint-id (:level @appstate))
-        checkpoint (co/find-checkpoint course checkpoint-id)]
+        checkpoint (co/find-checkpoint course checkpoint-id)
+        url (:url checkpoint)
+        resource (or (get (:resources store) url) :unknown)]
     (if (or checkpoint (= checkpoint-id :new))
-      (update-appstate! #(model/update-checkpoint %1 course))
+      (update-appstate! #(model/update-checkpoint %1 course checkpoint-id resource))
       (respond :not-found-resource))))
 
 (defn- refresh-collection [{:keys [store]}]
@@ -26,9 +28,11 @@
     (update-appstate! #(model/refresh-collection %1 collection))))
 
 (defn- refresh-course [{:keys [store]}]
-  (let [course (utils/get-course @appstate store)]
+  (let [course (utils/get-course @appstate store)
+        resources (or (:resources store) {})]
     (if course
-      (update-appstate! #(model/refresh-course %1 course))
+      (let [course (co/augment-checkpoints course resources)]
+        (update-appstate! #(model/refresh-course %1 course)))
       (respond :not-found-resource))))
 
 ;; Public API

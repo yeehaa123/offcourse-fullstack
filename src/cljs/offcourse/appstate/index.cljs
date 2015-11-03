@@ -1,5 +1,5 @@
 (ns offcourse.appstate.index
-  (:require-macros [cljs.core.async.macros :refer [go-loop]])
+  (:require-macros [cljs.core.async.macros :refer [go go-loop]])
   (:require [offcourse.appstate.store :as store]
             [cljs.core.async :refer [>! chan tap mult merge]]
             [offcourse.appstate.service :as service]

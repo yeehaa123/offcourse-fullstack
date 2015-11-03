@@ -10,9 +10,11 @@
   (go-loop []
     (let [{type :type payload :payload} (<! input)]
       (case type
-        :not-found-data (>! channel (service/find-data payload))
-        nil))
-    (recur)))
+        :not-found-data (go
+                          #_(<! (timeout (rand-int 1000)))
+                          (>! channel (service/find-data payload)))
+      nil))
+  (recur)))
 
 (defn init [inputs]
   (let [inputs (map #(tap %1 (chan)) inputs)

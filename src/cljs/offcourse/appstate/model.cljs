@@ -36,15 +36,16 @@
         course (co/add-temp-checkpoint course checkpoint)]
     (set-viewmodel appstate (vm/new-checkpoint course (:id checkpoint)))))
 
-(defn refresh-checkpoint [{:keys [level] :as appstate} course]
-  (let  [checkpoint-id (:checkpoint-id level)]
+(defn refresh-checkpoint [{:keys [level] :as appstate} course resource]
+  (let  [checkpoint-id (:checkpoint-id level)
+         course (co/augment-checkpoint course checkpoint-id resource)
+         checkpoint (co/find-checkpoint course checkpoint-id)]
    (set-viewmodel appstate (vm/new-checkpoint course checkpoint-id))))
 
-(defn update-checkpoint [{:keys [level] :as appstate} course]
-  (let  [checkpoint-id (:checkpoint-id level)]
-    (if (= :new checkpoint-id)
-      (add-checkpoint appstate course)
-      (refresh-checkpoint appstate course))))
+(defn update-checkpoint [appstate course checkpoint-id resource]
+  (if (= :new checkpoint-id)
+    (add-checkpoint appstate course)
+    (refresh-checkpoint appstate course resource)))
 
 (defn refresh-collection [{:keys [level] :as appstate} collection]
   (let [collection-name (:collection-name level)]

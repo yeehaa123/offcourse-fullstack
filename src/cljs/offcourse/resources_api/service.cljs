@@ -13,9 +13,7 @@
 (def all-resources
   (->> urls
        (map-indexed (fn [index url]
-                      (if (= url "google.com")
-                        [url (r/new "offcourse.io" (str "fake-resource " index))]
-                        [url (r/new url (str "fake-resource " index))])))
+                        [url (r/new url (str "fake-resource " index))]))
        (into {})))
 
 (defn fetch-resources [{:keys [urls]}]

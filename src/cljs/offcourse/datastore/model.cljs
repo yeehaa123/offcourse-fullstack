@@ -2,10 +2,13 @@
   (:require [offcourse.models.action :refer [respond]]
             [offcourse.models.collection :as cl]))
 
-(defrecord DataStore [collections courses])
+(defrecord DataStore [collections courses resources])
 
 (defn new-datastore []
-  (->DataStore {} {}))
+  (->DataStore {} {} {}))
+
+(defn update-resources [store resources]
+  (update-in store [:resources] #(into %1 resources)))
 
 (defn update-collections [store collection-name collection-ids]
   (assoc-in store [:collections collection-name] collection-ids))

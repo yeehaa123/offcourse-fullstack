@@ -16,3 +16,10 @@
   (assoc checkpoint
          :url (:url resource)
          :resource resource))
+
+(defn add-resources [checkpoints resources]
+  (map (fn [[checkpoint-id checkpoint]]
+         (let [url (:url checkpoint)
+               resource (get resources url)]
+           [checkpoint-id (assoc checkpoint :resource resource)]))
+       checkpoints))

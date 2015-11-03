@@ -22,6 +22,9 @@
     (update-datastore! fn)
     (helpers/respond-added course-id)))
 
+(defn update-resources [{:keys [resources]}]
+  (update-and-respond! #(model/update-resources %1 resources)))
+
 (defn- update-collections [{:keys [collection-name collection-ids]}]
   (let [courses-ids (into #{} (keys (:courses @store)))
         missing-ids (set/difference collection-ids courses-ids)]
@@ -64,10 +67,18 @@
       (helpers/respond-checked :course {:course-id course-id})
       (helpers/respond-not-found :course {:course-id course-id}))))
 
-(defn fetch-resources [{:keys [course]}]
-  (let [checkpoints (vals (:checkpoints course))
-        urls (map :url checkpoints)]
-    (helpers/respond-not-found :resources {:urls urls})))
+(defn fetch-resources [{:keys [course course-id]}]
+  (let [course (or course (model/find-course @store course-id))
+        checkpoints (vals (:checkpoints course))
+        course-urls (into #{} (map :url checkpoints))
+        store-urls (into #{} (map :url (vals (:resources @store))))
+        missing-urls (set/difference course-urls store-urls)]
+    (if course
+      (if (empty? missing-urls)
+        (helpers/respond-checked :course {:course-id (:id course)})
+        (helpers/respond-not-found :resources {:urls missing-urls}))
+      (helpers/respond-not-found :course {:course-id course-id}))))
+
 
 ;; Public API
 
@@ -86,10 +97,7 @@
     :collection (update-collections payload)
     :course     (update-course payload)
     :courses    (update-courses payload)
-    :resource   (augment-checkpoint payload)
-    :resources  (do
-                  (println (keys payload))
-                  (respond :ignore))))
+    :resources  (update-resources payload)))
 
 (defn check-resources [{:keys [type] :as payload}]
   (case type
