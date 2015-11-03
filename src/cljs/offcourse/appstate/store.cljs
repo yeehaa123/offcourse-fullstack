@@ -1,7 +1,7 @@
 (ns offcourse.appstate.store
   (:require [offcourse.appstate.model :as model]
-            [offcourse.appstate.utils :as utils]
             [offcourse.models.course :as co]
+            [offcourse.models.collection :as cl]
             [offcourse.models.action :refer [respond]]))
 
 (def appstate (atom (model/new-appstate)))
@@ -12,27 +12,29 @@
     (respond :updated-appstate
              :appstate @appstate)))
 
-(defn- refresh-checkpoint [{store :store}]
-  (let [level (:level @appstate)
-        course (utils/get-course @appstate store)
-        checkpoint-id (:checkpoint-id (:level @appstate))
-        checkpoint (co/find-checkpoint course checkpoint-id)
-        url (:url checkpoint)
-        resource (or (get (:resources store) url) :unknown)]
+(defn- refresh-checkpoint [{:keys [courses resources]}]
+  (let [{:keys [course-id checkpoint-id]} (:level @appstate)
+        course (get courses course-id)
+        {:keys [url] :as checkpoint} (co/find-checkpoint course checkpoint-id)
+        resource (or (get resources url) :unknown)
+        course (co/augment-checkpoint course checkpoint-id resource)]
     (if (or checkpoint (= checkpoint-id :new))
-      (update-appstate! #(model/update-checkpoint %1 course checkpoint-id resource))
+      (update-appstate! #(model/update-checkpoint %1 course checkpoint-id))
       (respond :not-found-resource))))
 
-(defn- refresh-collection [{:keys [store]}]
-  (let [collection (utils/get-collection @appstate store)]
+(defn- refresh-collection [{:keys [collections courses]}]
+  (let [{:keys [collection-name]} (:level @appstate)
+        course-ids (collection-name collections)
+        collection (cl/find-courses courses course-ids)]
     (update-appstate! #(model/refresh-collection %1 collection))))
 
-(defn- refresh-course [{:keys [store]}]
-  (let [course (utils/get-course @appstate store)
-        resources (or (:resources store) {})]
+(defn- refresh-course [{:keys [courses resources]}]
+  (let [{:keys [course-id checkpoint-id]} (:level @appstate)
+        course (get courses course-id)
+        course (co/augment-checkpoints course resources)
+        resources (or resources {})]
     (if course
-      (let [course (co/augment-checkpoints course resources)]
-        (update-appstate! #(model/refresh-course %1 course)))
+      (update-appstate! #(model/refresh-course %1 course))
       (respond :not-found-resource))))
 
 ;; Public API
@@ -46,12 +48,12 @@
 (defn set-level [payload]
   (update-appstate! #(model/set-level %1 payload)))
 
-(defn refresh [payload]
+(defn refresh [{:keys [store] :as payload}]
   (let [{type :type :as level} (:level @appstate)]
     (case type
-      :collection (refresh-collection payload)
-      :course (refresh-course payload)
-      :checkpoint (refresh-checkpoint payload))))
+      :collection (refresh-collection store)
+      :course (refresh-course store)
+      :checkpoint (refresh-checkpoint store))))
 
 (defn toggle-highlight [payload]
   (let [{type :type :as level} (:level @appstate)]

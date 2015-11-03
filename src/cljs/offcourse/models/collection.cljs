@@ -21,3 +21,8 @@
 
 (defn highlight [collection course-id checkpoint-id highlight]
   (update-in collection [course-id :checkpoints checkpoint-id :highlighted] (fn [] highlight)))
+
+(defn find-courses [collection course-ids]
+  (->> course-ids
+       (map (fn [id] [id (get collection id)]))
+       (into {})))
