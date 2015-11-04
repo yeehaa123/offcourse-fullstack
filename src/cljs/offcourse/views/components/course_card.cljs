@@ -17,8 +17,8 @@
                   [:meta (Meta :curator curator
                                :learners 123
                                :forks 23)]
-                  [:list (TodoList course-id checkpoints handlers)]
-                  [:tags (Tags tags)]]]
+                  [:tags (Tags tags)]
+                  [:list (TodoList course-id checkpoints handlers)]]]
     (d/section {:key course-id
                 :className (css/classes "card" highlighted)
                 :onClick #(go-to-course course-id %1)}
