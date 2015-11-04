@@ -1,13 +1,14 @@
 (ns offcourse.models.checkpoint
   (:require [offcourse.models.fake-data :as fake-data]))
 
-(defrecord Checkpoint [checkpoint-id task url completed])
+(defrecord Checkpoint [checkpoint-id task url completed tags])
 
 (defn new
   ([] (map->Checkpoint fake-data/checkpoint))
   ([checkpoint] (map->Checkpoint checkpoint))
   ([checkpoint checkpoint-id] (map->Checkpoint (assoc checkpoint :checkpoint-id checkpoint-id)))
-  ([checkpoint-id task url completed] (Checkpoint. checkpoint-id task url completed)))
+  ([checkpoint-id task url completed]
+   (Checkpoint. checkpoint-id task url completed (fake-data/set-of-buzzwords 0 5))))
 
 (defn toggle-done [checkpoint]
   (update-in checkpoint [:completed] not))

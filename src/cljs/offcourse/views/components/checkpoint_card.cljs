@@ -7,7 +7,7 @@
 (defn CheckpointCard
   ([checkpoint course resource handlers]
    (CheckpointCard checkpoint course resource handlers false))
-  ([{:keys [highlighted completed task checkpoint-id]}
+  ([{:keys [highlighted completed task checkpoint-id tags]}
     {:keys [course-id goal]}
     {:keys [url title content]}
     {:keys [go-to-checkpoint] :as handlers}
@@ -21,7 +21,7 @@
                                  :goal goal)
                            (Meta :title title
                                  :url url))]
-                  [:tags (Tags ["React" "Angular" "FrontEnd"])]]
+                  [:tags (Tags tags)]]
          extra    [:course-button (GoToButton course-id handlers)]
          sections (if in-sidebar? (conj basic extra) basic)]
      (d/section {:key checkpoint-id
