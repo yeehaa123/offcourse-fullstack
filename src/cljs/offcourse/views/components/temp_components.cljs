@@ -3,6 +3,11 @@
             [quiescent.dom :as d]
             [offcourse.helpers.css :as css]))
 
+(defn Checkbox [course-id checkbox-id completed? {:keys [toggle-done]}]
+  (let [completed (if completed? "complete" "incomplete")]
+    (d/div {:className completed
+            :onClick #(toggle-done course-id checkbox-id %1)})))
+
 (defn Map []
   (d/div))
 
