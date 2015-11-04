@@ -9,6 +9,7 @@
             [offcourse.routes :as router]
             [offcourse.courses-api.index :as courses-api]
             [offcourse.resources-api.index :as resources-api]
+            [offcourse.collection-api.index :as collections-api]
             [offcourse.tags-api.index :as tags-api]
             [offcourse.history.service :as history]))
 
@@ -29,12 +30,12 @@
 
   (datastore/init      [appstate/out
                         courses-api/out
-                        resources-api/out])
+                        resources-api/out
+                        collections-api/out])
 
-  (courses-api/init    [datastore/out])
-
-  (resources-api/init  [datastore/out])
-
+  (courses-api/init     [datastore/out])
+  (resources-api/init   [datastore/out])
+  (collections-api/init [datastore/out])
   (tags-api/init       [datastore/out])
 
   (history/init        [appstate/out])

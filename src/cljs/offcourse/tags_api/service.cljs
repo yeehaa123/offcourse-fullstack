@@ -4,5 +4,4 @@
             [offcourse.models.action :refer [respond]]))
 
 (defn find-data [payload]
-  (println payload)
   (respond :ignore))

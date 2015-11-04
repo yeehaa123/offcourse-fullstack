@@ -62,3 +62,8 @@
       (assoc :course-id id)
       (assoc :curator curator)
       (update-in [:checkpoints] index-checkpoints)))
+
+(def courses
+  (->> (take 20 (iterate inc 1))
+       (map-indexed (fn [id _] [id (generate-course id (generate-user))]))
+       (into {})))

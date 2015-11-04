@@ -2,16 +2,12 @@
   (:require-macros [cljs.core.async.macros :refer [go go-loop]])
   (:require        [cljs.core.async :refer [chan timeout <! >!]]
                    [markdown.core :refer [md->html]]
+                   [offcourse.fake-data.index :as fake-data]
                    [offcourse.models.resource :as r]
                    [offcourse.models.action :refer [respond]]))
 
-(def urls ["facebook.com"
-           "google.com"
-           "yahoo.com"
-           "offcourse.io"])
-
 (def all-resources
-  (->> urls
+  (->> fake-data/urls
        (map-indexed (fn [index url]
                         [url (r/new url (str "fake-resource " index))]))
        (into {})))
@@ -24,5 +20,7 @@
 
 (defn fetch [{:keys [type] :as payload}]
   (case type
-    :resources (fetch-resources payload)
-    (respond :ignore)))
+    :collection (respond :ignore)
+    :courses (respond :ignore)
+    :course  (respond :ignore)
+    :resources (fetch-resources payload)))
