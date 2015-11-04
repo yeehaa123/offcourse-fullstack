@@ -1,10 +1,13 @@
-(ns offcourse.api.service
-  (:require-macros [cljs.core.async.macros :refer [go go-loop]])
-  (:require        [cljs.core.async :refer [chan timeout <! >!]]
-                   [offcourse.api.fake-data :as fake-data]
-                   [offcourse.models.collection :as co]
-                   [markdown.core :refer [md->html]]
-                   [offcourse.models.action :refer [respond]]))
+(ns offcourse.courses-api.service
+  (:require [offcourse.fake-data.index :as fake-data]
+            [offcourse.models.collection :as cl]
+            [offcourse.models.course :as co]
+            [offcourse.models.action :refer [respond]]))
+
+(def courses
+  (->> (take 100 (iterate inc 1))
+       (map-indexed (fn [id _] [id (fake-data/generate-course id (fake-data/generate-user))]))
+       (into {})))
 
 (defn fetch-collection [{collection-name :collection-name}]
   (let [collections {:featured (into #{} (take 10 (iterate inc 1)))
@@ -17,13 +20,13 @@
              :collection-ids collection-ids)))
 
 (defn fetch-course [{course-id :course-id :as payload}]
-  (let [course (co/find-course fake-data/courses course-id)]
+  (let [course (cl/find-course courses course-id)]
     (respond :fetched-data
              :type :course
              :course course)))
 
 (defn fetch-courses [{course-ids :course-ids}]
-  (let [courses (map #(co/find-course fake-data/courses %1) course-ids)]
+  (let [courses (map #(cl/find-course courses %1) course-ids)]
     (respond :fetched-data
              :type :courses
              :courses courses)))

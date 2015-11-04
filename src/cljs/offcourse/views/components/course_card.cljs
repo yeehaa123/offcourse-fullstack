@@ -15,8 +15,7 @@
         sections [[:map (Map)]
                   [:title (Title goal)]
                   [:meta (Meta :curator curator
-                               :learners 123
-                               :forks 23)]
+                               :learners 123)]
                   [:tags (Tags tags)]
                   [:list (TodoList course-id checkpoints handlers)]]]
     (d/section {:key course-id

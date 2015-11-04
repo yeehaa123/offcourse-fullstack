@@ -1,5 +1,5 @@
 (ns offcourse.models.checkpoint
-  (:require [offcourse.models.fake-data :as fake-data]))
+  (:require [offcourse.fake-data.index :as fake-data]))
 
 (defrecord Checkpoint [checkpoint-id task url completed tags])
 

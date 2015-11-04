@@ -19,6 +19,7 @@
                  [quiescent "0.2.0-RC2"]
                  [secretary "1.2.3"]
                  [env/faker "0.4.0"]
+                 [org.clojure/core.match "0.3.0-alpha4"]
                  [devcards "0.2.0-8"]]
 
   :plugins [[lein-environ "1.0.1"]

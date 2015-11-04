@@ -1,4 +1,4 @@
-(ns offcourse.models.buzzwords)
+(ns offcourse.fake-data.buzzwords)
 
 (def buzzwords ["4G"
                "Aggregator"

@@ -1,8 +1,7 @@
 (ns offcourse.datastore.index
   (:require-macros [cljs.core.async.macros :refer [go go-loop]])
   (:require        [cljs.core.async :refer [>! chan tap merge mult <!]]
-                   [offcourse.datastore.store :as store]
-                   [offcourse.api.index :as api]))
+                   [offcourse.datastore.store :as store]))
 
 (def channel (chan))
 (def out (mult channel))

@@ -7,8 +7,9 @@
             [offcourse.logger.index :as logger]
             [offcourse.user.index :as user]
             [offcourse.routes :as router]
-            [offcourse.api.index :as courses-api]
+            [offcourse.courses-api.index :as courses-api]
             [offcourse.resources-api.index :as resources-api]
+            [offcourse.tags-api.index :as tags-api]
             [offcourse.history.service :as history]))
 
 (defn init! []
@@ -33,6 +34,8 @@
   (courses-api/init    [datastore/out])
 
   (resources-api/init  [datastore/out])
+
+  (tags-api/init       [datastore/out])
 
   (history/init        [appstate/out])
 
