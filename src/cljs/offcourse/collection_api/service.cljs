@@ -16,10 +16,8 @@
 (defn fetch-user-collection [user-name]
   (->> fake-data/courses
        (reduce (fn [acc [id course]]
-                 (if (= user-name (:curator course))
-                   (conj acc id)
-                   acc)
-                 )[])))
+                 (if (= user-name (:curator course)) (conj acc id) acc)
+                 ) #{})))
 
 (defn fetch-collection [payload]
   (match [payload]
