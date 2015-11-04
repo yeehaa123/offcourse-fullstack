@@ -175,14 +175,9 @@ textarea {
   user-select: none;
   transition: background-color 0.4s ease; }
 
-.logo .title::after {
-  content: "_"; }
-
-.logo:hover .title::after {
-  content: none; }
-
-.logo:hover .title::before {
-  content: "_"; }
+.logo:hover .textbar {
+  background-color: #FFFFFF;
+  color: #000000; }
 
 .sidebar {
   display: flex;
@@ -264,6 +259,10 @@ textarea {
 .btn.btn-inverse {
   background: #000000;
   color: #FFFFFF; }
+
+.btn.btn-browse:hover {
+  background: #FFFFFF;
+  color: #000000; }
 
 .table {
   font-size: 13px;

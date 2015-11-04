@@ -47,3 +47,8 @@
   background: $baseColor;
   color: $inverseColor;
 }
+
+.btn.btn-browse:hover {
+    background: $inverseColor;
+    color: $baseColor;
+}
