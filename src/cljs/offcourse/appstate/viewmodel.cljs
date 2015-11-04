@@ -8,20 +8,24 @@
 
 (defn new-checkpoint [course checkpoint-id & resource]
   (map->CheckpointViewmodel {:level :checkpoint
-                             :course course
-                             :checkpoint (co/find-checkpoint course checkpoint-id)
+                             :course (assoc course :course-id (:id course))
+                             :checkpoint (assoc (co/find-checkpoint course checkpoint-id)
+                                                :checkpoint-id checkpoint-id)
                              :resource (or (first resource) :unknown)}))
 
 (defn new-course [course resources]
   (map->CheckpointViewmodel {:level :course
-                             :course course
+                             :course (assoc course :course-id (:id course))
                              :resources resources}))
 
 (defn new-collection [collection-name collection]
+  (let [collection (->> collection
+                        (map (fn [[id course]] [id (assoc course :course-id id)]))
+                        (into {}))]
   (map->CollectionViewmodel {:level :collection
                              :collection collection
                              :collection-name collection-name
-                             :collection-names [:featured :new :popular]}))
+                             :collection-names [:featured :new :popular]})))
 
 (defn highlight-course [viewmodel checkpoint-id highlight]
   (update-in viewmodel [:course]

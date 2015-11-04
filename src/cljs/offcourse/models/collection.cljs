@@ -2,7 +2,7 @@
   (:require [offcourse.models.course :as co]))
 
 (defn update-course [collection course]
-  (assoc-in collection [(:id course)] course))
+  (assoc-in collection [(:course-id course)] course))
 
 (defn update-courses [collection courses]
   (reduce update-course collection courses))

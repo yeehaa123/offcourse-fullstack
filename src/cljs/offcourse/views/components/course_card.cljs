@@ -5,17 +5,17 @@
              :refer [Map Title Meta Tags CardSection]]
             [offcourse.helpers.css :as css]))
 
-(defn CourseCard [{:keys [highlighted checkpoints goal curator id]}
-            {:keys [go-to-course] :as handlers}]
+(defn CourseCard [{:keys [highlighted checkpoints goal curator course-id] :as course}
+                  {:keys [go-to-course] :as handlers}]
   (let [highlighted (if highlighted "highlighted" "not-highlighted")
         sections [[:map (Map)]
                   [:title (Title goal)]
                   [:meta (Meta :curator curator
                                :learners 123
                                :forks 23)]
-                  [:list (TodoList id checkpoints handlers)]
+                  [:list (TodoList course-id checkpoints handlers)]
                   [:tags (Tags ["React" "Angular" "FrontEnd"])]]]
-    (d/section {:key id
+    (d/section {:key course-id
                 :className (css/classes "card" highlighted)
-                :onClick #(go-to-course id %1)}
+                :onClick #(go-to-course course-id %1)}
                (map-indexed #(CardSection %1 %2) sections))))

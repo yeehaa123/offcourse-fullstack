@@ -10,5 +10,5 @@
 
 (def courses
   (->> (take 100 (iterate inc 1))
-       (map-indexed (fn [id _] [id (assoc (co/generate-fake-course) :id id)]))
+       (map-indexed (fn [id _] [id (assoc (co/generate-fake-course) :course-id id)]))
        (into {})))

@@ -24,10 +24,10 @@
                   :collection-name collection-name}]
     :course     [{:level level
                   :title (:goal course)
-                  :course-id (:id course)}]
+                  :course-id (:course-id course)}]
     :checkpoint [{:level :course
                   :title (:goal course)
-                  :course-id (:id course)
+                  :course-id (:course-id course)
                   :link true}
                  {:level level
                   :title (:task checkpoint)

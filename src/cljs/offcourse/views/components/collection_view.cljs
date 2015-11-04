@@ -4,6 +4,6 @@
             [offcourse.helpers.css :as css]))
 
 (defn CollectionView [{:keys [level course collection]} handlers]
-  (let [collection (sort-by :id (vals collection))]
+  (let [collection (sort-by :course-id (vals collection))]
     (d/section {:className "cards"}
                (map #(CourseCard %1 handlers) collection))))

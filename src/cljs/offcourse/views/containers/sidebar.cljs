@@ -16,4 +16,4 @@
              (case level
                :collection (Collections-Navigation collection-names handlers)
                :course (CourseCard course handlers)
-               :checkpoint (CheckpointCard checkpoint (assoc course :course-id (:id course)) resource handlers true))))
+               :checkpoint (CheckpointCard checkpoint course resource handlers true))))

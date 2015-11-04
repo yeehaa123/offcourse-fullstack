@@ -75,7 +75,7 @@
         missing-urls (set/difference course-urls store-urls)]
     (if course
       (if (empty? missing-urls)
-        (helpers/respond-checked :course {:course-id (:id course)})
+        (helpers/respond-checked :course {:course-id (:course-id course)})
         (helpers/respond-not-found :resources {:urls missing-urls}))
       (helpers/respond-not-found :course {:course-id course-id}))))
 
