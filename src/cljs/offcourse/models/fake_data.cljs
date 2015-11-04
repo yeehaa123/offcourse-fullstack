@@ -2,7 +2,7 @@
   (:require [clojure.string :as str]
             [faker.lorem :as lorem]))
 
-(def checkpoint {:id :new
+(def checkpoint {:checkpoint-id :new
                  :task "Do Something Different"
                  :url "bla.com"
                  :completed false})

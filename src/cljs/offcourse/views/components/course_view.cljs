@@ -7,7 +7,7 @@
   (let [{:keys [course-id goal]} course
         collection (vals (:checkpoints course))]
     (d/section {:className "cards"}
-               (map #(CheckpointCard (assoc %1 :checkpoint-id (:id %1))
+               (map #(CheckpointCard %1
                                      course
                                      (get resources (:url %1))
                                      handlers)

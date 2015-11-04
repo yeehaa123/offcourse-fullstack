@@ -35,7 +35,7 @@
 (defn add-checkpoint [appstate course]
   (let [checkpoint (cp/new)
         course (co/add-temp-checkpoint course checkpoint)]
-    (set-viewmodel appstate (vm/new-checkpoint course (:id checkpoint)))))
+    (set-viewmodel appstate (vm/new-checkpoint course (:checkpoint-id checkpoint)))))
 
 (defn refresh-checkpoint [{:keys [level] :as appstate} course resources]
   (let  [checkpoint-id (:checkpoint-id level)
