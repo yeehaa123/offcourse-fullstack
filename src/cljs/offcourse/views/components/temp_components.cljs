@@ -20,8 +20,11 @@
        (str/capitalize (str item))))
 
 (defn Meta [& data]
-  (let [fields (apply sorted-map data)]
-    (d/div {}
+  (let [args (apply sorted-map data)
+        {:keys [go-to-user-collection]} (:handlers args)
+        fields (dissoc args :handlers)
+        user (:curator fields)]
+    (d/div {:onClick #(go-to-user-collection user %1)}
            (map-indexed #(MetaField %1 %2) fields))))
 
 (defn Tags [tags]

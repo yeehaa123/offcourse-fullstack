@@ -10,18 +10,23 @@
         collection-ids (collection-name collections)]
     (respond :fetched-data
              :type :collection
-             :collection-name collection-name
+             :collection-id collection-name
              :collection-ids collection-ids)))
 
-(defn fetch-user-collection [user-name]
-  (->> fake-data/courses
-       (reduce (fn [acc [id course]]
-                 (if (= user-name (:curator course)) (conj acc id) acc)
-                 ) #{})))
+(defn fetch-user-collection [{:keys [user-name]}]
+  (let [collection-ids (->> fake-data/courses
+                            (reduce (fn [acc [id course]]
+                                      (if (= (name user-name) (:curator course)) (conj acc id) acc)
+                                      ) #{}))]
+    (respond :fetched-data
+             :type :collection
+             :collection-id user-name
+             :collection-ids collection-ids)))
 
 (defn fetch-collection [payload]
   (match [payload]
-         [{:collection-name _}] (fetch-named-collection payload)))
+         [{:collection-name _}] (fetch-named-collection payload)
+         [{:user-name _}] (fetch-user-collection payload)))
 
 (defn fetch [{:keys [type] :as payload}]
   (case type

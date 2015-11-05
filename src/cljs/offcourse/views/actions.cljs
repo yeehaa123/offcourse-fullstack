@@ -29,6 +29,13 @@
                                :level :collection
                                :collection-name collection-name))
 
+     :go-to-user-collection  (fn [user-name event]
+                               (.stopPropagation event)
+                               (println user-name)
+                               (>>! :requested-level
+                                    :level :collection
+                                    :collection-name (str "users/" user-name)))
+
      :go-to-course      (fn [course-id event]
                           (.stopPropagation event)
                           (>>! :requested-level

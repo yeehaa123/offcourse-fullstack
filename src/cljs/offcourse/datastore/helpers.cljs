@@ -1,5 +1,6 @@
 (ns offcourse.datastore.helpers
-  (:require [offcourse.models.action :refer [respond]]))
+  (:require [offcourse.models.action :refer [respond]]
+            [cljs.core.match :refer-macros [match]]))
 
 (defn init [store]
   (defn respond-updated []
@@ -11,33 +12,45 @@
              :course-id course-id
              :store @store))
 
-  (defn respond-not-found [type {:keys [course-id course-ids collection-name urls]}]
-    (case type
-      :collection (respond :not-found-data
-                           :type type
-                           :collection-name collection-name
-                           :store @store)
-      :courses    (respond :not-found-data
-                           :type type
-                           :course-ids course-ids
-                           :store @store)
-      :course     (respond :not-found-data
-                           :type type
-                           :course-id course-id
-                           :store @store)
-      :resources  (respond :not-found-data
-                           :type type
-                           :urls urls)))
+  (defn respond-not-found [type {:keys [course-id course-ids user-name collection-name urls] :as payload}]
+    (let [[collection-key collection-id] (match [payload]
+                                                [{:collection-name _}] [:collection-name collection-name]
+                                                [{:user-name _}] [:user-name user-name]
+                                                [_] [nil nil])]
 
-  (defn respond-checked [type {:keys [course-id collection-name]}]
-    (case type
-      :collection (respond :checked-datastore
-                           :type type
-                           :collection-name collection-name
-                           :store @store)
-      :course     (respond :checked-datastore
-                           :type type
-                           :course-id course-id
-                           :store @store)))
+
+      (case type
+        :collection (respond :not-found-data
+                             :type type
+                             collection-key collection-id
+                             :store @store)
+        :courses    (respond :not-found-data
+                             :type type
+                             :course-ids course-ids
+                             :store @store)
+        :course     (respond :not-found-data
+                             :type type
+                             :course-id course-id
+                             :store @store)
+        :resources  (respond :not-found-data
+                             :type type
+                             :urls urls))))
+
+  (defn respond-checked [type {:keys [course-id user-name collection-name] :as payload}]
+    (let [[collection-key collection-id] (match [payload]
+                                                [{:collection-name _}] [:collection-name collection-name]
+                                                [{:user-name _}] [:user-name user-name]
+                                                [_] [nil nil])]
+      (case type
+        :collection (respond :checked-datastore
+                             :type type
+                             collection-key collection-id
+                             :user-name user-name
+                             :store @store)
+        :course     (respond :checked-datastore
+                             :type type
+                             :course-id course-id
+                             :store @store))))
+
   (defn respond-ignore []
     respond :ignore))

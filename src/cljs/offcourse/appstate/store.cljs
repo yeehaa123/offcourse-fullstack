@@ -21,15 +21,15 @@
       (respond :not-found-resource))))
 
 (defn- refresh-collection [{:keys [collections courses]}]
-  (let [{:keys [collection-name]} (:level @appstate)
-        course-ids (collection-name collections)
+  (let [{:keys [collection-name user-name]} (:level @appstate)
+        collection-id (or collection-name user-name)
+        course-ids (collection-id collections)
         collection (cl/find-courses courses course-ids)]
     (update-appstate! #(model/refresh-collection %1 collection))))
 
 (defn- refresh-course [{:keys [courses resources]}]
   (let [{:keys [course-id checkpoint-id]} (:level @appstate)
         course (get courses course-id)
-        course (co/augment-checkpoints course resources)
         resources (or resources {})]
     (if course
       (update-appstate! #(model/refresh-course %1 course resources))

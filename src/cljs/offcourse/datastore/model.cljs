@@ -10,8 +10,8 @@
 (defn update-resources [store resources]
   (update-in store [:resources] #(into %1 resources)))
 
-(defn update-collections [store collection-name collection-ids]
-  (assoc-in store [:collections collection-name] collection-ids))
+(defn update-collections [store collection-id collection-ids]
+  (assoc-in store [:collections collection-id] collection-ids))
 
 (defn update-cache [store fn]
   (update-in store [:courses] fn))

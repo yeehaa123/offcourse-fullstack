@@ -37,11 +37,5 @@
 (defn toggle-done [course checkpoint-id]
   (update-in course [:checkpoints checkpoint-id] #(cp/toggle-done %1)))
 
-(defn augment-checkpoint [course checkpoint-id resource]
-  (update-in course [:checkpoints checkpoint-id] #(cp/add-resource %1 resource)))
-
-(defn augment-checkpoints [course resources]
-  (update-in course [:checkpoints] #(into {} (cp/add-resources %1 resources))))
-
 (defn highlight [course checkpoint-id highlight]
   (update-in course [:checkpoints checkpoint-id :highlighted] (fn [] highlight)))

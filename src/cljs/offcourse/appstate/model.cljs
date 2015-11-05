@@ -49,7 +49,7 @@
     (refresh-checkpoint appstate course resources)))
 
 (defn refresh-collection [{:keys [level] :as appstate} collection]
-  (let [collection-name (:collection-name level)]
+  (let [collection-name (or (:collection-name level) (:user-name level))]
     (set-viewmodel appstate (vm/new-collection collection-name collection))))
 
 (defn refresh-course [appstate course resources]

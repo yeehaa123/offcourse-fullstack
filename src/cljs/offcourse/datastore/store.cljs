@@ -2,6 +2,7 @@
   (:require [offcourse.datastore.model :as model]
             [offcourse.models.course :as c]
             [clojure.set :as set]
+            [cljs.core.match :refer-macros [match]]
             [offcourse.models.action :refer [respond]]
             [offcourse.datastore.helpers :as helpers]))
 
@@ -25,13 +26,13 @@
 (defn update-resources [{:keys [resources]}]
   (update-and-respond! #(model/update-resources %1 resources)))
 
-(defn- update-collections [{:keys [collection-name collection-ids]}]
+(defn- update-collections [{:keys [collection-id collection-ids]}]
   (let [courses-ids (into #{} (keys (:courses @store)))
         missing-ids (set/difference collection-ids courses-ids)]
     (if (empty? missing-ids)
-      (update-and-respond! #(model/update-collections %1 collection-name collection-ids))
+      (update-and-respond! #(model/update-collections %1 collection-id collection-ids))
       (do
-        (update-datastore! #(model/update-collections %1 collection-name collection-ids))
+        (update-datastore! #(model/update-collections %1 collection-id collection-ids))
         (helpers/respond-not-found :courses {:course-ids missing-ids})))))
 
 (defn- update-course [{:keys [course]}]
@@ -43,9 +44,6 @@
 (defn- toggle-done [{:keys [course-id checkpoint-id]}]
   (update-and-respond! #(model/toggle-done %1 course-id checkpoint-id)))
 
-(defn- augment-checkpoint [{:keys [course-id checkpoint-id resource]}]
-  (update-and-respond! #(model/augment-checkpoint %1 course-id checkpoint-id resource)))
-
 (defn- add-checkpoint [{:keys [course-id checkpoint]}]
   (let [course (model/find-course @store course-id)]
     (add-and-respond! #(model/add-checkpoint %1 course-id checkpoint) course-id)))
@@ -55,11 +53,14 @@
     (add-checkpoint payload)
     (helpers/respond-ignore)))
 
-(defn- get-collection [{:keys [collection-name]}]
-  (let [collections (:collections @store)]
-    (if (collection-name collections)
-      (helpers/respond-checked :collection {:collection-name collection-name})
-      (helpers/respond-not-found :collection {:collection-name collection-name}))))
+(defn- get-collection [{:keys [collection-name user-name] :as payload}]
+  (let [collections (:collections @store)
+        [collection-key collection-id] (match [payload]
+                             [{:collection-name _}] [:collection-name collection-name]
+                             [{:user-name _}] [:user-name user-name])]
+    (if (collection-key collections)
+      (helpers/respond-checked :collection {collection-key collection-id})
+      (helpers/respond-not-found :collection {collection-key collection-id}))))
 
 (defn- get-course [{:keys [course-id]}]
   (let [course (model/find-course @store course-id)]

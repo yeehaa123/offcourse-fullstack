@@ -13,39 +13,39 @@
 (def route-names {:home       "/"
                   :checkpoint "/courses/:course-id/checkpoints/:checkpoint-id"
                   :course     "/courses/:course-id"
-                  :collection "/:collection-name"})
+                  :collection "/:collection-name"
+                  :user-collection "/users/:user-name"})
 
-(def arguments {:checkpoint [:course-id :checkpoint-id]
-                :collection [:collection-name]
-                :course     [:course-id]})
-
-(defn update-vals [vals f map]
-  (reduce #(update-in % [%2] f) map vals))
-
-(defn convertRouteParams [id]
+(defn to-id [id]
   (cond
     (= "new" id) (keyword id)
     (= nil id) nil
     :default (js/parseInt id)))
 
 (defn response [type & args]
-  (let [payload (->> args
-                     (zipmap (type arguments))
-                     (update-vals [:course-id :checkpoint-id] convertRouteParams)
-                     (into {:type type}))]
+  (let [payload (assoc (apply hash-map args) :type type)]
     (>>! channel :requested-resource
          :payload payload)))
 
 (defn init []
 
   (defroute (:checkpoint route-names) {course-id :course-id checkpoint-id :checkpoint-id}
-    (response :checkpoint course-id checkpoint-id))
+    (response :checkpoint
+              :course-id (to-id course-id)
+              :checkpoint-id (to-id checkpoint-id)))
 
   (defroute (:course route-names) {course-id :course-id}
-    (response :course course-id))
+    (response :course
+              :course-id (to-id course-id)))
 
   (defroute (:collection route-names) {collection-name :collection-name}
-    (response :collection (keyword collection-name)))
+    (response :collection
+              :collection-name (keyword collection-name)))
+
+  (defroute (:user-collection route-names) {user-name :user-name}
+    (response :collection
+              :user-name (keyword user-name)))
 
   (defroute (:home route-names) []
-    (response :collection :featured)))
+    (response :collection
+              :collection-name :featured)))

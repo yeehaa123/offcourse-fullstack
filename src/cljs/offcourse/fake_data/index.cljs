@@ -48,9 +48,10 @@
 
 (defn- index-checkpoint [index {:keys [task completed]}]
   [index {:checkpoint-id index
-           :task task
-           :url (rand-nth urls)
-           :completed completed}])
+          :task task
+          :url (rand-nth urls)
+          :completed completed
+          :tags (set-of-buzzwords 0 5)}])
 
 (defn- index-checkpoints [checkpoints]
   (->> checkpoints
@@ -64,6 +65,6 @@
       (update-in [:checkpoints] index-checkpoints)))
 
 (def courses
-  (->> (take 20 (iterate inc 1))
+  (->> (take 30 (iterate inc 1))
        (map-indexed (fn [id _] [id (generate-course id (generate-user))]))
        (into {})))
