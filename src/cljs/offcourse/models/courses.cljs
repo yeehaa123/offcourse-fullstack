@@ -10,9 +10,6 @@
 (defn add-checkpoint [collection course-id checkpoint]
   (update-in collection [course-id] #(co/add-checkpoint %1 checkpoint)))
 
-(defn augment-checkpoint [collection course-id checkpoint-id resource]
-  (update-in collection [course-id] #(co/augment-checkpoint %1 checkpoint-id resource)))
-
 (defn toggle-done [collection course-id checkpoint-id]
   (update-in collection [course-id] #(co/toggle-done %1 checkpoint-id)))
 
@@ -26,5 +23,3 @@
   (->> course-ids
        (map (fn [id] [id (get collection id)]))
        (into {})))
-
-(defn midd)

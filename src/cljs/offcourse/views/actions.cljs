@@ -48,6 +48,7 @@
                                :course-id course-id))
 
      :go-to-checkpoint  (fn [course-id checkpoint-id event]
+                          (println event)
                           (.stopPropagation event)
                           (>>! :requested-level
                                :level :checkpoint

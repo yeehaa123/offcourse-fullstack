@@ -8,9 +8,8 @@
 
 (defn new-checkpoint [course checkpoint-id & resource]
   (map->CheckpointViewmodel {:level :checkpoint
-                             :course (assoc course :course-id (:id course))
-                             :checkpoint (assoc (co/find-checkpoint course checkpoint-id)
-                                                :checkpoint-id checkpoint-id)
+                             :course course
+                             :checkpoint (co/find-checkpoint course checkpoint-id)
                              :resource (or (first resource) :unknown)}))
 
 (defn new-course [course resources]
