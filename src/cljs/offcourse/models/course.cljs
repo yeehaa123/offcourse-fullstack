@@ -39,3 +39,10 @@
 
 (defn highlight [course checkpoint-id highlight]
   (update-in course [:checkpoints checkpoint-id :highlighted] (fn [] highlight)))
+
+(defn get-tags [{:keys [checkpoints]}]
+  (reduce (fn [tag-acc [_ {:keys [tags]}]] (into tag-acc tags)) #{} checkpoints))
+
+(defn has-tag? [course tag]
+  (let [tags (get-tags course)]
+    (contains? tags tag)))

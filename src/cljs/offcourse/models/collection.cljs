@@ -1,12 +1,14 @@
-(ns offcourse.models.collection)
+(ns offcourse.models.collection
+  (:require [offcourse.models.course :as co]))
 
 (defrecord Collection [collection-type collection-name collection-ids])
 
 (defn find-user-collection [courses user-name]
-  (let [collection-ids (->> courses
-                            (reduce (fn [acc [id course]]
-                                      (if (= (name user-name) (:curator course)) (conj acc id) acc)
-                                      ) #{}))]
+  (let [collection-ids (reduce (fn [acc [id course]]
+                                 (if (= (name user-name) (:curator course))
+                                   (conj acc id)
+                                   acc))
+                               #{} courses)]
     (Collection. :user-collection user-name collection-ids)))
 
 (defn named-collection [collection-name]
@@ -15,3 +17,10 @@
                      :new (into #{} (take 4 (iterate inc 4)))}
         collection-ids (collection-name collections)]
     (Collection. :named-collection collection-name collection-ids)))
+
+(defn find-tag-collection [courses tag]
+  (let [collection-ids (reduce (fn [acc [id course]]
+                                 (if (co/has-tag? course (name tag))
+                                   (conj acc id)
+                                   acc)) #{} courses)]
+    (Collection. :tag-collection tag collection-ids)))

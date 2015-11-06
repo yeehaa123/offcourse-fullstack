@@ -5,22 +5,19 @@
             [offcourse.models.action :refer [respond]]))
 
 (defn fetch-named-collection [collection-name]
-  (let [{:keys [collection-ids] :as collection} (cl/named-collection collection-name)]
-    (respond :fetched-data
-             :type :collection
-             :collection collection)))
-
-(defn fetch-user-collection [collection-name]
-  (let [{:keys [collection-ids] :as collection} (cl/find-user-collection fake-data/courses collection-name)]
-    (respond :fetched-data
-             :type :collection
-             :collection collection)))
-
-(defn fetch-tags-collection [collection-name]
-  (println collection-name)
   (respond :fetched-data
            :type :collection
-           :collection {}))
+           :collection (cl/named-collection collection-name)))
+
+(defn fetch-user-collection [collection-name]
+  (respond :fetched-data
+           :type :collection
+           :collection (cl/find-user-collection fake-data/courses collection-name)))
+
+(defn fetch-tags-collection [collection-name]
+  (respond :fetched-data
+           :type :collection
+           :collection (cl/find-tag-collection fake-data/courses collection-name)))
 
 (defn fetch-collection [{:keys [collection-type collection-name]}]
   (case collection-type

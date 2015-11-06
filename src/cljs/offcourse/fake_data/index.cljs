@@ -39,7 +39,11 @@
      :text text}))
 
 (defn set-of-buzzwords [min max]
-  (into #{} (take (rand-int-between 0 5) (shuffle buzzwords))))
+  (->> buzzwords
+       shuffle
+       (take (rand-int-between 0 5))
+       (map #(str/lower-case %1))
+       (into #{})))
 
 (def course (rand-nth raw-courses))
 
@@ -68,12 +72,6 @@
   (->> (take 30 (iterate inc 1))
        (map-indexed (fn [id _] [id (generate-course id (generate-user))]))
        (into {})))
-
-(defn user-collection [user-name]
-  (->> courses
-       (reduce (fn [acc [id course]]
-                 (if (= (name user-name) (:curator course)) (conj acc id) acc)
-                 ) #{})))
 
 (defn named-collection [collection-name]
   (let [collections {:featured (into #{} (take 10 (iterate inc 1)))
