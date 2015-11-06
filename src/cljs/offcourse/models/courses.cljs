@@ -1,38 +1,30 @@
-(ns offcourse.models.courses)
+(ns offcourse.models.courses
+  (:require [offcourse.models.course :as co]))
 
-(def courses [{:goal "Become a Frontend Ninja"
-               :checkpoints [{:task "Install React"
-                              :completed true}
-                             {:task "Build a Component"
-                              :completed false}
-                             {:task "Create an App"
-                              :completed false}]}
-              {:goal "Improve your Backend Chops"
-               :checkpoints [{:task "Install Node"
-                              :completed true}
-                             {:task "Set up a Route"
-                              :completed false}
-                             {:task "Add some Middleware"
-                              :completed false}
-                             {:task "Build an API"
-                              :completed false}]}
-              {:goal "Get More Street Cred"
-               :checkpoints [{:task "Talk Dirty with Reika"
-                              :completed false}
-                             {:task "Pair with Greg"
-                              :completed false}
-                             {:task "Scheme with Charlotte"
-                              :completed false}
-                             {:task "Brawl with Yeehaa"
-                              :completed false}]}
-              {:goal "Make DevOps Your Thing"
-               :checkpoints [{:task "Tame the Command Line"
-                              :completed false}
-                             {:task "Just Git It"
-                              :completed false}
-                             {:task "Try a PAAS"
-                              :completed false}
-                             {:task "Make Containers"
-                              :completed false}
-                             {:task "Do it All"
-                              :completed false}]}])
+(defn update-course [collection course]
+  (assoc-in collection [(:course-id course)] course))
+
+(defn update-courses [collection courses]
+  (reduce update-course collection courses))
+
+(defn add-checkpoint [collection course-id checkpoint]
+  (update-in collection [course-id] #(co/add-checkpoint %1 checkpoint)))
+
+(defn augment-checkpoint [collection course-id checkpoint-id resource]
+  (update-in collection [course-id] #(co/augment-checkpoint %1 checkpoint-id resource)))
+
+(defn toggle-done [collection course-id checkpoint-id]
+  (update-in collection [course-id] #(co/toggle-done %1 checkpoint-id)))
+
+(defn find-course [collection course-id]
+  (get collection course-id))
+
+(defn highlight [collection course-id checkpoint-id highlight]
+  (update-in collection [course-id :checkpoints checkpoint-id :highlighted] (fn [] highlight)))
+
+(defn find-courses [collection course-ids]
+  (->> course-ids
+       (map (fn [id] [id (get collection id)]))
+       (into {})))
+
+(defn midd)

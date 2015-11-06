@@ -26,13 +26,12 @@
 (defn update-resources [{:keys [resources]}]
   (update-and-respond! #(model/update-resources %1 resources)))
 
-(defn- update-collections [{:keys [collection-id collection-ids]}]
-  (let [courses-ids (into #{} (keys (:courses @store)))
-        missing-ids (set/difference collection-ids courses-ids)]
+(defn- update-collections [{:keys [collection-ids] :as collection}]
+  (let [missing-ids (model/missing-ids store collection-ids)]
     (if (empty? missing-ids)
-      (update-and-respond! #(model/update-collections %1 collection-id collection-ids))
+      (update-and-respond! #(model/update-collections %1 collection))
       (do
-        (update-datastore! #(model/update-collections %1 collection-id collection-ids))
+        (update-datastore! #(model/update-collections %1 collection))
         (helpers/respond-not-found :courses {:course-ids missing-ids})))))
 
 (defn- update-course [{:keys [course]}]
@@ -53,14 +52,13 @@
     (add-checkpoint payload)
     (helpers/respond-ignore)))
 
-(defn- get-collection [{:keys [collection-name user-name] :as payload}]
-  (let [collections (:collections @store)
-        [collection-key collection-id] (match [payload]
-                             [{:collection-name _}] [:collection-name collection-name]
-                             [{:user-name _}] [:user-name user-name])]
-    (if (collection-key collections)
-      (helpers/respond-checked :collection {collection-key collection-id})
-      (helpers/respond-not-found :collection {collection-key collection-id}))))
+(defn- get-collection [{:keys [collection-type collection-name] :as payload}]
+  (let [collections (:collections @store)]
+    (if (get-in collections [collection-type collection-name])
+      (helpers/respond-checked :collection {:collection-type collection-type
+                                            :collection-name collection-name})
+      (helpers/respond-not-found :collection {:collection-type collection-type
+                                              :collection-name collection-name}))))
 
 (defn- get-course [{:keys [course-id]}]
   (let [course (model/find-course @store course-id)]
@@ -80,7 +78,6 @@
         (helpers/respond-not-found :resources {:urls missing-urls}))
       (helpers/respond-not-found :course {:course-id course-id}))))
 
-
 ;; Public API
 
 (defn commit-data [{type :type :as payload}]
@@ -93,9 +90,9 @@
     :course     (get-course payload)
     :checkpoint (get-course payload)))
 
-(defn update-datastore [{:keys [type] :as payload}]
+(defn update-datastore [{:keys [type collection] :as payload}]
   (case type
-    :collection (update-collections payload)
+    :collection (update-collections collection)
     :course     (update-course payload)
     :courses    (update-courses payload)
     :resources  (update-resources payload)))

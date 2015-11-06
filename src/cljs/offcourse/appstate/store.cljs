@@ -1,7 +1,7 @@
 (ns offcourse.appstate.store
   (:require [offcourse.appstate.model :as model]
             [offcourse.models.course :as co]
-            [offcourse.models.collection :as cl]
+            [offcourse.models.courses :as cs]
             [offcourse.models.action :refer [respond]]))
 
 (def appstate (atom (model/new-appstate)))
@@ -21,10 +21,9 @@
       (respond :not-found-resource))))
 
 (defn- refresh-collection [{:keys [collections courses]}]
-  (let [{:keys [collection-name user-name]} (:level @appstate)
-        collection-id (or collection-name user-name)
-        course-ids (collection-id collections)
-        collection (cl/find-courses courses course-ids)]
+  (let [{:keys [collection-type collection-name]} (:level @appstate)
+        course-ids (get-in collections [collection-type collection-name])
+        collection (cs/find-courses courses course-ids)]
     (update-appstate! #(model/refresh-collection %1 collection))))
 
 (defn- refresh-course [{:keys [courses resources]}]

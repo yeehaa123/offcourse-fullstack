@@ -14,7 +14,8 @@
                   :checkpoint "/courses/:course-id/checkpoints/:checkpoint-id"
                   :course     "/courses/:course-id"
                   :collection "/:collection-name"
-                  :user-collection "/users/:user-name"})
+                  :user-collection "/users/:user-name"
+                  :tag-collection "/tags/:tag"})
 
 (defn to-id [id]
   (cond
@@ -40,11 +41,18 @@
 
   (defroute (:collection route-names) {collection-name :collection-name}
     (response :collection
+              :collection-type :named-collection
               :collection-name (keyword collection-name)))
 
   (defroute (:user-collection route-names) {user-name :user-name}
     (response :collection
-              :user-name (keyword user-name)))
+              :collection-type :user-collection
+              :collection-name (keyword user-name)))
+
+  (defroute (:tag-collection route-names) {tag :tag}
+    (response :collection
+              :collection-type :tag-collection
+              :collection-name (keyword tag)))
 
   (defroute (:home route-names) []
     (response :collection

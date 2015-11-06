@@ -31,10 +31,15 @@
 
      :go-to-user-collection  (fn [user-name event]
                                (.stopPropagation event)
-                               (println user-name)
                                (>>! :requested-level
                                     :level :collection
                                     :collection-name (str "users/" user-name)))
+
+     :go-to-tag-collection      (fn [tag event]
+                                  (.stopPropagation event)
+                                  (>>! :requested-level
+                                       :level :collection
+                                       :collection-name (str "tags/" tag)))
 
      :go-to-course      (fn [course-id event]
                           (.stopPropagation event)
@@ -48,6 +53,7 @@
                                :level :checkpoint
                                :course-id course-id
                                :checkpoint-id checkpoint-id))
+
 
      :commit-checkpoint (fn [course-id checkpoint-id]
                           (>>! :requested-commit

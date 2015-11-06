@@ -17,7 +17,7 @@
                   [:meta (Meta :curator curator
                                :learners 123
                                :handlers handlers)]
-                  [:tags (Tags tags)]
+                  [:tags (Tags tags handlers)]
                   [:list (TodoList course-id checkpoints handlers)]]]
     (d/section {:key course-id
                 :className (css/classes "card" highlighted)

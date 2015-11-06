@@ -21,7 +21,7 @@
                                  :goal goal)
                            (Meta :title title
                                  :url url))]
-                  [:tags (Tags tags)]]
+                  [:tags (Tags tags handlers)]]
          extra    [:course-button (GoToButton course-id handlers)]
          sections (if in-sidebar? (conj basic extra) basic)]
      (d/section {:key checkpoint-id

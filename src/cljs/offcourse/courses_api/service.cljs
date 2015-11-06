@@ -1,18 +1,18 @@
 (ns offcourse.courses-api.service
   (:require [offcourse.fake-data.index :as fake-data]
-            [offcourse.models.collection :as cl]
+            [offcourse.models.courses :as cs]
             [offcourse.models.course :as co]
             [offcourse.models.action :refer [respond]]))
 
 
 (defn fetch-course [{course-id :course-id :as payload}]
-  (let [course (cl/find-course fake-data/courses course-id)]
+  (let [course (cs/find-course fake-data/courses course-id)]
     (respond :fetched-data
              :type :course
              :course course)))
 
 (defn fetch-courses [{course-ids :course-ids}]
-  (let [courses (map #(cl/find-course fake-data/courses %1) course-ids)]
+  (let [courses (map #(cs/find-course fake-data/courses %1) course-ids)]
     (respond :fetched-data
              :type :courses
              :courses courses)))

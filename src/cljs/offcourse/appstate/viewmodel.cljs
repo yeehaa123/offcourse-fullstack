@@ -1,6 +1,6 @@
 (ns offcourse.appstate.viewmodel
   (:require [offcourse.models.course :as co]
-            [offcourse.models.collection :as cl]))
+            [offcourse.models.courses :as cs]))
 
 (defrecord CheckpointViewmodel [level course checkpoint-id])
 (defrecord CourseViewmodel [level course])
@@ -30,4 +30,4 @@
 
 (defn highlight-collection [viewmodel course-id checkpoint-id highlight]
   (update-in viewmodel [:collection]
-             #(cl/highlight %1 course-id checkpoint-id highlight)))
+             #(cs/highlight %1 course-id checkpoint-id highlight)))

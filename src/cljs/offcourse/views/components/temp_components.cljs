@@ -27,10 +27,14 @@
     (d/div {:onClick #(go-to-user-collection user %1)}
            (map-indexed #(MetaField %1 %2) fields))))
 
-(defn Tags [tags]
+(defn Tag [id tag {:keys [go-to-tag-collection]}]
+  (d/span {:key id
+           :onClick #(go-to-tag-collection tag %1)
+           :className "tag"} tag))
+
+(defn Tags [tags handlers]
   (d/p {}
-       (map-indexed #(d/span {:key %1
-                              :className "tag"} %2) tags)))
+       (map-indexed #(Tag %1 %2 handlers) tags)))
 
 (defn CardSection [index [type component]]
   (d/div {:key index

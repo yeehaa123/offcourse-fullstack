@@ -1,28 +1,17 @@
-(ns offcourse.models.collection
-  (:require [offcourse.models.course :as co]))
+(ns offcourse.models.collection)
 
-(defn update-course [collection course]
-  (assoc-in collection [(:course-id course)] course))
+(defrecord Collection [collection-type collection-name collection-ids])
 
-(defn update-courses [collection courses]
-  (reduce update-course collection courses))
+(defn find-user-collection [courses user-name]
+  (let [collection-ids (->> courses
+                            (reduce (fn [acc [id course]]
+                                      (if (= (name user-name) (:curator course)) (conj acc id) acc)
+                                      ) #{}))]
+    (Collection. :user-collection user-name collection-ids)))
 
-(defn add-checkpoint [collection course-id checkpoint]
-  (update-in collection [course-id] #(co/add-checkpoint %1 checkpoint)))
-
-(defn augment-checkpoint [collection course-id checkpoint-id resource]
-  (update-in collection [course-id] #(co/augment-checkpoint %1 checkpoint-id resource)))
-
-(defn toggle-done [collection course-id checkpoint-id]
-  (update-in collection [course-id] #(co/toggle-done %1 checkpoint-id)))
-
-(defn find-course [collection course-id]
-  (get collection course-id))
-
-(defn highlight [collection course-id checkpoint-id highlight]
-  (update-in collection [course-id :checkpoints checkpoint-id :highlighted] (fn [] highlight)))
-
-(defn find-courses [collection course-ids]
-  (->> course-ids
-       (map (fn [id] [id (get collection id)]))
-       (into {})))
+(defn named-collection [collection-name]
+  (let [collections {:featured (into #{} (take 10 (iterate inc 1)))
+                        :popular (into #{} (take 5 (iterate inc 2)))
+                     :new (into #{} (take 4 (iterate inc 4)))}
+        collection-ids (collection-name collections)]
+    (Collection. :named-collection collection-name collection-ids)))

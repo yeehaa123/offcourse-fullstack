@@ -1,32 +1,32 @@
 (ns offcourse.collection-api.service
   (:require [cljs.core.match :refer-macros [match]]
             [offcourse.fake-data.index :as fake-data]
+            [offcourse.models.collection :as cl]
             [offcourse.models.action :refer [respond]]))
 
-(defn fetch-named-collection [{:keys [collection-name]}]
-  (let [collections {:featured (into #{} (take 10 (iterate inc 1)))
-                     :popular (into #{} (take 5 (iterate inc 2)))
-                     :new (into #{} (take 4 (iterate inc 4)))}
-        collection-ids (collection-name collections)]
+(defn fetch-named-collection [collection-name]
+  (let [{:keys [collection-ids] :as collection} (cl/named-collection collection-name)]
     (respond :fetched-data
              :type :collection
-             :collection-id collection-name
-             :collection-ids collection-ids)))
+             :collection collection)))
 
-(defn fetch-user-collection [{:keys [user-name]}]
-  (let [collection-ids (->> fake-data/courses
-                            (reduce (fn [acc [id course]]
-                                      (if (= (name user-name) (:curator course)) (conj acc id) acc)
-                                      ) #{}))]
+(defn fetch-user-collection [collection-name]
+  (let [{:keys [collection-ids] :as collection} (cl/find-user-collection fake-data/courses collection-name)]
     (respond :fetched-data
              :type :collection
-             :collection-id user-name
-             :collection-ids collection-ids)))
+             :collection collection)))
 
-(defn fetch-collection [payload]
-  (match [payload]
-         [{:collection-name _}] (fetch-named-collection payload)
-         [{:user-name _}] (fetch-user-collection payload)))
+(defn fetch-tags-collection [collection-name]
+  (println collection-name)
+  (respond :fetched-data
+           :type :collection
+           :collection {}))
+
+(defn fetch-collection [{:keys [collection-type collection-name]}]
+  (case collection-type
+    :user-collection (fetch-user-collection collection-name)
+    :named-collection (fetch-named-collection collection-name)
+    :tag-collection (fetch-tags-collection collection-name)))
 
 (defn fetch [{:keys [type] :as payload}]
   (case type
