@@ -48,6 +48,9 @@
     (add-checkpoint appstate course)
     (refresh-checkpoint appstate course resources)))
 
+(defn refresh-tags [appstate tags collection]
+  (assoc-in appstate [:viewmodel] (vm/new-tags collection tags)))
+
 (defn refresh-collection [{:keys [level] :as appstate} collection]
   (let [collection-name (or (:collection-name level) (:user-name level))]
     (set-viewmodel appstate (vm/new-collection collection-name collection))))

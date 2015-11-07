@@ -4,6 +4,7 @@
 
 (defrecord CheckpointViewmodel [level course checkpoint-id])
 (defrecord CourseViewmodel [level course])
+(defrecord TagsViewmodel [level tags collection])
 (defrecord CollectionViewmodel [level collection collection-name collection-names])
 
 (defn new-checkpoint [course checkpoint-id & resource]
@@ -22,6 +23,11 @@
                              :collection collection
                              :collection-name collection-name
                              :collection-names [:featured :new :popular]}))
+
+(defn new-tags [collection tags]
+  (map->TagsViewmodel {:level :tags
+                       :tags tags
+                       :collection collection}))
 
 (defn highlight-course [viewmodel checkpoint-id highlight]
   (update-in viewmodel [:course]

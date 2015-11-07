@@ -23,6 +23,14 @@
     (update-datastore! fn)
     (helpers/respond-added course-id)))
 
+(defn update-tags [tags]
+  (let [courses (:courses @store)]
+    (if (empty? courses)
+      (do
+        (update-datastore! #(model/update-tags %1 tags))
+        (helpers/respond-not-found :courses {:course-ids :all}))
+      (update-and-respond! #(model/update-tags %1 tags)))))
+
 (defn update-resources [{:keys [resources]}]
   (update-and-respond! #(model/update-resources %1 resources)))
 
@@ -60,6 +68,12 @@
       (helpers/respond-not-found :collection {:collection-type collection-type
                                               :collection-name collection-name}))))
 
+(defn- get-tags [payload]
+  (let [tags (:tags @store)]
+    (if tags
+      (helpers/respond-checked :tags)
+      (helpers/respond-not-found :tags))))
+
 (defn- get-course [{:keys [course-id]}]
   (let [course (model/find-course @store course-id)]
     (if course
@@ -86,12 +100,14 @@
 
 (defn get-data [{type :type :as payload}]
   (case type
+    :tags       (get-tags payload)
     :collection (get-collection payload)
     :course     (get-course payload)
     :checkpoint (get-course payload)))
 
-(defn update-datastore [{:keys [type collection] :as payload}]
+(defn update-datastore [{:keys [type tags collection] :as payload}]
   (case type
+    :tags       (update-tags tags)
     :collection (update-collections collection)
     :course     (update-course payload)
     :courses    (update-courses payload)

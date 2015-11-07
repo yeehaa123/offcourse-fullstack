@@ -55,6 +55,4 @@
               :collection-name (keyword tag)))
 
   (defroute (:home route-names) []
-    (response :collection
-              :collection-type :named-collection
-              :collection-name :featured)))
+    (response :tags)))

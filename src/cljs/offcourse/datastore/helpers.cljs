@@ -12,8 +12,12 @@
              :course-id course-id
              :store @store))
 
-  (defn respond-not-found [type {:keys [course-id course-ids user-name collection-type collection-name urls] :as payload}]
+  (defn respond-not-found
+    ([type] (respond-not-found type {}))
+    ([type {:keys [course-id course-ids user-name collection-type collection-name urls] :as payload}]
       (case type
+        :tags       (respond :not-found-data
+                             :type type)
         :collection (respond :not-found-data
                              :type type
                              :collection-type collection-type
@@ -29,14 +33,19 @@
                              :store @store)
         :resources  (respond :not-found-data
                              :type type
-                             :urls urls)))
+                             :urls urls))))
 
-  (defn respond-checked [type {:keys [course-id user-name collection-name] :as payload}]
+  (defn respond-checked
+    ([type] (respond-checked type {}))
+    ([type {:keys [course-id user-name collection-name] :as payload}]
     (let [[collection-key collection-id] (match [payload]
                                                 [{:collection-name _}] [:collection-name collection-name]
                                                 [{:user-name _}] [:user-name user-name]
                                                 [_] [nil nil])]
       (case type
+        :tags       (respond :checked-datastore
+                             :type type
+                             :store @store)
         :collection (respond :checked-datastore
                              :type type
                              collection-key collection-id
@@ -45,7 +54,7 @@
         :course     (respond :checked-datastore
                              :type type
                              :course-id course-id
-                             :store @store))))
+                             :store @store)))))
 
   (defn respond-ignore []
     respond :ignore))

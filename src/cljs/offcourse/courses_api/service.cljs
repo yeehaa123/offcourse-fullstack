@@ -12,7 +12,9 @@
              :course course)))
 
 (defn fetch-courses [{course-ids :course-ids}]
-  (let [courses (map #(cs/find-course fake-data/courses %1) course-ids)]
+  (let [courses (if (= :all course-ids)
+                  (vals fake-data/courses)
+                  (map #(cs/find-course fake-data/courses %1) course-ids))]
     (respond :fetched-data
              :type :courses
              :courses courses)))
@@ -24,6 +26,7 @@
 
 (defn find-data [{:keys [type store course-id] :as payload}]
   (case type
+    :tags       (respond :ignore)
     :collection (respond :ignore)
     :courses    (fetch-courses payload)
     :course     (fetch-course payload)

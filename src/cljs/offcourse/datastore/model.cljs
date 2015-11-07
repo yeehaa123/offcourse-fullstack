@@ -8,6 +8,9 @@
 (defn new-datastore []
   (->DataStore {} {} {}))
 
+(defn update-tags [store tags]
+  (update-in store [:tags] #(into %1 tags)))
+
 (defn update-resources [store resources]
   (update-in store [:resources] #(into %1 resources)))
 
@@ -28,9 +31,6 @@
 
 (defn toggle-done [store course-id checkpoint-id]
   (update-cache store #(cs/toggle-done %1 course-id checkpoint-id)))
-
-(defn augment-checkpoint [store course-id checkpoint-id resource]
-  (update-cache store #(cs/augment-checkpoint %1 course-id checkpoint-id resource)))
 
 (defn find-course [store course-id]
   (cs/find-course (:courses store) course-id))

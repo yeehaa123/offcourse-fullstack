@@ -19,6 +19,7 @@
 
 (defn createCrumbs [{:keys [level collection-name course checkpoint]}]
   (case level
+    :tags       nil
     :collection [{:level level
                   :title collection-name
                   :collection-name collection-name}]

@@ -12,7 +12,7 @@
       (case type
         :not-found-data (go
                           #_(<! (timeout (rand-int 1000)))
-                          (>! channel (service/find-data payload)))
+                          (>! channel (service/fetch payload)))
         nil))
     (recur)))
 

@@ -20,6 +20,9 @@
       (update-appstate! #(model/update-checkpoint %1 course checkpoint-id resources))
       (respond :not-found-resource))))
 
+(defn- refresh-tags [{:keys [tags courses]}]
+  (update-appstate! #(model/refresh-tags %1 tags courses)))
+
 (defn- refresh-collection [{:keys [collections courses]}]
   (let [{:keys [collection-type collection-name]} (:level @appstate)
         course-ids (get-in collections [collection-type collection-name])
@@ -48,6 +51,7 @@
 (defn refresh [{:keys [store] :as payload}]
   (let [{type :type :as level} (:level @appstate)]
     (case type
+      :tags (refresh-tags store)
       :collection (refresh-collection store)
       :course (refresh-course store)
       :checkpoint (refresh-checkpoint store))))

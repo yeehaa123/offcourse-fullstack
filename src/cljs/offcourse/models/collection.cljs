@@ -1,5 +1,6 @@
 (ns offcourse.models.collection
-  (:require [offcourse.models.course :as co]))
+  (:require [offcourse.models.course :as co]
+            [clojure.set :as set]))
 
 (defrecord Collection [collection-type collection-name collection-ids])
 
@@ -24,3 +25,6 @@
                                    (conj acc id)
                                    acc)) #{} courses)]
     (Collection. :tag-collection tag collection-ids)))
+
+(defn fetch-tags [collection]
+  (apply set/union (map #(co/get-tags %1) (vals collection))))

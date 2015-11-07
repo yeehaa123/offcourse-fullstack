@@ -31,12 +31,13 @@
   (datastore/init      [appstate/out
                         courses-api/out
                         resources-api/out
-                        collections-api/out])
+                        collections-api/out
+                        tags-api/out])
 
   (courses-api/init     [datastore/out])
   (resources-api/init   [datastore/out])
   (collections-api/init [datastore/out])
-  (tags-api/init       [datastore/out])
+  (tags-api/init        [datastore/out])
 
   (history/init        [appstate/out])
 

@@ -27,6 +27,7 @@
 
 (defn fetch [{:keys [type] :as payload}]
   (case type
+    :tags (respond :ignore)
     :collection (fetch-collection payload)
     :courses (respond :ignore)
     :course  (respond :ignore)
