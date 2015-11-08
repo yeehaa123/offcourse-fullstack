@@ -42,7 +42,7 @@
         (update-datastore! #(model/update-collections %1 collection))
         (helpers/respond-not-found :courses {:course-ids missing-ids})))))
 
-(defn- update-course [{:keys [course]}]
+(defn- update-course [course]
   (update-and-respond! #(model/update-course %1 course)))
 
 (defn- update-courses [{:keys [courses]}]
@@ -100,17 +100,19 @@
 
 (defn get-data [{:keys [data]}]
   (let [{:keys [type] :as payload} (first data)]
+    (println payload)
     (case type
       :tags       (get-tags payload)
       :collection (get-collection payload)
       :course     (get-course payload)
       :checkpoint (get-course payload))))
 
-(defn update-datastore [{:keys [type tags collection] :as payload}]
+(defn update-datastore [{:keys [type course tags collection] :as payload}]
+  (println payload)
   (case type
     :tags       (update-tags tags)
     :collection (update-collections collection)
-    :course     (update-course payload)
+    :course     (update-course course)
     :courses    (update-courses payload)
     :resources  (update-resources payload)))
 

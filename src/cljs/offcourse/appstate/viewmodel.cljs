@@ -5,7 +5,7 @@
             [cljs.core.match :refer-macros [match]]))
 
 (defrecord CheckpointViewmodel [level course checkpoint-id])
-(defrecord CourseViewmodel [level course])
+(defrecord CourseViewmodel [course resources])
 (defrecord TagsViewmodel [level tags collection])
 (defrecord CollectionViewmodel [level collection courses])
 
@@ -15,10 +15,15 @@
                              :checkpoint (co/find-checkpoint course checkpoint-id)
                              :resource (or (first resource) :unknown)}))
 
-(defn new-course [course resources]
-  (map->CheckpointViewmodel {:level :course
-                             :course course
-                             :resources resources}))
+(defn new-course
+  ([course-id]
+   (map->CourseViewmodel {:level :course
+                          :course (co/new course-id :unknown :unknown :unknown)
+                          :resources :unknown}))
+  ([course resources]
+   (map->CourseViewmodel {:level :course
+                          :course course
+                          :resources resources})))
 
 (defn new-collection [collection-type collection-name courses]
   (map->CollectionViewmodel {:level :collection
@@ -41,10 +46,11 @@
   (update-in viewmodel [:collection]
              #(cs/highlight %1 course-id checkpoint-id highlight)))
 
-(defn select [{:keys [type collection-type collection-name]}]
+(defn select [{:keys [type course-id collection-type collection-name]}]
   (case type
     :collection (new-collection collection-type collection-name :unknown)
-    :tags (new-tags :unknown :unknown)))
+    :tags (new-tags :unknown :unknown)
+    :course (new-course course-id)))
 
 (defn missing-data? [key item]
   (let [missing (remove nil? (map #(when (= :unknown %1) %1) (vals item)))]
@@ -55,6 +61,7 @@
 (defn missing? [[key value :as item]]
   (match item
          [:collection _] (missing-data? key value)
+         [:course _] (missing-data? key value)
          [_ :unknown] {:type key}
          [_ _] nil))
 

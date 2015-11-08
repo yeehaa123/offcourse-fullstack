@@ -52,10 +52,13 @@
         type (:type new-level)]
     (case type
       :collection (let [missing-data (vm/missing-data (:viewmodel @appstate))]
-                    (println missing-data)
                     (respond :requested-data
                              :data missing-data))
       :tags (let [missing-data (vm/missing-data (:viewmodel @appstate))]
+              (respond :requested-data
+                       :data missing-data))
+      :course (let [missing-data (vm/missing-data (:viewmodel @appstate))]
+                (println missing-data)
               (respond :requested-data
                        :data missing-data))
       (respond :requested-data

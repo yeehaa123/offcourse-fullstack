@@ -33,6 +33,9 @@
     :collection (let [viewmodel (vm/select level)]
                   (assoc appstate :level level
                                   :viewmodel viewmodel))
+    :course (let [viewmodel (vm/select level)]
+              (assoc appstate :level level
+                     :viewmodel viewmodel))
     (assoc appstate :level level)))
 
 (defn toggle-mode [appstate]

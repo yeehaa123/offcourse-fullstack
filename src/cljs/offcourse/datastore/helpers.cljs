@@ -38,23 +38,19 @@
   (defn respond-checked
     ([type] (respond-checked type {}))
     ([type {:keys [course-id user-name collection-name] :as payload}]
-    (let [[collection-key collection-id] (match [payload]
-                                                [{:collection-name _}] [:collection-name collection-name]
-                                                [{:user-name _}] [:user-name user-name]
-                                                [_] [nil nil])]
-      (case type
-        :tags       (respond :checked-datastore
-                             :type type
-                             :store @store)
-        :collection (respond :checked-datastore
-                             :type type
-                             collection-key collection-id
-                             :user-name user-name
-                             :store @store)
-        :course     (respond :checked-datastore
-                             :type type
-                             :course-id course-id
-                             :store @store)))))
+       (case type
+         :tags       (respond :checked-datastore
+                              :type type
+                              :store @store)
+         :collection (respond :checked-datastore
+                              :type type
+                              :collection-name collection-name
+                              :user-name user-name
+                              :store @store)
+         :course     (respond :checked-datastore
+                              :type type
+                              :course-id course-id
+                              :store @store))))
 
   (defn respond-ignore []
     respond :ignore))

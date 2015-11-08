@@ -9,14 +9,15 @@
 (defn listen-for-actions [input]
   (go-loop []
     (let [{type :type payload :payload} (<! input)]
+      (println type)
       (case type
         :requested-data             (go
                                       (>! channel (store/get-data payload))
-                                      (>! channel (store/check-resources payload)))
+                                      #_(>! channel (store/check-resources payload)))
         :requested-commit           (>! channel (store/commit-data payload))
         :fetched-data               (go
                                       (>! channel (store/update-datastore payload))
-                                      (>! channel (store/check-resources payload)))
+                                      #_(>! channel (store/check-resources payload)))
         :requested-toggle-done      (>! channel (store/toggle-done payload))
         nil))
     (recur)))
