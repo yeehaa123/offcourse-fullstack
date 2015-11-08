@@ -69,17 +69,13 @@
       (helpers/respond-not-found :collection-names)
       (helpers/respond-checked :collection-names))))
 
-(defn- get-collection [{:keys [collection-name collection-type ] :as payload}]
-  (if collection-name
-    (do
-      (let [collection (get-in @store [:collections :collection-type collection-name])]
-        (if (empty? collection)
-          (helpers/respond-not-found :collection {:collection-name collection-name
-                                                  :collection-type collection-type})
-          (helpers/respond-checked :collection {:collection-name collection-name
-                                                :collection-type collection-type})))))
-      (get-collection-names))
-
+(defn- get-collection [{:keys [collection-type collection-name] :as payload}]
+  (let [collections (:collections @store)]
+    (if (get-in collections [collection-type collection-name])
+      (helpers/respond-checked :collection {:collection-type collection-type
+                                            :collection-name collection-name})
+      (helpers/respond-not-found :collection {:collection-type collection-type
+                                              :collection-name collection-name}))))
 (defn- get-tags [payload]
   (let [tags (:tags @store)]
     (if tags
@@ -92,8 +88,8 @@
       (helpers/respond-checked :course {:course-id course-id})
       (helpers/respond-not-found :course {:course-id course-id}))))
 
-(defn fetch-resources [{:keys [course course-id]}]
-  (let [course (or course (model/find-course @store course-id))
+(defn fetch-resources [course-id]
+  (let [course (model/find-course @store course-id)
         checkpoints (vals (:checkpoints course))
         course-urls (into #{} (map :url checkpoints))
         store-urls (into #{} (map :url (vals (:resources @store))))
@@ -112,7 +108,6 @@
 
 (defn get-data [{:keys [data]}]
   (let [{:keys [type] :as payload} (first data)]
-    (println payload)
     (case type
       :tags       (get-tags payload)
       :collection (get-collection payload)
@@ -120,15 +115,9 @@
       :checkpoint (get-course payload))))
 
 (defn update-datastore [{:keys [type course tags collection] :as payload}]
-  (println payload)
   (case type
     :tags       (update-tags tags)
     :collection (update-collections collection)
     :course     (update-course course)
     :courses    (update-courses payload)
     :resources  (update-resources payload)))
-
-(defn check-resources [{:keys [type] :as payload}]
-  (case type
-    :course (fetch-resources payload)
-    (respond :ignore)))

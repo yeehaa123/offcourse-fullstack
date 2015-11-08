@@ -26,17 +26,8 @@
   (assoc-in appstate [:user-id] user-id))
 
 (defn set-level [appstate {:keys [type] :as level}]
-  (case type
-    :tags (let [viewmodel (vm/select level)]
-            (assoc appstate :level level
-                            :viewmodel viewmodel))
-    :collection (let [viewmodel (vm/select level)]
-                  (assoc appstate :level level
-                                  :viewmodel viewmodel))
-    :course (let [viewmodel (vm/select level)]
-              (assoc appstate :level level
-                     :viewmodel viewmodel))
-    (assoc appstate :level level)))
+  (let [viewmodel (vm/select level)]
+    (assoc appstate :level level :viewmodel viewmodel)))
 
 (defn toggle-mode [appstate]
   (update-in appstate [:mode]
@@ -45,7 +36,7 @@
 (defn add-checkpoint [appstate course]
   (let [checkpoint (cp/new)
         course (co/add-temp-checkpoint course checkpoint)]
-    (set-viewmodel appstate (vm/new-checkpoint course (:checkpoint-id checkpoint)))))
+    (set-viewmodel appstate (vm/new-checkpoint course (:checkpoint-id checkpoint) {}))))
 
 (defn refresh-checkpoint [{:keys [level] :as appstate} course resources]
   (let  [checkpoint-id (:checkpoint-id level)

@@ -4,7 +4,6 @@
             [offcourse.helpers.css :as css]))
 
 (defn CourseView [{:keys [level course resources]} handlers]
-  (println "hi" course)
   (let [{:keys [course-id goal]} course
         collection (vals (:checkpoints course))]
     (d/section {:className "cards"}

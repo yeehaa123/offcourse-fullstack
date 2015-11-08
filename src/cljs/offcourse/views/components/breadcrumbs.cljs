@@ -32,7 +32,7 @@
                   :link true}
                  {:level level
                   :title (:task checkpoint)
-                  :checkpoint-id (:id checkpoint)}]))
+                  :checkpoint-id (:checkpoint-id checkpoint)}]))
 
 (defn Breadcrumbs [viewmodel handlers]
   (let [crumbs (createCrumbs viewmodel)]

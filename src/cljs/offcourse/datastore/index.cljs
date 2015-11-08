@@ -10,13 +10,9 @@
   (go-loop []
     (let [{type :type payload :payload} (<! input)]
       (case type
-        :requested-data             (go
-                                      (>! channel (store/get-data payload))
-                                      #_(>! channel (store/check-resources payload)))
+        :requested-data             (>! channel (store/get-data payload))
         :requested-commit           (>! channel (store/commit-data payload))
-        :fetched-data               (go
-                                      (>! channel (store/update-datastore payload))
-                                      #_(>! channel (store/check-resources payload)))
+        :fetched-data               (>! channel (store/update-datastore payload))
         :requested-toggle-done      (>! channel (store/toggle-done payload))
         nil))
     (recur)))

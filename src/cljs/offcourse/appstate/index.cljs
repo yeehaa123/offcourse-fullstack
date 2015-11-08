@@ -11,7 +11,6 @@
 (defn listen-for-actions [input]
   (go-loop []
     (let [{type :type payload :payload} (<! input)]
-      (println type)
       (case type
         :requested-resource         (>! channel (store/set-level payload))
         :requested-commit           (>! channel (store/commit-data payload))

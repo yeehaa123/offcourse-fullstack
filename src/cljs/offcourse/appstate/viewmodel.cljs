@@ -1,5 +1,6 @@
 (ns offcourse.appstate.viewmodel
   (:require [offcourse.models.course :as co]
+            [offcourse.models.checkpoint :as cp]
             [offcourse.models.collection :as cl]
             [offcourse.models.courses :as cs]
             [cljs.core.match :refer-macros [match]]))
@@ -9,11 +10,16 @@
 (defrecord TagsViewmodel [level tags collection])
 (defrecord CollectionViewmodel [level collection courses])
 
-(defn new-checkpoint [course checkpoint-id & resource]
-  (map->CheckpointViewmodel {:level :checkpoint
-                             :course course
-                             :checkpoint (co/find-checkpoint course checkpoint-id)
-                             :resource (or (first resource) :unknown)}))
+(defn new-checkpoint
+  ([course-id checkpoint-id] {:level :checkpoint
+                              :course (co/new course-id :unknown :unknown :unknown)
+                              :checkpoint (cp/new {:checkpoint-id checkpoint-id})
+                              :resource :unknown})
+  ([course checkpoint-id resources]
+   (map->CheckpointViewmodel {:level :checkpoint
+                              :course course
+                              :checkpoint (co/find-checkpoint course checkpoint-id)
+                              :resource :unknown})))
 
 (defn new-course
   ([course-id]
@@ -46,11 +52,12 @@
   (update-in viewmodel [:collection]
              #(cs/highlight %1 course-id checkpoint-id highlight)))
 
-(defn select [{:keys [type course-id collection-type collection-name]}]
+(defn select [{:keys [type course-id checkpoint-id collection-type collection-name]}]
   (case type
     :collection (new-collection collection-type collection-name :unknown)
     :tags (new-tags :unknown :unknown)
-    :course (new-course course-id)))
+    :course (new-course course-id)
+    :checkpoint (new-checkpoint course-id checkpoint-id)))
 
 (defn missing-data? [key item]
   (let [missing (remove nil? (map #(when (= :unknown %1) %1) (vals item)))]

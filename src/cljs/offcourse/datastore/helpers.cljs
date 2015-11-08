@@ -17,7 +17,7 @@
     ([type {:keys [course-id course-ids user-name collection-type collection-name urls] :as payload}]
      (let [response (partial respond :not-found-data
                              :type type
-                             :store store)]
+                             :store @store)]
        (case type
          :tags                (response)
          :collection-names    (response)
@@ -32,12 +32,12 @@
     ([type {:keys [course-id user-name collection-name] :as payload}]
      (let [response (partial respond :checked-datastore
                              :type type
-                             :store store)]
+                             :store @store)]
       (case type
         :tags       (response)
         :collection-names (response)
-        :collection (response :collection-name collection-name)
-        :course     (response :course-id course-id)))))
+        :collection (response)
+        :course     (response)))))
 
   (defn respond-ignore []
     respond :ignore))
