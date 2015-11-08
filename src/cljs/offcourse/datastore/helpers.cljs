@@ -15,42 +15,29 @@
   (defn respond-not-found
     ([type] (respond-not-found type {}))
     ([type {:keys [course-id course-ids user-name collection-type collection-name urls] :as payload}]
-      (case type
-        :tags       (respond :not-found-data
-                             :type type)
-        :collection (respond :not-found-data
+     (let [response (partial respond :not-found-data
                              :type type
-                             :collection-type collection-type
-                             :collection-name collection-name
-                             :store @store)
-        :courses    (respond :not-found-data
-                             :type type
-                             :course-ids course-ids
-                             :store @store)
-        :course     (respond :not-found-data
-                             :type type
-                             :course-id course-id
-                             :store @store)
-        :resources  (respond :not-found-data
-                             :type type
-                             :urls urls))))
+                             :store store)]
+       (case type
+         :tags                (response)
+         :collection-names    (response)
+         :collection          (response :collection-type collection-type
+                                        :collection-name collection-name)
+         :courses             (response :course-ids course-ids)
+         :course              (response :course-id course-id)
+         :resources           (response :urls urls)))))
 
   (defn respond-checked
     ([type] (respond-checked type {}))
     ([type {:keys [course-id user-name collection-name] :as payload}]
-       (case type
-         :tags       (respond :checked-datastore
-                              :type type
-                              :store @store)
-         :collection (respond :checked-datastore
-                              :type type
-                              :collection-name collection-name
-                              :user-name user-name
-                              :store @store)
-         :course     (respond :checked-datastore
-                              :type type
-                              :course-id course-id
-                              :store @store))))
+     (let [response (partial respond :checked-datastore
+                             :type type
+                             :store store)]
+      (case type
+        :tags       (response)
+        :collection-names (response)
+        :collection (response :collection-name collection-name)
+        :course     (response :course-id course-id)))))
 
   (defn respond-ignore []
     respond :ignore))

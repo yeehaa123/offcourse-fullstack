@@ -26,9 +26,10 @@
 
 (defn- refresh-collection [{:keys [collections courses]}]
   (let [{:keys [collection-type collection-name]} (:level @appstate)
-        course-ids (get-in collections [collection-type collection-name])
-        collection (cs/find-courses courses course-ids)]
-    (update-appstate! #(model/refresh-collection %1 collection))))
+        collection-names (keys (get-in collections [collection-type]))]
+    (if (empty? collection-names)
+      (println "hiphop")
+      (println "hurray"))))
 
 (defn- refresh-course [{:keys [courses resources]}]
   (let [{:keys [course-id checkpoint-id]} (:level @appstate)

@@ -4,6 +4,11 @@
             [offcourse.models.collection :as cl]
             [offcourse.models.action :refer [respond]]))
 
+(defn fetch-collection-names [_]
+  (respond :fetched-data
+           :type :collection-names
+           :collection-names [:featured :newest :user :popular]))
+
 (defn fetch-named-collection [collection-name]
   (respond :fetched-data
            :type :collection
@@ -28,6 +33,7 @@
 (defn fetch [{:keys [type] :as payload}]
   (case type
     :tags (respond :ignore)
+    :collection-names (fetch-collection-names payload)
     :collection (fetch-collection payload)
     :courses (respond :ignore)
     :course  (respond :ignore)

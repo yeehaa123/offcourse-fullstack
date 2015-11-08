@@ -26,8 +26,9 @@
 
 (defn find-data [{:keys [type store course-id] :as payload}]
   (case type
-    :tags       (respond :ignore)
-    :collection (respond :ignore)
-    :courses    (fetch-courses payload)
-    :course     (fetch-course payload)
-    :resources  (respond :ignore)))
+    :tags             (respond :ignore)
+    :collection-names (respond :ignore)
+    :collection       (respond :ignore)
+    :courses          (fetch-courses payload)
+    :course           (fetch-course payload)
+    :resources        (respond :ignore)))
