@@ -17,6 +17,12 @@
 (defn update-collections [store {:keys [collection-name collection-type collection-ids]}]
   (assoc-in store [:collections collection-type collection-name] collection-ids))
 
+(defn update-collection-names [store collection-names]
+  (let [collections (->> collection-names
+                         (map (fn [collection-name] [collection-name #{}]))
+                         (into {}))]
+  (assoc-in store [:collections :named-collection] collections)))
+
 (defn update-cache [store fn]
   (update-in store [:courses] fn))
 

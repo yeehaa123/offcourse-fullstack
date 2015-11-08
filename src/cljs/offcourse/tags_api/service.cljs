@@ -10,8 +10,10 @@
              :tags tags)))
 
 (defn fetch [{:keys [type] :as payload}]
+  (println type)
   (case type
     :tags (fetch-all-tags fake-data/courses)
+    :collection-names (respond :ignore)
     :collection (respond :ignore)
     :courses (respond :ignore)
     :course  (respond :ignore)

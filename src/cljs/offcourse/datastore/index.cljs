@@ -9,6 +9,7 @@
 (defn listen-for-actions [input]
   (go-loop []
     (let [{type :type payload :payload} (<! input)]
+      (println type payload)
       (case type
         :requested-data             (go
                                       (>! channel (store/get-data payload))
