@@ -11,21 +11,25 @@
 (defrecord CollectionViewmodel [level collection courses])
 
 (defn new-checkpoint
-  ([course-id checkpoint-id] {:level :checkpoint
+  ([course-id checkpoint-id]
+   (map->CheckpointViewmodel {:level :checkpoint
                               :course (co/new course-id :unknown :unknown :unknown)
                               :checkpoint (cp/new {:checkpoint-id checkpoint-id})
-                              :resource :unknown})
-  ([course checkpoint-id resources]
-   (map->CheckpointViewmodel {:level :checkpoint
-                              :course course
-                              :checkpoint (co/find-checkpoint course checkpoint-id)
-                              :resource :unknown})))
+                              :resource :unknown
+                              :load-order [:course]}))
+   ([course checkpoint-id resources]
+    (map->CheckpointViewmodel {:level :checkpoint
+                               :course course
+                               :checkpoint (co/find-checkpoint course checkpoint-id)
+                               :resource :unknown
+                               :load-order [:course]})))
 
 (defn new-course
   ([course-id]
    (map->CourseViewmodel {:level :course
                           :course (co/new course-id :unknown :unknown :unknown)
-                          :resources :unknown}))
+                          :resources :unknown
+                          :load-order [:course]}))
   ([course resources]
    (map->CourseViewmodel {:level :course
                           :course course
@@ -33,11 +37,12 @@
 
 (defn new-collection [collection-type collection-name courses]
   (map->CollectionViewmodel {:level :collection
+                             :collection-names ["new"]
                              :collection (cl/new-collection collection-type
                                                             collection-name
                                                             :unknown)
-                             :collection-names ["new" "featured"]
-                             :courses courses}))
+                             :courses courses
+                             :load-order [:collection]}))
 
 (defn new-tags [courses tags]
   (map->TagsViewmodel {:level :tags
@@ -59,20 +64,17 @@
     :course (new-course course-id)
     :checkpoint (new-checkpoint course-id checkpoint-id)))
 
-(defn missing-data? [key item]
-  (let [missing (remove nil? (map #(when (= :unknown %1) %1) (vals item)))]
-    (if-not (empty? missing)
-      (assoc item :type key)
-      nil)))
+(defn add-field [field {:keys [collection] :as vm} store]
+  (case field
+    :collection-names (if (get-in store [:collection-names])
+                        {:type field}
+                        nil)
+    :collection (let [{:keys [collection-type collection-name]} collection]
+                  (if-not (get-in store [:collections collection-type collection-name])
+                    (assoc (field vm) :type field)
+                    nil))))
 
-(defn missing? [[key value :as item]]
-  (match item
-         [:collection _] (missing-data? key value)
-         [:course _] (missing-data? key value)
-         [_ :unknown] {:type key}
-         [_ _] nil))
-
-(defn missing-data [viewmodel]
-  (->> viewmodel
-       (map missing?)
+(defn missing-data [{:keys [load-order] :as vm} store]
+  (->> load-order
+       (map #(add-field %1 vm store))
        (remove nil?)))

@@ -24,11 +24,15 @@
 (defn- refresh-tags [{:keys [tags courses]}]
   (update-appstate! #(model/refresh-tags %1 tags courses)))
 
-(defn- refresh-collection [{:keys [collections courses]}]
+(defn- refresh-collection [{:keys [collections courses] :as store}]
   (let [{:keys [collection-type collection-name]} (get-in @appstate [:level])
         course-ids (get-in collections [collection-type collection-name])
-        collection (cs/find-courses courses course-ids)]
-    (update-appstate! #(model/refresh-collection %1 collection))))
+        collection (cs/find-courses courses course-ids)
+        missing-data (vm/missing-data (:viewmodel @appstate) store)]
+    (if (empty? missing-data)
+      (update-appstate! #(model/refresh-collection %1 collection))
+      (respond :requested-data
+               :data missing-data))))
 
 (defn- refresh-course [{:keys [courses resources]}]
   (let [{:keys [course-id checkpoint-id]} (:level @appstate)
@@ -46,11 +50,14 @@
 (defn toggle-mode []
   (update-appstate! #(model/toggle-mode %1)))
 
-(defn set-level [payload]
-  (do
-    (swap! appstate #(model/set-level %1 payload))
+(defn get-data [payload]
+  (let [missing-data (vm/missing-data (:viewmodel @appstate) payload)]
+    (println missing-data)
     (respond :requested-data
-             :data (vm/missing-data (:viewmodel @appstate)))))
+             :data missing-data)))
+
+(defn set-level [payload]
+  (swap! appstate #(model/set-level %1 payload)))
 
 (defn refresh [{:keys [store] :as payload}]
   (let [{type :type :as level} (:level @appstate)]
