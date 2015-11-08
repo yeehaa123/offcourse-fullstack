@@ -27,18 +27,21 @@
      :go-to-collection  (fn [collection-name]
                           (>>! :requested-level
                                :level :collection
+                               :collection-type :named-collection
                                :collection-name collection-name))
 
      :go-to-user-collection  (fn [user-name event]
                                (.stopPropagation event)
                                (>>! :requested-level
                                     :level :collection
+                                    :collection-type :user-collection
                                     :collection-name (str "users/" user-name)))
 
      :go-to-tag-collection      (fn [tag event]
                                   (.stopPropagation event)
                                   (>>! :requested-level
                                        :level :collection
+                                       :collection-type :tag-collection
                                        :collection-name (str "tags/" tag)))
 
      :go-to-course      (fn [course-id event]

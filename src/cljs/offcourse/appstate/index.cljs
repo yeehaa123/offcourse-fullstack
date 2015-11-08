@@ -12,9 +12,7 @@
   (go-loop []
     (let [{type :type payload :payload} (<! input)]
       (case type
-        :requested-resource         (do
-                                      (>! channel (service/get-data payload))
-                                      (store/set-level payload))
+        :requested-resource         (>! channel (store/set-level payload))
         :requested-commit           (>! channel (store/commit-data payload))
         :requested-level            (>! channel (service/switch-route payload))
         :requested-done-toggle      (>! channel (service/toggle-done payload))

@@ -1,5 +1,6 @@
 (ns offcourse.appstate.store
   (:require [offcourse.appstate.model :as model]
+            [offcourse.appstate.viewmodel :as vm]
             [offcourse.models.course :as co]
             [offcourse.models.courses :as cs]
             [offcourse.models.action :refer [respond]]))
@@ -46,7 +47,19 @@
   (update-appstate! #(model/toggle-mode %1)))
 
 (defn set-level [payload]
-  (update-appstate! #(model/set-level %1 payload)))
+  (let [new-appstate (swap! appstate #(model/set-level %1 payload))
+        new-level (:level @appstate)
+        type (:type new-level)]
+    (case type
+      :collection (let [missing-data (vm/missing-data (:viewmodel @appstate))]
+                    (println missing-data)
+                    (respond :requested-data
+                             :data missing-data))
+      :tags (let [missing-data (vm/missing-data (:viewmodel @appstate))]
+              (respond :requested-data
+                       :data missing-data))
+      (respond :requested-data
+               :data [new-level]))))
 
 (defn refresh [{:keys [store] :as payload}]
   (let [{type :type :as level} (:level @appstate)]

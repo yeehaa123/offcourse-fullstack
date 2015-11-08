@@ -98,12 +98,13 @@
   (case type
     :checkpoint (save-checkpoint payload)))
 
-(defn get-data [{type :type :as payload}]
-  (case type
-    :tags       (get-tags payload)
-    :collection (get-collection payload)
-    :course     (get-course payload)
-    :checkpoint (get-course payload)))
+(defn get-data [{:keys [data]}]
+  (let [{:keys [type] :as payload} (first data)]
+    (case type
+      :tags       (get-tags payload)
+      :collection (get-collection payload)
+      :course     (get-course payload)
+      :checkpoint (get-course payload))))
 
 (defn update-datastore [{:keys [type tags collection] :as payload}]
   (case type
