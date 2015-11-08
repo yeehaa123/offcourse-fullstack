@@ -4,6 +4,9 @@
 
 (defrecord Collection [collection-type collection-name collection-ids])
 
+(defn new-collection [collection-type collection-name collection-ids]
+  (Collection. collection-type collection-name collection-ids))
+
 (defn find-user-collection [courses user-name]
   (let [collection-ids (reduce (fn [acc [id course]]
                                  (if (= (name user-name) (:curator course))

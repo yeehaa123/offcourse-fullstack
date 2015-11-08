@@ -25,8 +25,15 @@
 (defn set-user-id [appstate user-id]
   (assoc-in appstate [:user-id] user-id))
 
-(defn set-level [appstate level]
-  (assoc appstate :level level))
+(defn set-level [appstate {:keys [type] :as level}]
+  (case type
+    :tags (let [viewmodel (vm/select level)]
+            (assoc appstate :level level
+                            :viewmodel viewmodel))
+    :collection (let [viewmodel (vm/select level)]
+                  (assoc appstate :level level
+                                  :viewmodel viewmodel))
+    (assoc appstate :level level)))
 
 (defn toggle-mode [appstate]
   (update-in appstate [:mode]
@@ -52,8 +59,8 @@
   (assoc-in appstate [:viewmodel] (vm/new-tags collection tags)))
 
 (defn refresh-collection [{:keys [level] :as appstate} collection]
-  (let [collection-name (or (:collection-name level) (:user-name level))]
-    (set-viewmodel appstate (vm/new-collection collection-name collection))))
+  (let [{:keys [collection-name collection-type]} level]
+    (set-viewmodel appstate (vm/new-collection collection-type collection-name collection))))
 
 (defn refresh-course [appstate course resources]
   (let [urls (into #{} (co/get-resource-urls course))
