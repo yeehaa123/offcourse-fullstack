@@ -27,10 +27,12 @@
 (defn- refresh-collection [{:keys [collections courses] :as store}]
   (let [{:keys [collection-type collection-name]} (get-in @appstate [:level])
         course-ids (get-in collections [collection-type collection-name])
-        collection (cs/find-courses courses course-ids)
+        courses (cs/find-courses courses course-ids)
+        collection-names (keys (get-in collections [:named-collection]))
         missing-data (vm/missing-data (:viewmodel @appstate) store)]
+    (println missing-data)
     (if (empty? missing-data)
-      (update-appstate! #(model/refresh-collection %1 collection))
+      (update-appstate! #(model/refresh-collection %1 courses course-ids collection-names))
       (respond :requested-data
                :data missing-data))))
 

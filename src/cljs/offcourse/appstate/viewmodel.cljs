@@ -35,14 +35,24 @@
                           :course course
                           :resources resources})))
 
-(defn new-collection [collection-type collection-name courses]
-  (map->CollectionViewmodel {:level :collection
-                             :collection-names ["new"]
-                             :collection (cl/new-collection collection-type
-                                                            collection-name
-                                                            :unknown)
-                             :courses courses
-                             :load-order [:collection]}))
+(defn new-collection
+  ([collection-type collection-name courses]
+   (map->CollectionViewmodel {:level :collection
+                              :collection-names :unknown
+                              :collection (cl/new-collection collection-type
+                                                             collection-name
+                                                             :unknown)
+                              :courses courses
+                              :load-order [:collection-names :collection]}))
+  ([collection-type collection-name collection-ids courses collection-names]
+   (map->CollectionViewmodel {:level :collection
+                              :collection-names collection-names
+                              :collection (cl/new-collection collection-type
+                                                             collection-name
+                                                             collection-ids)
+                              :courses courses
+                              :load-order [:collection-names :collection]})))
+
 
 (defn new-tags [courses tags]
   (map->TagsViewmodel {:level :tags
@@ -64,15 +74,19 @@
     :course (new-course course-id)
     :checkpoint (new-checkpoint course-id checkpoint-id)))
 
-(defn add-field [field {:keys [collection] :as vm} store]
+(defn add-field [field {:keys [collection collections] :as vm} store]
   (case field
-    :collection-names (if (get-in store [:collection-names])
-                        {:type field}
-                        nil)
-    :collection (let [{:keys [collection-type collection-name]} collection]
-                  (if-not (get-in store [:collections collection-type collection-name])
-                    (assoc (field vm) :type field)
-                    nil))))
+    :collection-names (let [collection-names (keys (get-in store [:collections :named-collection]))]
+                        (if (empty? collection-names)
+                          {:type field}
+                          nil))
+    :collection (let [{:keys [collection-type collection-name]} collection
+                      collection (get-in store [:collections collection-type collection-name])]
+                  (cond
+                    (not collection) (assoc (field vm) :type field)
+                    (empty? collection) (assoc (field vm) :type field)
+                    :default nil))
+    :courses {:type field}))
 
 (defn missing-data [{:keys [load-order] :as vm} store]
   (->> load-order

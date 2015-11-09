@@ -7,7 +7,7 @@
 (defn fetch-collection-names [_]
   (respond :fetched-data
            :type :collection-names
-           :collection-names [:featured :newest :user :popular]))
+           :collection-names [:featured :new :popular]))
 
 (defn fetch-named-collection [collection-name]
   (respond :fetched-data

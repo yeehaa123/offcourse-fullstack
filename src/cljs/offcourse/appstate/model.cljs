@@ -52,9 +52,9 @@
 (defn refresh-tags [appstate tags collection]
   (assoc-in appstate [:viewmodel] (vm/new-tags collection tags)))
 
-(defn refresh-collection [{:keys [level] :as appstate} collection]
+(defn refresh-collection [{:keys [level] :as appstate} courses collection-ids collection-names]
   (let [{:keys [collection-name collection-type]} level]
-    (set-viewmodel appstate (vm/new-collection collection-type collection-name collection))))
+    (set-viewmodel appstate (vm/new-collection collection-type collection-name collection-ids courses collection-names))))
 
 (defn refresh-course [appstate course resources]
   (let [urls (into #{} (co/get-resource-urls course))
