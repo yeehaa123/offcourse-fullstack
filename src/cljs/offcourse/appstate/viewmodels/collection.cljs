@@ -1,7 +1,9 @@
-(ns offcourse.appstate.collection-viewmodel
+(ns offcourse.appstate.viewmodels.collection
   (:require [schema.core :as schema :include-macros true]
             [offcourse.models.collection
-             :refer [map->Collection Collection Collections]]))
+             :refer [map->Collection Collection Collections]]
+             [offcourse.models.course
+              :refer [Course]]))
 
 (schema/defrecord CollectionViewmodel
     [level :- Keyword
@@ -9,7 +11,7 @@
      tag-names :- #{schema/Str}
      user-names :- #{schema/Str}
      collection :- Collection
-     courses :- {schema/Int schema/Any}])
+     courses :- {schema/Int Course}])
 
 (defn new-collection
   ([] (map->CollectionViewmodel {:level :collection}))

@@ -1,13 +1,18 @@
 (ns offcourse.appstate.store
   (:require [offcourse.appstate.model :as model]
             [offcourse.appstate.viewmodel :as vm]
-            [offcourse.appstate.collection-viewmodel :as cl-vm]
+            [offcourse.appstate.viewmodels.collection :as cl-vm]
+            [offcourse.appstate.viewmodels.course :as co-vm]
             [offcourse.models.course :as co]
             [offcourse.models.courses :as cs]
             [offcourse.models.action :refer [respond]]
             [cljs.core.match :refer-macros [match]]))
 
-(defn respond-resource-required [field {:keys [collection]}]
+(def counter (atom 0))
+(def appstate (atom (model/new-appstate)))
+
+(defn respond-resource-required [field {:keys [course collection]}]
+  (swap! counter inc)
   (let [resource-data (case field
                         :collection-names {:type field}
                         :tag-names {:type field}
@@ -15,12 +20,12 @@
                         :collection  {:type :collection
                                       :collection collection}
                         :courses     {:type :collection
-                                      :collection collection})]
-    (respond :requested-data
-             :data resource-data)))
-
-
-(def appstate (atom (model/new-appstate)))
+                                      :collection collection}
+                        :course    {:type :course
+                                    :course course})]
+    (when (< @counter 40)
+      (respond :requested-data
+               :data resource-data))))
 
 (defn- update-appstate! [fn]
   (do
@@ -48,13 +53,17 @@
       (respond :updated-appstate
                :appstate appstate))))
 
-(defn- refresh-course [{:keys [courses resources]}]
-  (let [{:keys [course-id checkpoint-id]} (:level @appstate)
-        course (get courses course-id)
-        resources (or resources {})]
-    (if course
-      (update-appstate! #(model/refresh-course %1 course resources))
-      (respond :not-found-resource))))
+(defn- refresh-course [{:keys [courses resources] :as store}]
+  (let [appstate (swap! appstate #(model/refresh-course %1 store))
+        viewmodel (:viewmodel appstate)
+        errors  (co-vm/check viewmodel)
+        unknown-fields (keys errors)
+        next-unknown-field (first unknown-fields)]
+    (println errors)
+    (if next-unknown-field
+      (respond-resource-required next-unknown-field viewmodel)
+      (respond :updated-appstate
+               :appstate appstate))))
 
 ;; Public API
 
@@ -68,8 +77,10 @@
 (defn set-level [payload]
   (let [appstate (swap! appstate #(model/set-level %1 payload))
         viewmodel (:viewmodel appstate)
-        unknown-fields (keys (cl-vm/check viewmodel))
+        errors (vm/check viewmodel)
+        unknown-fields (keys errors)
         next-unknown-field (first unknown-fields)]
+    (println errors)
     (respond-resource-required next-unknown-field viewmodel)))
 
 (defn refresh [{:keys [store] :as payload}]

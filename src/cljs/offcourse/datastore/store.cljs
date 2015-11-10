@@ -77,13 +77,13 @@
                                               :collection-type collection-type})
       (helpers/respond-not-found :courses {:course-ids collection-ids}))))
 
-(defn- get-tags [payload]
+(defn- get-tags []
   (let [tags (:tags @store)]
     (if tags
       (helpers/respond-checked :tags)
       (helpers/respond-not-found :tags))))
 
-(defn- get-users [payload]
+(defn- get-users []
   (let [users (:users @store)]
     (if users
       (helpers/respond-checked :users)
@@ -114,13 +114,14 @@
     :checkpoint (save-checkpoint payload)))
 
 (defn get-data [{:keys [data]}]
-  (let [{:keys [type] :as payload} data]
+  (let [{:keys [type course] :as payload} data]
+    (println data)
     (case type
       :collection-names (get-collection-names)
-      :tag-names       (get-tags data)
-      :user-names       (get-users data)
+      :tag-names       (get-tags)
+      :user-names       (get-users)
       :collection (get-collection (type data))
-      :course     (get-course payload)
+      :course     (get-course (type data))
       :checkpoint (get-course payload))))
 
 (defn update-datastore [{:keys [type course tags users collection collections collection-names] :as payload}]

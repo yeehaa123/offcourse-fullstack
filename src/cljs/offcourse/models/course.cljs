@@ -1,8 +1,13 @@
 (ns offcourse.models.course
-  (:require [offcourse.models.checkpoint :as cp]
+  (:require [schema.core :as schema :include-macros true]
+            [offcourse.models.checkpoint :as cp]
             [offcourse.fake-data.index :as fake-data]))
 
-(defrecord Course [course-id curator-id goal checkpoints])
+(schema/defrecord Course
+    [course-id :- schema/Int
+     curator :- schema/Str
+     goal :- schema/Str
+     checkpoints :- schema/Any])
 
 (defn new
   ([curator] (fake-data/generate-course :new curator))

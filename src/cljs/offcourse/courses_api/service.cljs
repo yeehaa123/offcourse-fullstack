@@ -2,11 +2,11 @@
   (:require [offcourse.fake-data.index :as fake-data]
             [offcourse.models.courses :as cs]
             [offcourse.models.course :as co]
+            [offcourse.models.course :refer [map->Course Course]]
             [offcourse.models.action :refer [respond]]))
 
-
 (defn fetch-course [{course-id :course-id :as payload}]
-  (let [course (cs/find-course fake-data/courses course-id)]
+  (let [course (map->Course (cs/find-course fake-data/courses course-id))]
     (respond :fetched-data
              :type :course
              :course course)))
@@ -14,7 +14,8 @@
 (defn fetch-courses [{course-ids :course-ids}]
   (let [courses (if (= :all course-ids)
                   (vals fake-data/courses)
-                  (map #(cs/find-course fake-data/courses %1) course-ids))]
+                  (map #(cs/find-course fake-data/courses %1) course-ids))
+        courses (map #(map->Course %1) courses)]
     (respond :fetched-data
              :type :courses
              :courses courses)))

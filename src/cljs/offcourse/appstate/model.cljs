@@ -3,11 +3,11 @@
             [offcourse.models.course :as co]
             [offcourse.models.courses :as cs]
             [offcourse.models.checkpoint :as cp]
-            [offcourse.appstate.collection-viewmodel :as cl-vm]
+            [offcourse.appstate.viewmodels.collection :as cl-vm]
+            [offcourse.appstate.viewmodels.course :as co-vm]
             [offcourse.models.resource :as r]
             [offcourse.appstate.viewmodel :as vm]))
 
-(def counter (atom 0))
 
 (defrecord AppState [level mode course-collections viewmodel])
 
@@ -54,12 +54,11 @@
     (refresh-checkpoint appstate course resources)))
 
 (defn refresh-collection [{:keys [level] :as appstate} {:keys [collections tags users courses]}]
-  (swap! counter inc)
   (let [{:keys [collection-name collection-type]} level
         collection-names (into #{} (keys (:named-collection collections)))
         tag-names (if tags (into #{} tags) :unknown)
         user-names (if users (into #{} users) :unknown)
-        collection-name (if (= collection-name :unknown) (second collection-name) collection-name)
+        collection-name (if (= collection-name :unknown) (second collection-names) collection-name)
         {:keys [collection-ids] :as collection} (get-in collections [collection-type collection-name])
         collection {:collection-name collection-name
                     :collection-type collection-type
@@ -68,13 +67,14 @@
         courses (if (not-any? nil? (vals found-courses))
                   found-courses
                   :unknown)]
-    (when (< @counter 40)
-      (set-viewmodel appstate (cl-vm/new-collection collection-names tag-names user-names collection courses)))))
+    (set-viewmodel appstate (cl-vm/new-collection collection-names tag-names user-names collection courses))))
 
-(defn refresh-course [appstate course resources]
-  (let [urls (into #{} (co/get-resource-urls course))
+(defn refresh-course [{:keys [viewmodel] :as appstate} {:keys [courses resources]}]
+  (let [course-id (get-in viewmodel [:course :course-id])
+        course (get courses course-id)
+        urls (into #{} (co/get-resource-urls course))
         resources (r/find-resources resources urls)]
-    (assoc-in appstate [:viewmodel] (vm/new-course course resources))))
+    (assoc-in appstate [:viewmodel] (co-vm/new-course course resources))))
 
 (defn highlight-collection [appstate {:keys [course-id checkpoint-id highlight]}]
   (update-viewmodel appstate
