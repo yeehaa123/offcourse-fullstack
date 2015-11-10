@@ -48,6 +48,10 @@
 (defn- update-courses [{:keys [courses]}]
   (update-and-respond! #(model/update-courses %1 courses)))
 
+(defn update-users [users]
+  (println users)
+  (update-and-respond! #(model/update-users %1 users)))
+
 (defn- toggle-done [{:keys [course-id checkpoint-id]}]
   (update-and-respond! #(model/toggle-done %1 course-id checkpoint-id)))
 
@@ -79,6 +83,12 @@
       (helpers/respond-checked :tags)
       (helpers/respond-not-found :tags))))
 
+(defn- get-users [payload]
+  (let [users (:users @store)]
+    (if users
+      (helpers/respond-checked :users)
+      (helpers/respond-not-found :users))))
+
 (defn- get-course [{:keys [course-id]}]
   (let [course (model/find-course @store course-id)]
     (if course
@@ -107,16 +117,18 @@
   (let [{:keys [type] :as payload} data]
     (case type
       :collection-names (get-collection-names)
-      :tags       (get-tags data)
+      :tag-names       (get-tags data)
+      :user-names       (get-users data)
       :collection (get-collection (type data))
       :course     (get-course payload)
       :checkpoint (get-course payload))))
 
-(defn update-datastore [{:keys [type course tags collection collections collection-names] :as payload}]
+(defn update-datastore [{:keys [type course tags users collection collections collection-names] :as payload}]
   (case type
     :collections (update-collections collections)
     :tags        (update-tags tags)
     :collection  (update-collection collection)
     :course      (update-course course)
+    :users       (update-users users)
     :courses     (update-courses payload)
     :resources   (update-resources payload)))

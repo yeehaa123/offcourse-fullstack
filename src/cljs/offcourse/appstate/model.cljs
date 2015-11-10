@@ -53,10 +53,12 @@
     (add-checkpoint appstate course)
     (refresh-checkpoint appstate course resources)))
 
-(defn refresh-collection [{:keys [level] :as appstate} {:keys [collections courses]}]
+(defn refresh-collection [{:keys [level] :as appstate} {:keys [collections tags users courses]}]
   (swap! counter inc)
   (let [{:keys [collection-name collection-type]} level
         collection-names (into #{} (keys (:named-collection collections)))
+        tag-names (if tags (into #{} tags) :unknown)
+        user-names (if users (into #{} users) :unknown)
         collection-name (if (= collection-name :unknown) (second collection-name) collection-name)
         {:keys [collection-ids] :as collection} (get-in collections [collection-type collection-name])
         collection {:collection-name collection-name
@@ -66,8 +68,8 @@
         courses (if (not-any? nil? (vals found-courses))
                   found-courses
                   :unknown)]
-    (when (< @counter 100)
-      (set-viewmodel appstate (cl-vm/new-collection collection-names collection courses)))))
+    (when (< @counter 40)
+      (set-viewmodel appstate (cl-vm/new-collection collection-names tag-names user-names collection courses)))))
 
 (defn refresh-course [appstate course resources]
   (let [urls (into #{} (co/get-resource-urls course))

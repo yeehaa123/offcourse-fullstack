@@ -40,5 +40,8 @@
 (defn fetch-tags [collection]
   (apply set/union (map #(co/get-tags %1) (vals collection))))
 
+(defn fetch-users [collection]
+  (into #{} (map #(co/get-user %1) (vals collection))))
+
 (defn collection-names [collection]
   (keys collection))

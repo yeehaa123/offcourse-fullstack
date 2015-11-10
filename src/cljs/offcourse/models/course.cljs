@@ -45,3 +45,6 @@
 (defn has-tag? [course tag]
   (let [tags (get-tags course)]
     (contains? tags tag)))
+
+(defn get-user [{:keys [curator] :as course}]
+  curator)

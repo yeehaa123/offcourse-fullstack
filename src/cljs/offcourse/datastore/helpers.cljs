@@ -20,6 +20,7 @@
                              :store @store)]
        (case type
          :tags                (response)
+         :users               (response)
          :collections         (response)
          :collection          (response :collection-type collection-type
                                         :collection-name collection-name)
@@ -35,6 +36,7 @@
                              :store @store)]
       (case type
         :tags        (response)
+        :users       (response)
         :collections (response)
         :collection  (response)
         :course      (response)))))

@@ -7,7 +7,6 @@
 
 (defn TagsCard [tags handlers]
   (let [highlighted (if false "highlighted" "not-highlighted")
-        sections [[:map (Map)]
-                  [:tags (Tags tags handlers)]]]
+        sections [[:tags (Tags tags handlers)]]]
     (d/section {:className (css/classes "card" highlighted)}
                (map-indexed #(CardSection %1 %2) sections))))

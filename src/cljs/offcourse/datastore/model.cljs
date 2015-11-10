@@ -12,6 +12,9 @@
 (defn update-tags [store tags]
   (update-in store [:tags] #(into %1 tags)))
 
+(defn update-users [store users]
+  (update-in store [:users] #(into %1 users)))
+
 (defn update-resources [store resources]
   (update-in store [:resources] #(into %1 resources)))
 

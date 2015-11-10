@@ -10,12 +10,12 @@
             [quiescent.dom :as d]
             [offcourse.views.actions :as actions]))
 
-(defn Sidebar [{:keys [level tags collection-names course resource checkpoint] :as vm} handlers]
+(defn Sidebar [{:keys [level tag-names user-names collection-names course resource checkpoint] :as vm} handlers]
+  (println tag-names)
   (d/section {:className (css/classes "sidebar")}
              (d/div {:className "sidebar-logo"}
                     (Logo handlers))
              (case level
-               :tags (TagsCard tags handlers)
-               :collection (Collections-Navigation collection-names handlers)
+               :collection (Collections-Navigation collection-names tag-names user-names handlers)
                :course (CourseCard course handlers)
                :checkpoint (CheckpointCard checkpoint course resource handlers true))))

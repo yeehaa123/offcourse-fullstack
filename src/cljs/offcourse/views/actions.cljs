@@ -24,7 +24,8 @@
                                :checkpoint-id checkpoint-id
                                :highlight highlight))
 
-     :go-to-collection  (fn [collection-name]
+     :go-to-collection  (fn [collection-name event]
+                          (.stopPropagation event)
                           (>>! :requested-level
                                :level :collection
                                :collection-type :named-collection
