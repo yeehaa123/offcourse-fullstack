@@ -1,6 +1,7 @@
 (ns offcourse.appstate.model
   (:require [offcourse.models.action :refer [respond]]
             [offcourse.models.course :as co]
+            [offcourse.models.courses :as cs]
             [offcourse.models.checkpoint :as cp]
             [offcourse.models.resource :as r]
             [offcourse.appstate.viewmodel :as vm]))
@@ -52,9 +53,20 @@
 (defn refresh-tags [appstate tags collection]
   (assoc-in appstate [:viewmodel] (vm/new-tags collection tags)))
 
-(defn refresh-collection [{:keys [level] :as appstate} courses collection-ids collection-names]
-  (let [{:keys [collection-name collection-type]} level]
-    (set-viewmodel appstate (vm/new-collection collection-type collection-name collection-ids courses collection-names))))
+(defn refresh-collection [{:keys [level] :as appstate} {:keys [collections courses]}]
+  (let [{:keys [collection-name collection-type]} level
+        collection-names (keys (collection-type collections))
+        collection-name (if (= collection-name :unknown)
+                          (second collection-names)
+                          collection-name)
+        {:keys [collection-ids] :as collection} (get-in collections [collection-type collection-name])
+        collection (assoc collection :collection-type collection-t)
+        found-courses (cs/find-courses courses collection-ids)
+        courses (if (not-any? nil? (vals found-courses))
+                  found-courses
+                  :unknown)]
+    (println collection)
+    (set-viewmodel appstate (vm/new-collection collections collection courses))))
 
 (defn refresh-course [appstate course resources]
   (let [urls (into #{} (co/get-resource-urls course))

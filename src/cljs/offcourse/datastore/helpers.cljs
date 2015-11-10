@@ -20,7 +20,7 @@
                              :store @store)]
        (case type
          :tags                (response)
-         :collection-names    (response)
+         :collections         (response)
          :collection          (response :collection-type collection-type
                                         :collection-name collection-name)
          :courses             (response :course-ids course-ids)
@@ -34,10 +34,10 @@
                              :type type
                              :store @store)]
       (case type
-        :tags       (response)
-        :collection-names (response)
-        :collection (response)
-        :course     (response)))))
+        :tags        (response)
+        :collections (response)
+        :collection  (response)
+        :course      (response)))))
 
   (defn respond-ignore []
     respond :ignore))

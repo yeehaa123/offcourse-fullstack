@@ -34,11 +34,11 @@
 (defn update-resources [{:keys [resources]}]
   (update-and-respond! #(model/update-resources %1 resources)))
 
-(defn- update-collection-names [collection-names]
-  (update-and-respond! #(model/update-collection-names %1 collection-names)))
+(defn- update-collections [collections]
+  (update-and-respond! #(model/update-collections %1 collections)))
 
-(defn- update-collections [{:keys [collection-ids] :as collection}]
-  (update-and-respond! #(model/update-collections %1 collection)))
+(defn- update-collection [{:keys [collection-ids] :as collection}]
+  (update-and-respond! #(model/update-collection %1 collection)))
 
 (defn- update-course [course]
   (update-and-respond! #(model/update-course %1 course)))
@@ -58,20 +58,18 @@
     (add-checkpoint payload)
     (helpers/respond-ignore)))
 
-(defn get-collection-names []
-  (let [collection-names (keys (get-in @store [:collections]))]
-    (if (empty? collection-names)
-      (helpers/respond-not-found :collection-names)
-      (helpers/respond-checked :collection-names))))
+(defn get-collections []
+  (let [collections (get-in @store [:collections :named-collection])]
+    (if (empty? collections)
+      (helpers/respond-not-found :collections)
+      (helpers/respond-checked :collections))))
 
-(defn- get-collection [{:keys [collection-type collection-name] :as payload}]
-  (let [collections (:collections @store)
-        collection (get-in collections [collection-type collection-name])]
-    (if (empty? collection)
-      (helpers/respond-not-found :collection {:collection-type collection-type
-                                              :collection-name collection-name})
-      (helpers/respond-checked :collection {:collection-type collection-type
-                                            :collection-name collection-name}))))
+(defn- get-collection [{:keys [collection-type collection-name collection-ids]}]
+  (let [store-collection-ids (get-in @store [:collections collection-type collection-name :collection-ids])]
+    (if-not (or collection-ids store-collection-ids)
+      (respond :ignore)
+      (helpers/respond-not-found :courses {:course-ids collection-ids}))))
+
 (defn- get-tags [payload]
   (let [tags (:tags @store)]
     (if tags
@@ -103,19 +101,19 @@
     :checkpoint (save-checkpoint payload)))
 
 (defn get-data [{:keys [data]}]
-  (let [{:keys [type] :as payload} (first data)]
+  (let [{:keys [type] :as payload} data]
     (case type
-      :collection-names (get-collection-names)
-      :tags       (get-tags payload)
-      :collection (get-collection payload)
+      :collections (get-collections)
+      :tags       (get-tags data)
+      :collection (get-collection (type data))
       :course     (get-course payload)
       :checkpoint (get-course payload))))
 
-(defn update-datastore [{:keys [type course tags collection collection-names] :as payload}]
+(defn update-datastore [{:keys [type course tags collection collections collection-names] :as payload}]
   (case type
-    :collection-names (update-collection-names collection-names)
-    :tags       (update-tags tags)
-    :collection (update-collections collection)
-    :course     (update-course course)
-    :courses    (update-courses payload)
-    :resources  (update-resources payload)))
+    :collections (update-collections collections)
+    :tags        (update-tags tags)
+    :collection  (update-collection collection)
+    :course      (update-course course)
+    :courses     (update-courses payload)
+    :resources   (update-resources payload)))

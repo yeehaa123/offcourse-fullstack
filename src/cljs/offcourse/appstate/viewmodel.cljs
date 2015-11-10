@@ -2,13 +2,12 @@
   (:require [offcourse.models.course :as co]
             [offcourse.models.checkpoint :as cp]
             [offcourse.models.collection :as cl]
-            [offcourse.models.courses :as cs]
-            [cljs.core.match :refer-macros [match]]))
+            [offcourse.models.courses :as cs]))
 
 (defrecord CheckpointViewmodel [level course checkpoint-id])
 (defrecord CourseViewmodel [course resources])
 (defrecord TagsViewmodel [level tags collection])
-(defrecord CollectionViewmodel [level collection courses])
+(defrecord CollectionViewmodel [level collections collection courses load-order])
 
 (defn new-checkpoint
   ([course-id checkpoint-id]
@@ -35,24 +34,19 @@
                           :course course
                           :resources resources})))
 
-(defn new-collection
-  ([collection-type collection-name courses]
-   (map->CollectionViewmodel {:level :collection
-                              :collection-names :unknown
-                              :collection (cl/new-collection collection-type
-                                                             collection-name
-                                                             :unknown)
-                              :courses courses
-                              :load-order [:collection-names :collection]}))
-  ([collection-type collection-name collection-ids courses collection-names]
-   (map->CollectionViewmodel {:level :collection
-                              :collection-names collection-names
-                              :collection (cl/new-collection collection-type
-                                                             collection-name
-                                                             collection-ids)
-                              :courses courses
-                              :load-order [:collection-names :collection]})))
+(defn bootstrap-collection []
+  (map->CollectionViewmodel {:level :collection
+                             :collections :unknown
+                             :collection :unknown
+                             :courses :unknown
+                             :load-order [:collections :courses]}))
 
+(defn new-collection [collections collection courses]
+  (map->CollectionViewmodel {:level :collection
+                             :collections collections
+                             :collection collection
+                             :courses courses
+                             :load-order [:collections :courses]}))
 
 (defn new-tags [courses tags]
   (map->TagsViewmodel {:level :tags
@@ -69,26 +63,21 @@
 
 (defn select [{:keys [type course-id checkpoint-id collection-type collection-name]}]
   (case type
-    :collection (new-collection collection-type collection-name :unknown)
+    :collection (bootstrap-collection)
     :tags (new-tags :unknown :unknown)
     :course (new-course course-id)
     :checkpoint (new-checkpoint course-id checkpoint-id)))
 
-(defn add-field [field {:keys [collection collections] :as vm} store]
-  (case field
-    :collection-names (let [collection-names (keys (get-in store [:collections :named-collection]))]
-                        (if (empty? collection-names)
-                          {:type field}
-                          nil))
-    :collection (let [{:keys [collection-type collection-name]} collection
-                      collection (get-in store [:collections collection-type collection-name])]
-                  (cond
-                    (not collection) (assoc (field vm) :type field)
-                    (empty? collection) (assoc (field vm) :type field)
-                    :default nil))
-    :courses {:type field}))
+(defn is-known? [field viewmodel]
+  (if (= :unknown (field viewmodel)) field false))
 
-(defn missing-data [{:keys [load-order] :as vm} store]
-  (->> load-order
-       (map #(add-field %1 vm store))
-       (remove nil?)))
+(defn next-unknown-resource [viewmodel]
+  (let [load-order (:load-order viewmodel)
+        missing-resources (remove false? (map #(is-known? %1 viewmodel) load-order))
+        next-field (first missing-resources)]
+    (case next-field
+      :collections {:type next-field
+                    next-field (next-field viewmodel)}
+      :courses {:type :collection
+                :collection (:collection viewmodel)}
+      false)))

@@ -3,7 +3,8 @@
             [offcourse.appstate.viewmodel :as vm]
             [offcourse.models.course :as co]
             [offcourse.models.courses :as cs]
-            [offcourse.models.action :refer [respond]]))
+            [offcourse.models.action :refer [respond]]
+            [cljs.core.match :refer-macros [match]]))
 
 (def appstate (atom (model/new-appstate)))
 
@@ -24,17 +25,14 @@
 (defn- refresh-tags [{:keys [tags courses]}]
   (update-appstate! #(model/refresh-tags %1 tags courses)))
 
-(defn- refresh-collection [{:keys [collections courses] :as store}]
-  (let [{:keys [collection-type collection-name]} (get-in @appstate [:level])
-        course-ids (get-in collections [collection-type collection-name])
-        courses (cs/find-courses courses course-ids)
-        collection-names (keys (get-in collections [:named-collection]))
-        missing-data (vm/missing-data (:viewmodel @appstate) store)]
-    (println missing-data)
-    (if (empty? missing-data)
-      (update-appstate! #(model/refresh-collection %1 courses course-ids collection-names))
+(defn- refresh-collection [store]
+  (let [appstate (swap! appstate #(model/refresh-collection %1 store))
+        next-missing-resource (vm/next-unknown-resource (:viewmodel appstate))]
+    (if next-missing-resource
       (respond :requested-data
-               :data missing-data))))
+               :data next-missing-resource)
+      (respond :updated-appstate
+               :appstate appstate))))
 
 (defn- refresh-course [{:keys [courses resources]}]
   (let [{:keys [course-id checkpoint-id]} (:level @appstate)
@@ -52,17 +50,17 @@
 (defn toggle-mode []
   (update-appstate! #(model/toggle-mode %1)))
 
-(defn get-data [payload]
-  (let [missing-data (vm/missing-data (:viewmodel @appstate) payload)]
-    (println missing-data)
-    (respond :requested-data
-             :data missing-data)))
 
 (defn set-level [payload]
-  (swap! appstate #(model/set-level %1 payload)))
+  (let [appstate (swap! appstate #(model/set-level %1 payload))
+        bootstrap-resource (vm/next-unknown-resource (:viewmodel appstate))]
+    (println "br " bootstrap-resource)
+    (respond :requested-data
+             :data bootstrap-resource)))
 
 (defn refresh [{:keys [store] :as payload}]
-  (let [{type :type :as level} (:level @appstate)]
+  (let [{:keys [level]} @appstate
+        {:keys [type]} level]
     (case type
       :tags (refresh-tags store)
       :collection (refresh-collection store)

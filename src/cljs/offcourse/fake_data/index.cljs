@@ -73,8 +73,17 @@
        (map-indexed (fn [id _] [id (generate-course id (generate-user))]))
        (into {})))
 
+(def raw-collections
+  [[:featured (into #{} (take 10 (iterate inc 1)))]
+   [:popular (into #{} (take 5 (iterate inc 2)))]
+   [:new (into #{} (take 4 (iterate inc 4)))]])
+
+(def named-collections
+  (->> raw-collections
+       (map (fn [[collection-name collection-ids]]
+              [collection-name {:collection-name collection-name
+                                :collection-ids collection-ids}]))
+       (into {})))
+
 (defn named-collection [collection-name]
-  (let [collections {:featured (into #{} (take 10 (iterate inc 1)))
-                     :popular (into #{} (take 5 (iterate inc 2)))
-                     :new (into #{} (take 4 (iterate inc 4)))}]
-    (collection-name collections)))
+  (collection-name named-collections))

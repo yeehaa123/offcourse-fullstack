@@ -57,4 +57,4 @@
   (defroute (:home route-names) []
     (response :collection
               :collection-type :named-collection
-              :collection-name :featured)))
+              :collection-name :unknown)))

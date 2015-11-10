@@ -12,7 +12,7 @@
 (defn fetch [{:keys [type] :as payload}]
   (case type
     :tags (fetch-all-tags fake-data/courses)
-    :collection-names (respond :ignore)
+    :collections (respond :ignore)
     :collection (respond :ignore)
     :courses (respond :ignore)
     :course  (respond :ignore)
