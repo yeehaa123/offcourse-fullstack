@@ -4,25 +4,11 @@
             [offcourse.models.collection :as cl]
             [offcourse.appstate.viewmodels.collection :as cl-vm]
             [offcourse.appstate.viewmodels.course :as co-vm]
-
+            [offcourse.appstate.viewmodels.checkpoint :as cp-vm]
             [offcourse.models.courses :as cs]))
 
 (defrecord CheckpointViewmodel [level course checkpoint-id])
 (defrecord CourseViewmodel [course resources])
-
-(defn new-checkpoint
-  ([course-id checkpoint-id]
-   (map->CheckpointViewmodel {:level :checkpoint
-                              :course (co/new course-id :unknown :unknown :unknown)
-                              :checkpoint (cp/new {:checkpoint-id checkpoint-id})
-                              :resource :unknown
-                              :load-order [:course]}))
-   ([course checkpoint-id resources]
-    (map->CheckpointViewmodel {:level :checkpoint
-                               :course course
-                               :checkpoint (co/find-checkpoint course checkpoint-id)
-                               :resource :unknown
-                               :load-order [:course]})))
 
 (defn highlight-course [viewmodel checkpoint-id highlight]
   (update-in viewmodel [:course]
@@ -36,10 +22,11 @@
   (case type
     :collection (cl-vm/new-collection)
     :course (co-vm/new-course {:course-id course-id})
-    :checkpoint (new-checkpoint course-id checkpoint-id)))
-
+    :checkpoint (cp-vm/new-checkpoint {:course-id course-id
+                                       :checkpoint-id checkpoint-id})))
 
 (defn check[{:keys [level] :as viewmodel}]
   (case level
     :collection (cl-vm/check viewmodel)
-    :course (co-vm/check viewmodel)))
+    :course (co-vm/check viewmodel)
+    :checkpoint (cp-vm/check viewmodel)))

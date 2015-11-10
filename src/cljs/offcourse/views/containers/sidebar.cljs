@@ -11,7 +11,6 @@
             [offcourse.views.actions :as actions]))
 
 (defn Sidebar [{:keys [level tag-names user-names collection-names course resource checkpoint] :as vm} handlers]
-  (println tag-names)
   (d/section {:className (css/classes "sidebar")}
              (d/div {:className "sidebar-logo"}
                     (Logo handlers))

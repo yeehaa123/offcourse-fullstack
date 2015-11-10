@@ -39,7 +39,6 @@
   (update-and-respond! #(model/update-collections %1 collections)))
 
 (defn- update-collection [collection]
-  (println collection)
   (update-and-respond! #(model/update-collection %1 collection)))
 
 (defn- update-course [course]
@@ -49,7 +48,6 @@
   (update-and-respond! #(model/update-courses %1 courses)))
 
 (defn update-users [users]
-  (println users)
   (update-and-respond! #(model/update-users %1 users)))
 
 (defn- toggle-done [{:keys [course-id checkpoint-id]}]
@@ -115,7 +113,6 @@
 
 (defn get-data [{:keys [data]}]
   (let [{:keys [type course] :as payload} data]
-    (println data)
     (case type
       :collection-names (get-collection-names)
       :tag-names       (get-tags)

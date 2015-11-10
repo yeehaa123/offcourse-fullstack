@@ -13,6 +13,7 @@
 
 (defn respond-resource-required [field {:keys [course collection]}]
   (swap! counter inc)
+  (println field)
   (let [resource-data (case field
                         :collection-names {:type field}
                         :tag-names {:type field}
@@ -34,12 +35,7 @@
              :appstate @appstate)))
 
 (defn- refresh-checkpoint [{:keys [courses resources]}]
-  (let [{:keys [course-id checkpoint-id]} (:level @appstate)
-        course (get courses course-id)
-        checkpoint (co/find-checkpoint course checkpoint-id)]
-    (if (or checkpoint (= checkpoint-id :new))
-      (update-appstate! #(model/update-checkpoint %1 course checkpoint-id resources))
-      (respond :not-found-resource))))
+  (println courses resources))
 
 (defn- refresh-collection [store]
   (let [appstate (swap! appstate #(model/refresh-collection %1 store))
@@ -80,7 +76,7 @@
         errors (vm/check viewmodel)
         unknown-fields (keys errors)
         next-unknown-field (first unknown-fields)]
-    (println errors)
+    (println viewmodel)
     (respond-resource-required next-unknown-field viewmodel)))
 
 (defn refresh [{:keys [store] :as payload}]

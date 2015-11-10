@@ -10,7 +10,6 @@
             [quiescent.dom :as d]))
 
 (defn App [{:keys [viewmodel user-id mode]} handlers]
-  (println viewmodel)
   (d/section {:className (css/classes "app" mode "waypoints")}
              (d/div {:className "layout-sidebar"}
                     (Sidebar viewmodel handlers))
