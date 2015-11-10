@@ -1,8 +1,18 @@
 (ns offcourse.models.collection
   (:require [offcourse.models.course :as co]
+            [schema.core :as schema :include-macros true]
             [clojure.set :as set]))
 
-(defrecord Collection [collection-type collection-name collection-ids])
+
+(schema/defrecord Collection
+    [collection-type :- schema/Keyword
+     collection-name :- schema/Keyword
+     collection-ids :- #{schema/Int}])
+
+(def Collections
+  {:named-collection {:featured Collection
+                      :new Collection
+                      :popular Collection}})
 
 (defn new-collection [collection-type collection-name collection-ids]
   (Collection. collection-type collection-name collection-ids))

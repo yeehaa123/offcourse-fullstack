@@ -3,6 +3,7 @@
             [offcourse.models.course :as co]
             [offcourse.models.courses :as cs]
             [offcourse.models.checkpoint :as cp]
+            [offcourse.appstate.collection-viewmodel :as cl-vm]
             [offcourse.models.resource :as r]
             [offcourse.appstate.viewmodel :as vm]))
 
@@ -57,12 +58,14 @@
                           (second collection-names)
                           collection-name)
         {:keys [collection-ids] :as collection} (get-in collections [collection-type collection-name])
-        collection (assoc collection :collection-type collection-type)
+        collection {:collection-name collection-name
+                    :collection-type collection-type
+                    :collection-ids collection-ids}
         found-courses (cs/find-courses courses collection-ids)
         courses (if (not-any? nil? (vals found-courses))
                   found-courses
                   :unknown)]
-    (set-viewmodel appstate (vm/new-collection collections collection courses))))
+    (set-viewmodel appstate (cl-vm/new-collection collections collection courses))))
 
 (defn refresh-course [appstate course resources]
   (let [urls (into #{} (co/get-resource-urls course))

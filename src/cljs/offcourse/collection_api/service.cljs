@@ -1,14 +1,17 @@
 (ns offcourse.collection-api.service
   (:require [cljs.core.match :refer-macros [match]]
             [offcourse.fake-data.index :as fake-data]
-            [offcourse.models.collection :as cl]
+            [offcourse.models.collection :as cl :refer [map->Collection]]
             [offcourse.models.action :refer [respond]]))
 
 (defn fetch-named-collections [_]
-  (println fake-data/named-collections)
+  (let [collections (->> fake-data/named-collections
+                         (map (fn [[id collection]]
+                                [id (map->Collection collection)]))
+                         (into {}))]
   (respond :fetched-data
            :type :collections
-           :collections fake-data/named-collections))
+           :collections collections)))
 
 (defn fetch-named-collection [collection-name]
   (respond :fetched-data

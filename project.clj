@@ -20,6 +20,7 @@
                  [secretary "1.2.3"]
                  [env/faker "0.4.0"]
                  [org.clojure/core.match "0.3.0-alpha4"]
+                 [prismatic/schema "1.0.3"]
                  [devcards "0.2.0-8"]]
 
   :plugins [[lein-environ "1.0.1"]

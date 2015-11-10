@@ -59,8 +59,7 @@
 
 (defn- index-checkpoints [checkpoints]
   (->> checkpoints
-       (map-indexed #(index-checkpoint %1 %2))
-       (into {})))
+       (map-indexed #(index-checkpoint %1 %2))))
 
 (defn generate-course [id curator]
   (-> course
@@ -82,6 +81,7 @@
   (->> raw-collections
        (map (fn [[collection-name collection-ids]]
               [collection-name {:collection-name collection-name
+                                :collection-type :named-collection
                                 :collection-ids collection-ids}]))
        (into {})))
 

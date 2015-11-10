@@ -1,10 +1,21 @@
 (ns offcourse.appstate.store
   (:require [offcourse.appstate.model :as model]
             [offcourse.appstate.viewmodel :as vm]
+            [offcourse.appstate.collection-viewmodel :as cl-vm]
             [offcourse.models.course :as co]
             [offcourse.models.courses :as cs]
             [offcourse.models.action :refer [respond]]
             [cljs.core.match :refer-macros [match]]))
+
+(defn respond-resource-required [field {:keys [collection]}]
+  (let [resource-data (case field
+                        :collections {:type field}
+                        :collection  {:type :collection
+                                      :collection collection}
+                        :courses     {:type :collection
+                                      :collection collection})]
+    (respond :requested-data
+             :data resource-data)))
 
 (def appstate (atom (model/new-appstate)))
 
@@ -24,10 +35,11 @@
 
 (defn- refresh-collection [store]
   (let [appstate (swap! appstate #(model/refresh-collection %1 store))
-        next-missing-resource (vm/next-unknown-resource (:viewmodel appstate))]
-    (if next-missing-resource
-      (respond :requested-data
-               :data next-missing-resource)
+        viewmodel (:viewmodel appstate)
+        unknown-fields (keys (cl-vm/check viewmodel))
+        next-unknown-field (first unknown-fields)]
+    (if next-unknown-field
+      (respond-resource-required next-unknown-field viewmodel)
       (respond :updated-appstate
                :appstate appstate))))
 
@@ -50,10 +62,10 @@
 
 (defn set-level [payload]
   (let [appstate (swap! appstate #(model/set-level %1 payload))
-        bootstrap-resource (vm/next-unknown-resource (:viewmodel appstate))]
-    (println "br " bootstrap-resource)
-    (respond :requested-data
-             :data bootstrap-resource)))
+        viewmodel (:viewmodel appstate)
+        unknown-fields (keys (cl-vm/check viewmodel))
+        next-unknown-field (first unknown-fields)]
+    (respond-resource-required next-unknown-field viewmodel)))
 
 (defn refresh [{:keys [store] :as payload}]
   (let [{:keys [level]} @appstate
