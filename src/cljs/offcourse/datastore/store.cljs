@@ -37,7 +37,7 @@
 (defn- update-collections [collections]
   (update-and-respond! #(model/update-collections %1 collections)))
 
-(defn- update-collection [{:keys [collection-ids] :as collection}]
+(defn- update-collection [collection]
   (update-and-respond! #(model/update-collection %1 collection)))
 
 (defn- update-course [course]
@@ -67,7 +67,8 @@
 (defn- get-collection [{:keys [collection-type collection-name collection-ids]}]
   (let [store-collection-ids (get-in @store [:collections collection-type collection-name :collection-ids])]
     (if-not (or collection-ids store-collection-ids)
-      (respond :ignore)
+      (helpers/respond-not-found :collection {:collection-name collection-name
+                                              :collection-type collection-type})
       (helpers/respond-not-found :courses {:course-ids collection-ids}))))
 
 (defn- get-tags [payload]

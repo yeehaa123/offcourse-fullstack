@@ -4,29 +4,32 @@
             [offcourse.models.collection :as cl :refer [map->Collection]]
             [offcourse.models.action :refer [respond]]))
 
+
+(defn wrap-collections [collections]
+  (->> collections
+       (map (fn [[id collection]]
+              [id (map->Collection collection)]))
+       (into {})))
+
 (defn fetch-named-collections [_]
-  (let [collections (->> fake-data/named-collections
-                         (map (fn [[id collection]]
-                                [id (map->Collection collection)]))
-                         (into {}))]
   (respond :fetched-data
            :type :collections
-           :collections collections)))
+           :collections (wrap-collections fake-data/named-collections)))
 
 (defn fetch-named-collection [collection-name]
   (respond :fetched-data
-           :type :collection
-           :collection (cl/named-collection collection-name)))
+           :type :collectionj
+           :collection (wrap-collections (cl/named-collection collection-name))))
 
 (defn fetch-user-collection [collection-name]
   (respond :fetched-data
            :type :collection
-           :collection (cl/find-user-collection fake-data/courses collection-name)))
+           :collection (map->Collection (cl/find-user-collection fake-data/courses collection-name))))
 
 (defn fetch-tags-collection [collection-name]
   (respond :fetched-data
            :type :collection
-           :collection (cl/find-tag-collection fake-data/courses collection-name)))
+           :collection (map->Collection (cl/find-tag-collection fake-data/courses collection-name))))
 
 (defn fetch-collection [{:keys [collection-type collection-name]}]
   (case collection-type

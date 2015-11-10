@@ -5,14 +5,12 @@
 
 
 (schema/defrecord Collection
-    [collection-type :- schema/Keyword
-     collection-name :- schema/Keyword
+    [collection-type :- Keyword
+     collection-name :- Keyword
      collection-ids :- #{schema/Int}])
 
 (def Collections
-  {:named-collection {:featured Collection
-                      :new Collection
-                      :popular Collection}})
+  {schema/Any {schema/Any Collection}})
 
 (defn new-collection [collection-type collection-name collection-ids]
   (Collection. collection-type collection-name collection-ids))

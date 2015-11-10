@@ -17,6 +17,7 @@
     (respond :requested-data
              :data resource-data)))
 
+
 (def appstate (atom (model/new-appstate)))
 
 (defn- update-appstate! [fn]
@@ -38,6 +39,7 @@
         viewmodel (:viewmodel appstate)
         unknown-fields (keys (cl-vm/check viewmodel))
         next-unknown-field (first unknown-fields)]
+    (println (cl-vm/check viewmodel))
     (if next-unknown-field
       (respond-resource-required next-unknown-field viewmodel)
       (respond :updated-appstate
