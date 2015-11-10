@@ -1,6 +1,7 @@
 (ns offcourse.datastore.store
   (:require [offcourse.datastore.model :as model]
             [offcourse.models.course :as c]
+            [offcourse.models.collection :as cl]
             [clojure.set :as set]
             [cljs.core.match :refer-macros [match]]
             [offcourse.models.action :refer [respond]]
@@ -38,6 +39,7 @@
   (update-and-respond! #(model/update-collections %1 collections)))
 
 (defn- update-collection [collection]
+  (println collection)
   (update-and-respond! #(model/update-collection %1 collection)))
 
 (defn- update-course [course]
@@ -58,11 +60,11 @@
     (add-checkpoint payload)
     (helpers/respond-ignore)))
 
-(defn get-collections []
-  (let [collections (get-in @store [:collections :named-collection])]
-    (if (empty? collections)
+(defn- get-collection-names []
+  (let [collection-names (cl/collection-names (get-in @store [:collections :named-collection]))]
+    (if-not collection-names
       (helpers/respond-not-found :collections)
-      (helpers/respond-checked :collections))))
+      (helpers/respond-not-found :collections))))
 
 (defn- get-collection [{:keys [collection-type collection-name collection-ids]}]
   (let [store-collection-ids (get-in @store [:collections collection-type collection-name :collection-ids])]
@@ -104,7 +106,7 @@
 (defn get-data [{:keys [data]}]
   (let [{:keys [type] :as payload} data]
     (case type
-      :collections (get-collections)
+      :collection-names (get-collection-names)
       :tags       (get-tags data)
       :collection (get-collection (type data))
       :course     (get-course payload)

@@ -27,9 +27,10 @@
            :collection (map->Collection (cl/find-user-collection fake-data/courses collection-name))))
 
 (defn fetch-tags-collection [collection-name]
-  (respond :fetched-data
-           :type :collection
-           :collection (map->Collection (cl/find-tag-collection fake-data/courses collection-name))))
+  (let [collection (map->Collection (cl/find-tag-collection fake-data/courses collection-name))]
+    (respond :fetched-data
+             :type :collection
+             :collection collection)))
 
 (defn fetch-collection [{:keys [collection-type collection-name]}]
   (case collection-type

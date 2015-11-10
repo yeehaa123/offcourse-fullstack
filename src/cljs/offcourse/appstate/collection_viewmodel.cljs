@@ -5,20 +5,17 @@
 
 (schema/defrecord CollectionViewmodel
     [level :- Keyword
-     collections :- Collections
+     collection-names :- #{schema/Keyword}
      collection :- Collection
-     courses :- {schema/Int schema/Any}
-     load-order :- [Keyword]])
+     courses :- {schema/Int schema/Any}])
 
 (defn new-collection
-  ([] (map->CollectionViewmodel {:level :collection
-                                 :load-order [:collections :courses]}))
-  ([collections collection courses]
+  ([] (map->CollectionViewmodel {:level :collection}))
+  ([collection-names collection courses]
    (map->CollectionViewmodel {:level :collection
-                              :collections collections
+                              :collection-names collection-names
                               :collection (map->Collection collection)
-                              :courses courses
-                              :load-order [:collections :courses]})))
+                              :courses courses})))
 
 (defn check[viewmodel]
   (schema/check CollectionViewmodel viewmodel))

@@ -7,6 +7,8 @@
             [offcourse.models.resource :as r]
             [offcourse.appstate.viewmodel :as vm]))
 
+(def counter (atom 0))
+
 (defrecord AppState [level mode course-collections viewmodel])
 
 (defn new-appstate []
@@ -52,11 +54,10 @@
     (refresh-checkpoint appstate course resources)))
 
 (defn refresh-collection [{:keys [level] :as appstate} {:keys [collections courses]}]
+  (swap! counter inc)
   (let [{:keys [collection-name collection-type]} level
-        collection-names (keys (collection-type collections))
-        collection-name (if (= collection-name :unknown)
-                          (second collection-names)
-                          collection-name)
+        collection-names (into #{} (keys (:named-collection collections)))
+        collection-name (if (= collection-name :unknown) (second collection-name) collection-name)
         {:keys [collection-ids] :as collection} (get-in collections [collection-type collection-name])
         collection {:collection-name collection-name
                     :collection-type collection-type
@@ -65,7 +66,8 @@
         courses (if (not-any? nil? (vals found-courses))
                   found-courses
                   :unknown)]
-    (set-viewmodel appstate (cl-vm/new-collection collections collection courses))))
+    (when (< @counter 100)
+      (set-viewmodel appstate (cl-vm/new-collection collection-names collection courses)))))
 
 (defn refresh-course [appstate course resources]
   (let [urls (into #{} (co/get-resource-urls course))

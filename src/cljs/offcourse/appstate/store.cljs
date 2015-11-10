@@ -9,7 +9,7 @@
 
 (defn respond-resource-required [field {:keys [collection]}]
   (let [resource-data (case field
-                        :collections {:type field}
+                        :collection-names {:type field}
                         :collection  {:type :collection
                                       :collection collection}
                         :courses     {:type :collection
@@ -39,7 +39,7 @@
         viewmodel (:viewmodel appstate)
         unknown-fields (keys (cl-vm/check viewmodel))
         next-unknown-field (first unknown-fields)]
-    (println (cl-vm/check viewmodel))
+    (println viewmodel)
     (if next-unknown-field
       (respond-resource-required next-unknown-field viewmodel)
       (respond :updated-appstate
