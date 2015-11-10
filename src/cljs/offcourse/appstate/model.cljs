@@ -50,9 +50,6 @@
     (add-checkpoint appstate course)
     (refresh-checkpoint appstate course resources)))
 
-(defn refresh-tags [appstate tags collection]
-  (assoc-in appstate [:viewmodel] (vm/new-tags collection tags)))
-
 (defn refresh-collection [{:keys [level] :as appstate} {:keys [collections courses]}]
   (let [{:keys [collection-name collection-type]} level
         collection-names (keys (collection-type collections))
@@ -60,12 +57,11 @@
                           (second collection-names)
                           collection-name)
         {:keys [collection-ids] :as collection} (get-in collections [collection-type collection-name])
-        collection (assoc collection :collection-type collection-t)
+        collection (assoc collection :collection-type collection-type)
         found-courses (cs/find-courses courses collection-ids)
         courses (if (not-any? nil? (vals found-courses))
                   found-courses
                   :unknown)]
-    (println collection)
     (set-viewmodel appstate (vm/new-collection collections collection courses))))
 
 (defn refresh-course [appstate course resources]

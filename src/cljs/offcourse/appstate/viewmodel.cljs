@@ -6,7 +6,6 @@
 
 (defrecord CheckpointViewmodel [level course checkpoint-id])
 (defrecord CourseViewmodel [course resources])
-(defrecord TagsViewmodel [level tags collection])
 (defrecord CollectionViewmodel [level collections collection courses load-order])
 
 (defn new-checkpoint
@@ -48,10 +47,6 @@
                              :courses courses
                              :load-order [:collections :courses]}))
 
-(defn new-tags [courses tags]
-  (map->TagsViewmodel {:level :tags
-                       :tags tags
-                       :courses courses}))
 
 (defn highlight-course [viewmodel checkpoint-id highlight]
   (update-in viewmodel [:course]

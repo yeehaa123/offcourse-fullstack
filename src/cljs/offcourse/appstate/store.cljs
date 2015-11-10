@@ -22,9 +22,6 @@
       (update-appstate! #(model/update-checkpoint %1 course checkpoint-id resources))
       (respond :not-found-resource))))
 
-(defn- refresh-tags [{:keys [tags courses]}]
-  (update-appstate! #(model/refresh-tags %1 tags courses)))
-
 (defn- refresh-collection [store]
   (let [appstate (swap! appstate #(model/refresh-collection %1 store))
         next-missing-resource (vm/next-unknown-resource (:viewmodel appstate))]
@@ -62,7 +59,6 @@
   (let [{:keys [level]} @appstate
         {:keys [type]} level]
     (case type
-      :tags (refresh-tags store)
       :collection (refresh-collection store)
       :course (refresh-course store)
       :checkpoint (refresh-checkpoint store))))
