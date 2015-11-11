@@ -7,7 +7,7 @@
 (schema/defrecord Collection
     [collection-type :- Keyword
      collection-name :- Keyword
-     collection-ids :- #{schema/Int}])
+     collection-ids :- #{schema/Num}])
 
 (def Collections
   {schema/Any {schema/Any Collection}})

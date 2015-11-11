@@ -4,7 +4,7 @@
             [offcourse.fake-data.index :as fake-data]))
 
 (schema/defrecord Course
-    [course-id :- schema/Int
+    [course-id :- schema/Num
      curator :- schema/Str
      goal :- schema/Str
      checkpoints :- {schema/Int Checkpoint}])

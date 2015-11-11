@@ -3,7 +3,7 @@
             [offcourse.fake-data.index :as fake-data]))
 
 (schema/defrecord Checkpoint
-    [checkpoint-id :- schema/Int
+    [checkpoint-id :- schema/Num
      task :- schema/Str
      url :- schema/Str
      completed :- schema/Bool

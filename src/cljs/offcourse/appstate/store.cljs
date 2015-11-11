@@ -4,7 +4,6 @@
             [offcourse.appstate.viewmodels.collection :as cl-vm]
             [offcourse.appstate.viewmodels.course :as co-vm]
             [offcourse.models.course :as co]
-            [offcourse.models.courses :as cs]
             [offcourse.models.action :refer [respond]]
             [cljs.core.match :refer-macros [match]]))
 
@@ -33,30 +32,8 @@
     (respond :updated-appstate
              :appstate @appstate)))
 
-(defn- refresh-checkpoint [store]
-  (let [appstate (swap! appstate #(model/refresh-checkpoint %1 store))
-        viewmodel (:viewmodel appstate)
-        errors  (vm/check viewmodel)
-        unknown-fields (keys errors)
-        next-unknown-field (first unknown-fields)]
-    (if next-unknown-field
-      (respond-resource-required next-unknown-field viewmodel)
-      (respond :updated-appstate
-               :appstate appstate))))
-
-(defn- refresh-collection [store]
-  (let [appstate (swap! appstate #(model/refresh-collection %1 store))
-        viewmodel (:viewmodel appstate)
-        errors  (vm/check viewmodel)
-        unknown-fields (keys errors)
-        next-unknown-field (first unknown-fields)]
-    (if next-unknown-field
-      (respond-resource-required next-unknown-field viewmodel)
-      (respond :updated-appstate
-               :appstate appstate))))
-
-(defn- refresh-course [{:keys [courses resources] :as store}]
-  (let [appstate (swap! appstate #(model/refresh-course %1 store))
+(defn- refresh-appstate [fn store]
+  (let [appstate (swap! appstate #(fn %1 store))
         viewmodel (:viewmodel appstate)
         errors  (vm/check viewmodel)
         unknown-fields (keys errors)
@@ -87,9 +64,9 @@
   (let [{:keys [level]} @appstate
         {:keys [type]} level]
     (case type
-      :collection (refresh-collection store)
-      :course (refresh-course store)
-      :checkpoint (refresh-checkpoint store))))
+      :collection (refresh-appstate model/refresh-collection store)
+      :course (refresh-appstate model/refresh-course store)
+      :checkpoint (refresh-appstate model/refresh-checkpoint store))))
 
 (defn toggle-highlight [payload]
   (let [{type :type :as level} (:level @appstate)]
