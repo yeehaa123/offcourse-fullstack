@@ -13,7 +13,6 @@
 
 (defn respond-resource-required [field {:keys [course collection]}]
   (swap! counter inc)
-  (println field)
   (let [resource-data (case field
                         :collection-names {:type field}
                         :tag-names {:type field}
@@ -24,7 +23,7 @@
                                       :collection collection}
                         :course    {:type :course
                                     :course course})]
-    (when (< @counter 10)
+    (when (< @counter 1000)
       (respond :requested-data
                :data resource-data))))
 
@@ -40,7 +39,6 @@
         errors  (vm/check viewmodel)
         unknown-fields (keys errors)
         next-unknown-field (first unknown-fields)]
-    (println errors)
     (if next-unknown-field
       (respond-resource-required next-unknown-field viewmodel)
       (respond :updated-appstate
@@ -52,7 +50,6 @@
         errors  (vm/check viewmodel)
         unknown-fields (keys errors)
         next-unknown-field (first unknown-fields)]
-    (println errors)
     (if next-unknown-field
       (respond-resource-required next-unknown-field viewmodel)
       (respond :updated-appstate
@@ -64,7 +61,6 @@
         errors  (vm/check viewmodel)
         unknown-fields (keys errors)
         next-unknown-field (first unknown-fields)]
-    (println errors)
     (if next-unknown-field
       (respond-resource-required next-unknown-field viewmodel)
       (respond :updated-appstate
@@ -85,7 +81,6 @@
         errors (vm/check viewmodel)
         unknown-fields (keys errors)
         next-unknown-field (first unknown-fields)]
-    (println viewmodel)
     (respond-resource-required next-unknown-field viewmodel)))
 
 (defn refresh [{:keys [store] :as payload}]

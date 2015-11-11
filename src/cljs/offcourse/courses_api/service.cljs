@@ -7,7 +7,6 @@
 
 (defn fetch-course [{course-id :course-id :as payload}]
   (let [course (co/coerce-from-map (cs/find-course fake-data/courses course-id))]
-    (println "API: " (schema/check Course course))
     (respond :fetched-data
              :type :course
              :course course)))
