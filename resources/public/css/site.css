@@ -745,7 +745,20 @@ textarea {
   align-items: center;
   justify-content: center;
   padding: 0 0.625rem;
-  border: 1px solid black; }
+  border: 1px solid black;
+  background-color: #FFFFFF; }
 
 .app-is-learn .tag:hover {
   background-color: #E5CF39; }
+
+.dashboard {
+  padding: 1.875rem;
+  padding-top: 0; }
+
+.dashboard-section {
+  margin-bottom: 0.625rem; }
+
+.dashboard-section .title {
+  font-size: 1rem;
+  font-family: NittiNormal;
+  margin-bottom: 0.3125rem; }

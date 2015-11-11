@@ -15,13 +15,13 @@
             (string/capitalize (name user-name))))
 
 (defn Collections-Navigation [collection-names tag-names user-names handlers]
-  (d/nav {}
-         (d/ul {}
-               (for [collection-name collection-names]
-                 (d/li {:key collection-name}
-                       (Collection-Button collection-name handlers))))
-         (Tags tag-names handlers)
-         (d/ul {}
-               (for [user-name user-names]
-                 (d/li {:key user-name}
-                       (User-Button user-name handlers))))))
+  (d/section {:className "dashboard"}
+             (d/section {:className "dashboard-section"}
+                        (d/h1 {:className "title"} "Collections")
+                        (Tags (map name collection-names) handlers))
+             (d/section {:className "dashboard-section"}
+                        (d/h1 {:className "title"} "Tags")
+                        (Tags (sort tag-names) handlers))
+             (d/section {:className "dashboard-section"}
+                        (d/h1 {:className "title"} "Users")
+                        (Tags (sort user-names) handlers))))
