@@ -756,9 +756,13 @@ textarea {
   padding-top: 0; }
 
 .dashboard-section {
-  margin-bottom: 0.625rem; }
+  margin-bottom: 1.875rem; }
 
 .dashboard-section .title {
-  font-size: 1rem;
-  font-family: NittiNormal;
+  font-size: 0.9375rem;
+  font-family: NittiGroteskBold;
   margin-bottom: 0.3125rem; }
+
+.dashboard-section .tag:hover {
+  background-color: #000000;
+  color: #FFFFFF; }

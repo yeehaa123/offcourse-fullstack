@@ -5,11 +5,16 @@
 
 
 .dashboard-section {
-    margin-bottom: rem-calc(10);
+    margin-bottom: $baseUnit;
 }
 
 .dashboard-section .title {
-    font-size: rem-calc(16);
-    font-family: $buttonFontLight;
+    font-size: rem-calc(15);
+    font-family: $titleFont;
     margin-bottom: rem-calc(5);
+}
+
+.dashboard-section .tag:hover {
+    background-color: $baseColor;
+    color: $inverseColor;
 }
