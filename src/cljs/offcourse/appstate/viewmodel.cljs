@@ -15,7 +15,7 @@
              #(co/highlight %1 checkpoint-id highlight)))
 
 (defn highlight-collection [viewmodel course-id checkpoint-id highlight]
-  (update-in viewmodel [:collection]
+  (update-in viewmodel [:courses]
              #(cs/highlight %1 course-id checkpoint-id highlight)))
 
 (defn select [{:keys [type course-id checkpoint-id collection-type collection-name]}]
