@@ -7,7 +7,7 @@
     [course-id :- schema/Int
      curator :- schema/Str
      goal :- schema/Str
-     checkpoints :- schema/Any])
+     checkpoints :- {schema/Int schema/Any}])
 
 (defn new
   ([curator] (fake-data/generate-course :new curator))

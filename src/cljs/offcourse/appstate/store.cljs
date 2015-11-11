@@ -34,13 +34,22 @@
     (respond :updated-appstate
              :appstate @appstate)))
 
-(defn- refresh-checkpoint [{:keys [courses resources]}]
-  (println courses resources))
+(defn- refresh-checkpoint [store]
+  (let [appstate (swap! appstate #(model/refresh-checkpoint %1 store))
+        viewmodel (:viewmodel appstate)
+        errors  (vm/check viewmodel)
+        unknown-fields (keys errors)
+        next-unknown-field (first unknown-fields)]
+    (println errors)
+    (if next-unknown-field
+      (respond-resource-required next-unknown-field viewmodel)
+      (respond :updated-appstate
+               :appstate appstate))))
 
 (defn- refresh-collection [store]
   (let [appstate (swap! appstate #(model/refresh-collection %1 store))
         viewmodel (:viewmodel appstate)
-        errors  (cl-vm/check viewmodel)
+        errors  (vm/check viewmodel)
         unknown-fields (keys errors)
         next-unknown-field (first unknown-fields)]
     (println errors)
@@ -52,7 +61,7 @@
 (defn- refresh-course [{:keys [courses resources] :as store}]
   (let [appstate (swap! appstate #(model/refresh-course %1 store))
         viewmodel (:viewmodel appstate)
-        errors  (co-vm/check viewmodel)
+        errors  (vm/check viewmodel)
         unknown-fields (keys errors)
         next-unknown-field (first unknown-fields)]
     (println errors)

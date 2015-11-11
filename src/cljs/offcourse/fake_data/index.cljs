@@ -59,7 +59,8 @@
 
 (defn- index-checkpoints [checkpoints]
   (->> checkpoints
-       (map-indexed #(index-checkpoint %1 %2))))
+       (map-indexed #(index-checkpoint %1 %2))
+       (into {})))
 
 (defn generate-course [id curator]
   (-> course

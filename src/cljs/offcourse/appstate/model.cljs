@@ -5,6 +5,7 @@
             [offcourse.models.checkpoint :as cp]
             [offcourse.appstate.viewmodels.collection :as cl-vm]
             [offcourse.appstate.viewmodels.course :as co-vm]
+            [offcourse.appstate.viewmodels.checkpoint :as cp-vm]
             [offcourse.models.resource :as r]
             [offcourse.appstate.viewmodel :as vm]))
 
@@ -38,20 +39,18 @@
              #(if (= %1 :learn) :curate :learn)))
 
 (defn add-checkpoint [appstate course]
-  (let [checkpoint (cp/new)
+  #_(let [checkpoint (cp/new)
         course (co/add-temp-checkpoint course checkpoint)]
     (set-viewmodel appstate (vm/new-checkpoint course (:checkpoint-id checkpoint) {}))))
 
-(defn refresh-checkpoint [{:keys [level] :as appstate} course resources]
-  (let  [checkpoint-id (:checkpoint-id level)
+(defn refresh-checkpoint [{:keys [level] :as appstate}
+                          {:keys [courses resources]}]
+  (let  [{:keys [course-id checkpoint-id]} level
+         course (get courses course-id)
          {:keys [url]} (co/find-checkpoint course checkpoint-id)
          resource (r/find-resource resources url)]
-   (set-viewmodel appstate (vm/new-checkpoint course checkpoint-id resource))))
-
-(defn update-checkpoint [appstate course checkpoint-id resources]
-  (if (= :new checkpoint-id)
-    (add-checkpoint appstate course)
-    (refresh-checkpoint appstate course resources)))
+    (println course)
+    (set-viewmodel appstate (cp-vm/new-checkpoint course checkpoint-id resource))))
 
 (defn refresh-collection [{:keys [level] :as appstate} {:keys [collections tags users courses]}]
   (let [{:keys [collection-name collection-type]} level
@@ -74,7 +73,12 @@
         course (get courses course-id)
         urls (into #{} (co/get-resource-urls course))
         resources (r/find-resources resources urls)]
-    (assoc-in appstate [:viewmodel] (co-vm/new-course course resources))))
+    (set-viewmodel appstate (co-vm/new-course course resources))))
+
+#_(defn update-checkpoint [appstate course checkpoint-id resources]
+  (if (= :new checkpoint-id)
+    (add-checkpoint appstate course)
+    (refresh-checkpoint appstate course resources)))
 
 (defn highlight-collection [appstate {:keys [course-id checkpoint-id highlight]}]
   (update-viewmodel appstate

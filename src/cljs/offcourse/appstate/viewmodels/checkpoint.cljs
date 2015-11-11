@@ -12,6 +12,10 @@
   ([{:keys [course-id checkpoint-id] :as checkpoint}]
    (map->CheckpointViewmodel {:level :checkpoint
                               :course {:course-id course-id}
+                              :checkpoint-id checkpoint-id}))
+  ([course checkpoint-id resource]
+   (map->CheckpointViewmodel {:level :checkpoint
+                              :course course
                               :checkpoint-id checkpoint-id})))
 
 (defn check [viewmodel]
