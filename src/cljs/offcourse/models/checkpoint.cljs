@@ -1,7 +1,13 @@
 (ns offcourse.models.checkpoint
-  (:require [offcourse.fake-data.index :as fake-data]))
+  (:require [schema.core :as schema :include-macros true]
+            [offcourse.fake-data.index :as fake-data]))
 
-(defrecord Checkpoint [checkpoint-id task url completed tags])
+(schema/defrecord Checkpoint
+    [checkpoint-id :- schema/Int
+     task :- schema/Str
+     url :- schema/Str
+     completed :- schema/Bool
+     tags :- #{schema/Str}])
 
 (defn new
   ([] (map->Checkpoint fake-data/checkpoint))

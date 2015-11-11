@@ -1,19 +1,27 @@
 (ns offcourse.models.course
   (:require [schema.core :as schema :include-macros true]
-            [offcourse.models.checkpoint :as cp]
+            [offcourse.models.checkpoint :as cp :refer [map->Checkpoint Checkpoint]]
             [offcourse.fake-data.index :as fake-data]))
 
 (schema/defrecord Course
     [course-id :- schema/Int
      curator :- schema/Str
      goal :- schema/Str
-     checkpoints :- {schema/Int schema/Any}])
+     checkpoints :- {schema/Int Checkpoint}])
 
 (defn new
   ([curator] (fake-data/generate-course :new curator))
   ([course course-id] (assoc course :course-id course-id))
   ([course-id curator-id goal checkpoints]
    (Course. course-id curator-id goal checkpoints)))
+
+(defn coerce-from-map [{:keys [checkpoints] :as course}]
+  (let [checkpoints (->> checkpoints
+                         (map (fn [[id checkpoint]]
+                                [id (map->Checkpoint checkpoint)]))
+                         (into {}))
+        course      (assoc course :checkpoints checkpoints)]
+    (map->Course course)))
 
 (defn add-temp-checkpoint [course checkpoint]
   (assoc-in course [:checkpoints :new] checkpoint))

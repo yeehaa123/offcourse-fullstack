@@ -18,7 +18,7 @@
 
 (defn fetch-named-collection [collection-name]
   (respond :fetched-data
-           :type :collectionj
+           :type :collection
            :collection (wrap-collections (cl/named-collection collection-name))))
 
 (defn fetch-user-collection [collection-name]
