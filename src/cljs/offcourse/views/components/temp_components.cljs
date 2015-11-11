@@ -27,9 +27,9 @@
     (d/div {:onClick #(go-to-user-collection user %1)}
            (map-indexed #(MetaField %1 %2) fields))))
 
-(defn Tag [id tag {:keys [go-to-tag-collection]}]
+(defn Tag [id tag {:keys [onClick]}]
   (d/span {:key id
-           :onClick #(go-to-tag-collection tag %1)
+           :onClick #(onClick tag %1)
            :className "tag"} tag))
 
 (defn Tags [tags handlers]
