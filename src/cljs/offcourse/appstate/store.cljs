@@ -32,14 +32,10 @@
     (respond :updated-appstate
              :appstate @appstate)))
 
-(defn- refresh-appstate [fn store]
-  (let [appstate (swap! appstate #(fn %1 store))
-        viewmodel (:viewmodel appstate)
-        errors  (vm/check viewmodel)
-        unknown-fields (keys errors)
-        next-unknown-field (first unknown-fields)]
-    (if next-unknown-field
-      (respond-resource-required next-unknown-field viewmodel)
+(defn- respond-appstate [appstate]
+  (let [[unknown-field viewmodel] (model/unknown-data appstate)]
+    (if unknown-field
+      (respond-resource-required unknown-field viewmodel)
       (respond :updated-appstate
                :appstate appstate))))
 
@@ -51,22 +47,13 @@
 (defn toggle-mode []
   (update-appstate! #(model/toggle-mode %1)))
 
-
 (defn set-level [payload]
-  (let [appstate (swap! appstate #(model/set-level %1 payload))
-        viewmodel (:viewmodel appstate)
-        errors (vm/check viewmodel)
-        unknown-fields (keys errors)
-        next-unknown-field (first unknown-fields)]
-    (respond-resource-required next-unknown-field viewmodel)))
+  (let [appstate (swap! appstate #(model/set-level %1 payload))]
+    (respond-appstate appstate)))
 
 (defn refresh [{:keys [store] :as payload}]
-  (let [{:keys [level]} @appstate
-        {:keys [type]} level]
-    (case type
-      :collection (refresh-appstate model/refresh-collection store)
-      :course (refresh-appstate model/refresh-course store)
-      :checkpoint (refresh-appstate model/refresh-checkpoint store))))
+  (let [appstate (swap! appstate #(model/refresh %1 store))]
+    (respond-appstate appstate)))
 
 (defn toggle-highlight [payload]
   (let [{type :type :as level} (:level @appstate)]

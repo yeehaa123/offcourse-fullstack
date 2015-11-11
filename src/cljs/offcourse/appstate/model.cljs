@@ -49,7 +49,6 @@
          course (get courses course-id)
          {:keys [url]} (co/find-checkpoint course checkpoint-id)
          resource (r/find-resource resources url)]
-    (println course)
     (set-viewmodel appstate (cp-vm/new-checkpoint course checkpoint-id resource))))
 
 (defn refresh-collection [{:keys [level] :as appstate} {:keys [collections tags users courses]}]
@@ -87,3 +86,16 @@
 (defn highlight-course [appstate {:keys [checkpoint-id highlight]}]
   (update-viewmodel appstate
                     #(vm/highlight-course %1 checkpoint-id highlight)))
+
+(defn refresh [{:keys [level] :as appstate } store]
+  (case (:type level)
+    :collection (refresh-collection appstate store)
+    :course (refresh-course appstate store)
+    :checkpoint (refresh-checkpoint appstate store)))
+
+(defn unknown-data [{:keys [viewmodel]}]
+  (let [errors  (vm/check viewmodel)
+        unknown-fields (keys errors)
+        unknown-field (first unknown-fields)]
+    (when unknown-field
+      [unknown-field viewmodel])))
