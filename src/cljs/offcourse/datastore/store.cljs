@@ -25,12 +25,7 @@
     (helpers/respond-added course-id)))
 
 (defn update-tags [tags]
-  (let [courses (:courses @store)]
-    (if (empty? courses)
-      (do
-        (update-datastore! #(model/update-tags %1 tags))
-        (helpers/respond-not-found :courses {:course-ids :all}))
-      (update-and-respond! #(model/update-tags %1 tags)))))
+  (update-and-respond! #(model/update-tags %1 tags)))
 
 (defn update-resources [{:keys [resources]}]
   (update-and-respond! #(model/update-resources %1 resources)))
@@ -66,13 +61,12 @@
   (let [collection-names (cl/collection-names (get-in @store [:collections :named-collection]))]
     (if-not collection-names
       (helpers/respond-not-found :collections)
-      (helpers/respond-not-found :collections))))
+      (helpers/respond-checked :collections))))
 
-(defn- get-collection [{:keys [collection-type collection-name collection-ids]}]
-  (let [store-collection-ids (get-in @store [:collections collection-type collection-name :collection-ids])]
+(defn- get-collection [{:keys [collection-type collection-name collection-ids] :as collection}]
+  (let [store-collection-ids (model/get-collection-ids @store collection-type collection-name)]
     (if-not (or collection-ids store-collection-ids)
-      (helpers/respond-not-found :collection {:collection-name collection-name
-                                              :collection-type collection-type})
+      (helpers/respond-not-found :collection collection)
       (helpers/respond-not-found :courses {:course-ids collection-ids}))))
 
 (defn- get-tags []
@@ -115,11 +109,11 @@
   (let [{:keys [type course] :as payload} data]
     (case type
       :collection-names (get-collection-names)
-      :tag-names       (get-tags)
+      :tag-names        (get-tags)
       :user-names       (get-users)
-      :collection (get-collection (type data))
-      :course     (get-course (type data))
-      :checkpoint (get-course payload))))
+      :collection       (get-collection (type data))
+      :course           (get-course (type data))
+      :checkpoint       (get-course payload))))
 
 (defn update-datastore [{:keys [type course tags users collection collections collection-names] :as payload}]
   (case type

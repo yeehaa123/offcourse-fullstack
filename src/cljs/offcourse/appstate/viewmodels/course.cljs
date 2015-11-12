@@ -1,6 +1,7 @@
 (ns offcourse.appstate.viewmodels.course
   (:require [schema.core :as schema :include-macros true]
-            [offcourse.models.course :refer [map->Course Course]]))
+            [offcourse.models.course :as co :refer [map->Course Course]]
+            [offcourse.models.resource :as r]))
 
 (schema/defrecord CourseViewmodel
     [level :- Keyword
@@ -20,3 +21,14 @@
 
 (defn check[viewmodel]
   (schema/check CourseViewmodel viewmodel))
+
+(defn highlight-checkpoint [viewmodel checkpoint-id highlight]
+  (update-in viewmodel [:course]
+             #(co/highlight %1 checkpoint-id highlight)))
+
+(defn refresh [{:keys [course]} {:keys [courses resources]}]
+  (let [course-id (:course-id course)
+        course (get courses course-id)
+        urls (into #{} (co/get-resource-urls course))
+        resources (r/find-resources resources urls)]
+    (new-course course resources)))
