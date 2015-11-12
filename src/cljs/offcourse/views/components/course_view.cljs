@@ -5,7 +5,7 @@
 
 (defn CourseView [{:keys [level course resources]} handlers]
   (let [{:keys [course-id goal]} course
-        collection (vals (:checkpoints course))]
+        collection (keys (:checkpoints course))]
     (d/section {:className "cards"}
                (map #(CheckpointCard %1
                                      course
