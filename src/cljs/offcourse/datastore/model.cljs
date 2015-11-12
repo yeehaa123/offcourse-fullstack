@@ -3,11 +3,10 @@
             [clojure.set :as set]
             [offcourse.models.courses :as cs]))
 
-
-(defrecord DataStore [collections courses resources])
+(defrecord DataStore [collections courses resources tags users])
 
 (defn new-datastore []
-  (->DataStore {} {} {}))
+  (->DataStore nil nil nil nil nil))
 
 (defn update-tags [store tags]
   (update-in store [:tags] #(into %1 tags)))

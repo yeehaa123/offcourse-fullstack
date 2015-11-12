@@ -15,7 +15,7 @@
                                       :collection collection}
                         :course    {:type :course
                                     :course course})]
-    (when (< @counter 10)
+    (when (< @counter 100)
       (respond :requested-data
                :data resource-data))))
 
