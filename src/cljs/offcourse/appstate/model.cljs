@@ -24,13 +24,13 @@
 (defn update-viewmodel [appstate fn]
   (update-in appstate [:viewmodel] fn))
 
-(defn set-mode [appstate mode]
+(defn set-mode [mode appstate]
   (assoc-in appstate [:mode] mode))
 
-(defn set-user-id [appstate user-id]
+(defn set-user-id [user-id appstate]
   (assoc-in appstate [:user-id] user-id))
 
-(defn set-level [appstate {:keys [type] :as level}]
+(defn set-level [{:keys [type] :as level} appstate]
   (let [viewmodel (vm/select level)]
     (assoc appstate :level level :viewmodel viewmodel)))
 
@@ -79,15 +79,15 @@
     (add-checkpoint appstate course)
     (refresh-checkpoint appstate course resources)))
 
-(defn highlight-collection [appstate {:keys [course-id checkpoint-id highlight]}]
-  (update-viewmodel appstate
-                    #(vm/highlight-collection %1 course-id checkpoint-id highlight)))
+(defn toggle-highlight [course-id checkpoint-id highlight
+                        {:keys [level] :as appstate}]
+  (case (:type level)
+    :collection (update-viewmodel appstate #(cl-vm/highlight-checkpoint
+                                             %1 course-id checkpoint-id highlight))
+    :course (update-viewmodel appstate #(co-vm/highlight-checkpoint
+                                         %1 checkpoint-id highlight))))
 
-(defn highlight-course [appstate {:keys [checkpoint-id highlight]}]
-  (update-viewmodel appstate
-                    #(vm/highlight-course %1 checkpoint-id highlight)))
-
-(defn refresh [{:keys [level] :as appstate } store]
+(defn refresh [store {:keys [level] :as appstate }]
   (case (:type level)
     :collection (refresh-collection appstate store)
     :course (refresh-course appstate store)

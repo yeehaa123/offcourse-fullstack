@@ -2,8 +2,8 @@
   (:require [schema.core :as schema :include-macros true]
             [offcourse.models.collection
              :refer [map->Collection Collection Collections]]
-             [offcourse.models.course
-              :refer [Course]]))
+            [offcourse.models.course :as co :refer [Course]]
+            [offcourse.models.courses :as cs]))
 
 (schema/defrecord CollectionViewmodel
     [level :- Keyword
@@ -25,3 +25,7 @@
 
 (defn check[viewmodel]
   (schema/check CollectionViewmodel viewmodel))
+
+(defn highlight-checkpoint [viewmodel course-id checkpoint-id highlight]
+  (update-in viewmodel [:courses]
+             #(cs/highlight %1 course-id checkpoint-id highlight)))

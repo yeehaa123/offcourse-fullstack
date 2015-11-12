@@ -1,54 +1,42 @@
 (ns offcourse.appstate.store
   (:require [offcourse.appstate.model :as model]
-            [offcourse.appstate.viewmodel :as vm]
             [offcourse.appstate.responder :as res]
             [offcourse.models.course :as co]))
 
 (def appstate (atom (model/new-appstate)))
 
-(defn update? []
-  (let [unknown-field (model/unknown-data @appstate)]
-    (if unknown-field
-      (res/respond-resource-required unknown-field)
-      (res/respond-update @appstate))))
+(defn update-and-maybe-respond! [f]
+  (do
+    (swap! appstate #(f %1))
+    (let [unknown-field (model/unknown-data @appstate)]
+      (if unknown-field
+        (res/respond-resource-required unknown-field)
+        (res/respond-update @appstate)))))
 
-(defn update! []
-  (res/respond-update @appstate))
+(defn update-and-respond! [f]
+  (do
+    (swap! appstate #(f %1))
+    (res/respond-update @appstate)))
 
 (defn set-mode [{mode :mode}]
-  (do
-    (swap! appstate #(model/set-mode %1 mode))
-    (update!)))
+  (update-and-respond! (partial model/set-mode mode)))
 
 (defn toggle-mode []
-  (do
-    (swap! appstate #(model/toggle-mode %1))
-    (update!)))
+  (update-and-respond! model/toggle-mode))
+
+(defn toggle-highlight [{:keys [course-id checkpoint-id highlight]}]
+  (if course-id
+    (update-and-respond! (partial model/toggle-highlight course-id checkpoint-id highlight))
+    (update-and-respond! (partial model/toggle-highlight checkpoint-id highlight))))
 
 (defn set-user [{:keys [user-id]}]
-  (do
-    (swap! appstate #(model/set-user-id %1 user-id))
-    (update!)))
+  (update-and-respond! (partial model/set-user-id user-id)))
 
 (defn set-level [payload]
-  (do
-    (swap! appstate #(model/set-level %1 payload))
-    (update?)))
+  (update-and-maybe-respond! (partial model/set-level payload)))
 
 (defn refresh [{:keys [store] :as payload}]
-  (do
-    (swap! appstate #(model/refresh %1 store))
-    (update?)))
-
-(defn toggle-highlight [payload]
-  (let [{type :type :as level} (:level @appstate)]
-    (case type
-      :collection (do
-                    (swap! appstate #(model/highlight-collection %1 payload))
-                    (res/respond-update @appstate))
-      :course (do
-                (swap! appstate #(model/highlight-course %1 payload))
-                (res/respond-update @appstate)))))
+  (update-and-maybe-respond! (partial model/refresh store)))
 
 (defn commit-data [{:keys [course-id checkpoint-id] :as payload}]
   (let [course (:course (:viewmodel @appstate))
