@@ -11,10 +11,12 @@
     {:keys [course-id goal] :as course}
     {:keys [url title content]}
     {:keys [go-to-checkpoint
-            go-to-tag-collection] :as handlers}
+            go-to-tag-collection
+            highlight] :as handlers}
     in-sidebar?]
    (let [checkpoint (get-in course [:checkpoints checkpoint-id])
          {:keys [highlighted completed task checkpoint-id tags]} checkpoint
+         highlight (partial highlight course-id)
          highlighted (if highlighted "highlighted" "not-highlighted")
          basic   [[:checkbox (Checkbox course-id checkpoint-id completed handlers)]
                   [:title (Title task)]
@@ -30,5 +32,7 @@
 
      (d/section {:key checkpoint-id
                  :className (css/classes "card" highlighted)
-                 :onClick #(go-to-checkpoint course-id checkpoint-id %1)}
+                 :onClick #(go-to-checkpoint course-id checkpoint-id %1)
+                 :onMouseEnter #(highlight checkpoint-id true)
+                 :onMouseLeave #(highlight checkpoint-id false)}
                 (map-indexed #(CardSection %1 %2) sections)))))
