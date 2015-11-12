@@ -32,8 +32,8 @@
 (defn set-user [{:keys [user-id]}]
   (update-and-respond! (partial model/set-user-id user-id)))
 
-(defn set-level [payload]
-  (update-and-maybe-respond! (partial model/set-level payload)))
+(defn set-level [level]
+  (update-and-maybe-respond! (partial model/set-level level)))
 
 (defn refresh [{:keys [store] :as payload}]
   (update-and-maybe-respond! (partial model/refresh store)))
