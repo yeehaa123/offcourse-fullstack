@@ -21,7 +21,9 @@
 (defn toggle-highlight [{:keys [level] :as viewmodel} course-id checkpoint-id highlight]
   (case level
     :collection (cl-vm/highlight-checkpoint viewmodel course-id checkpoint-id highlight)
-    :course     (co-vm/highlight-checkpoint viewmodel checkpoint-id highlight)))
+    :course     (co-vm/highlight-checkpoint viewmodel checkpoint-id highlight)
+    :checkpoint (co-vm/highlight-checkpoint viewmodel checkpoint-id highlight)))
+
 
 (defn refresh [{:keys [level] :as viewmodel} store]
   (case level
