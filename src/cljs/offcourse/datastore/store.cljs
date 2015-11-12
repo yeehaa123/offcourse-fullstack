@@ -63,11 +63,10 @@
       (helpers/respond-not-found :collections)
       (helpers/respond-checked :collections))))
 
-(defn- get-collection [{:keys [collection-type collection-name collection-ids]}]
-  (let [store-collection-ids (get-in @store [:collections collection-type collection-name :collection-ids])]
+(defn- get-collection [{:keys [collection-type collection-name collection-ids] :as collection}]
+  (let [store-collection-ids (model/get-collection-ids @store collection-type collection-name)]
     (if-not (or collection-ids store-collection-ids)
-      (helpers/respond-not-found :collection {:collection-name collection-name
-                                              :collection-type collection-type})
+      (helpers/respond-not-found :collection collection)
       (helpers/respond-not-found :courses {:course-ids collection-ids}))))
 
 (defn- get-tags []

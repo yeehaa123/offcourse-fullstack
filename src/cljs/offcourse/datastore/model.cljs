@@ -44,3 +44,6 @@
 (defn missing-ids [store collection-ids]
   (let [courses-ids (into #{} (keys (:courses @store)))]
     (set/difference collection-ids courses-ids)))
+
+(defn get-collection-ids [store collection-type collection-name]
+  (get-in store [:collections collection-type collection-name :collection-ids]))
