@@ -5,10 +5,10 @@
 
 (defn CourseView [{:keys [level course resources]} handlers]
   (let [{:keys [course-id goal]} course
-        collection (keys (:checkpoints course))]
+        checkpoints (keys (:checkpoints course))]
     (d/section {:className "cards"}
                (map #(CheckpointCard %1
                                      course
                                      (get resources (:url %1))
                                      handlers)
-                    collection))))
+                    checkpoints))))

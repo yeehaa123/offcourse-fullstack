@@ -19,7 +19,6 @@
                                  :checkpoint-id checkpoint-id)))
 
      :highlight         (fn [course-id checkpoint-id highlight]
-                          (println course-id checkpoint-id highlight)
                           (>>! :requested-highlight-toggle
                                :course-id course-id
                                :checkpoint-id checkpoint-id

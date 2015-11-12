@@ -3,7 +3,10 @@
             [offcourse.views.components.course-card :refer [CourseCard]]
             [offcourse.helpers.css :as css]))
 
-(defn CollectionView [{:keys [level collection courses]} handlers]
-  (let [collection (sort-by :course-id (vals courses))]
+(defn CollectionView [{:keys [collection courses]} handlers]
+  (let [{:keys [collection-name collection-type]} collection
+        courses (sort-by :course-id (vals courses))]
     (d/section {:className "cards"}
-               (map #(CourseCard %1 handlers) collection))))
+               (if (= collection-type :tag-collection)
+                 (map #(CourseCard %1 collection-name handlers) courses)
+                 (map #(CourseCard %1 handlers) courses)))))

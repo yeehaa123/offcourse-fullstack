@@ -10,6 +10,10 @@
   border: 1px solid black;
   background-color: $inverseColor;
 }
+.tag-is-selected {
+  background-color: $baseColor;
+  color: $inverseColor;
+}
 
 .app-is-learn .tag:hover {
     background-color: $learnColor;

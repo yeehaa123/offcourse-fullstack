@@ -748,6 +748,10 @@ textarea {
   border: 1px solid black;
   background-color: #FFFFFF; }
 
+.tag-is-selected {
+  background-color: #000000;
+  color: #FFFFFF; }
+
 .app-is-learn .tag:hover {
   background-color: #E5CF39; }
 
@@ -762,7 +766,3 @@ textarea {
   font-size: 0.9375rem;
   font-family: NittiGroteskBold;
   margin-bottom: 0.3125rem; }
-
-.dashboard-section .tag:hover {
-  background-color: #000000;
-  color: #FFFFFF; }

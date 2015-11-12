@@ -11,11 +11,11 @@
             [offcourse.views.actions :as actions]))
 
 (defn Sidebar [{:keys [level tag-names user-names collection-names
-                       course resource checkpoint-id] :as vm} handlers]
+                       course resource collection checkpoint-id] :as vm} handlers]
   (d/section {:className (css/classes "sidebar")}
              (d/div {:className "sidebar-logo"}
                     (Logo handlers))
              (case level
-               :collection (Collections-Navigation collection-names tag-names user-names handlers)
+               :collection (Collections-Navigation collection collection-names tag-names user-names handlers)
                :course (CourseCard course handlers)
                :checkpoint (CheckpointCard checkpoint-id course resource handlers true))))

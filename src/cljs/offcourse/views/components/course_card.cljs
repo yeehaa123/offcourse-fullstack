@@ -8,9 +8,12 @@
 (defn course-tags [checkpoints]
   (reduce (fn [acc [_ {:keys [tags]}]] (into acc tags)) #{} checkpoints))
 
-(defn CourseCard [{:keys [highlighted checkpoints goal curator course-id] :as course}
-                  {:keys [go-to-course
-                          go-to-tag-collection] :as handlers}]
+(defn CourseCard
+  ([course handlers](CourseCard course nil handlers))
+  ([{:keys [highlighted checkpoints goal curator course-id] :as course}
+    selected-tag
+    {:keys [go-to-course
+            go-to-tag-collection] :as handlers}]
   (let [highlighted (if highlighted "highlighted" "not-highlighted")
         tags (course-tags checkpoints)
         sections [[:map (Map)]
@@ -18,9 +21,9 @@
                   [:meta (Meta :curator curator
                                :learners 123
                                :handlers handlers)]
-                  [:tags (Tags tags {:onClick go-to-tag-collection})]
+                  [:tags (Tags tags selected-tag {:onClick go-to-tag-collection})]
                   [:list (TodoList course-id checkpoints handlers)]]]
     (d/section {:key course-id
                 :className (css/classes "card" highlighted)
                 :onClick #(go-to-course course-id %1)}
-               (map-indexed #(CardSection %1 %2) sections))))
+               (map-indexed #(CardSection %1 %2) sections)))))
