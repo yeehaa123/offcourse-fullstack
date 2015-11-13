@@ -34,21 +34,14 @@
   (update-in viewmodel [:courses]
              #(cs/highlight %1 course-id checkpoint-id highlight)))
 
-(defn labels
-  ([names] (labels names nil))
-  ([names selected]
-   (->> names
-        (map (fn [name] [name (label/new name selected)]))
-        (into {}))))
-
 (defn refresh [{:keys [collection]} {:keys [collections tags users courses]}]
   (let [{:keys [collection-name collection-type]} collection
-        collection-names (labels (keys (:named-collection collections)))
+        collection-names (label/from-set (keys (:named-collection collections)))
         collection-name (if (= collection-name :unknown)
                           (second (keys collection-names))
                           collection-name)
-        tag-names (if tags (labels (map keyword tags) collection-name) :unknown)
-        user-names (if users (labels (map keyword users)) :unknown)
+        tag-names (if tags (label/from-set (map keyword tags) collection-name) :unknown)
+        user-names (if users (label/from-set (map keyword users)) :unknown)
         {:keys [collection-ids]} (get-in collections [collection-type collection-name])
         collection (assoc collection :collection-ids collection-ids)
         found-courses (cs/find-courses courses collection-ids)

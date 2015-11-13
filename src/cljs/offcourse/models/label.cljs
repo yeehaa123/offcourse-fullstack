@@ -9,14 +9,20 @@
 (def LabelCollection
   {schema/Keyword Label})
 
-(defn new
+(defn new-label
   ([name] (->Label name false false))
   ([name selected]
-   (if (= name selected)
-     (->Label name true false)
-     (->Label name false false))))
+   (let [selected? (= name selected)]
+     (->Label name selected? false))))
 
 (defn from-string [tag-name tags]
   (if-not (empty? tags)
     [(keyword tag-name) ((keyword tag-name) tags)]
     [(keyword tag-name) (new tag-name)]))
+
+(defn from-set
+  ([names] (from-set names nil))
+  ([names selected]
+   (->> names
+        (map (fn [name] [name (new-label name selected)]))
+        (into {}))))

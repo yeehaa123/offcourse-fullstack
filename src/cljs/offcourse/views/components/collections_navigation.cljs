@@ -11,12 +11,14 @@
                (Tags labels collection-name {:onClick handler})
                (Tags labels {:onClick handler}))))
 
-(defn Collections-Navigation [collection collection-names tag-names user-names {:keys [go-to-tag-collection
-                                                                            go-to-user-collection
-                                                                            go-to-collection]}]
+(defn Collections-Navigation [collection named-collections tags users
+                              {:keys [go-to-tag-collection
+                                      go-to-user-collection
+                                      go-to-collection]}]
   (d/section {:className "dashboard"}
              (Collection-Panel collection :named-collection "Collections"
-                               collection-names go-to-collection)
+                               named-collections go-to-collection)
              (Collection-Panel collection :tag-collection "Tags"
-                               tag-names go-to-tag-collection)
-             (Collection-Panel collection :user-collection "Users" user-names go-to-user-collection)))
+                               tags go-to-tag-collection)
+             (Collection-Panel collection :user-collection "Users"
+                               users go-to-user-collection)))
