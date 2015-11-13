@@ -1,8 +1,9 @@
 (ns offcourse.views.components.course-card
   (:require [quiescent.dom :as d]
             [offcourse.views.components.todo-list :refer [TodoList]]
+            [offcourse.views.components.tags :refer [Tags]]
             [offcourse.views.components.temp-components
-             :refer [Map Title Meta Tags CardSection]]
+             :refer [Map Title Meta CardSection]]
             [offcourse.helpers.css :as css]))
 
 (defn course-tags [checkpoints]

@@ -16,7 +16,7 @@
         :requested-commit           (>! channel (store/commit-data payload))
         :requested-level            (>! channel (service/switch-route payload))
         :requested-done-toggle      (>! channel (service/toggle-done payload))
-        :requested-highlight-toggle (>! channel (store/toggle-highlight payload))
+        :requested-highlight-toggle (>! channel (store/toggle-highlight-checkpoint payload))
         :requested-mode-toggle      (store/toggle-mode)
         :requested-mode-switch      (store/set-mode payload)
         :updated-data               (>! channel (store/refresh payload))

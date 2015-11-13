@@ -1,6 +1,5 @@
 (ns offcourse.datastore.helpers
-  (:require [offcourse.models.action :refer [respond]]
-            [cljs.core.match :refer-macros [match]]))
+  (:require [offcourse.models.action :refer [respond]]))
 
 (defn init [store]
   (defn respond-updated []

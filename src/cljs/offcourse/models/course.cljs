@@ -7,13 +7,15 @@
     [course-id :- schema/Num
      curator :- schema/Str
      goal :- schema/Str
-     checkpoints :- {schema/Int Checkpoint}])
+     checkpoints :- {schema/Int Checkpoint}
+     tags :- schema/Any])
+
 
 (defn new
   ([curator] (fake-data/generate-course :new curator))
   ([course course-id] (assoc course :course-id course-id))
   ([course-id curator-id goal checkpoints]
-   (Course. course-id curator-id goal checkpoints)))
+   (Course. course-id curator-id goal checkpoints #{})))
 
 (defn coerce-from-map [{:keys [checkpoints] :as course}]
   (let [checkpoints (->> checkpoints
@@ -61,3 +63,9 @@
 
 (defn get-user [{:keys [curator] :as course}]
   curator)
+
+(defn add-tags [{:keys [checkpoints] :as course} tags]
+  (->> checkpoints
+       (map (fn [[id checkpoint]] [id (cp/convert-tags checkpoint tags)]))
+       (into {})
+       (assoc course :checkpoints)))

@@ -27,19 +27,6 @@
     (d/div {:onClick #(go-to-user-collection user %1)}
            (map-indexed #(MetaField %1 %2) fields))))
 
-(defn Tag [id tag selected {:keys [onClick]}]
-  (let [selected (= selected (keyword tag))
-        highlighted (if selected "selected" "not-selected")]
-    (d/span {:key id
-             :onClick #(onClick tag %1)
-             :className (css/classes "tag" highlighted)}
-            tag)))
-
-(defn Tags
-  ([tags handlers] (Tags tags nil handlers))
-  ([tags selected handlers]
-   (d/p {}
-        (map-indexed #(Tag %1 %2 selected handlers) tags))))
 
 (defn CardSection [index [type component]]
   (d/div {:key index

@@ -29,6 +29,7 @@
 (defn refresh [{:keys [course]} {:keys [courses resources]}]
   (let [course-id (:course-id course)
         course (get courses course-id)
+        course (co/add-tags course {})
         urls (into #{} (co/get-resource-urls course))
         resources (r/find-resources resources urls)]
     (new-course course resources)))

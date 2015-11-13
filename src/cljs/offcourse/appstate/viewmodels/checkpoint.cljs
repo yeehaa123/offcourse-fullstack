@@ -8,8 +8,6 @@
      course :- Course
      checkpoint-id :- schema/Int])
 
-
-
 (defn new-checkpoint
   ([{:keys [course-id checkpoint-id] :as checkpoint}]
    (map->CheckpointViewmodel {:level :checkpoint
@@ -24,6 +22,7 @@
   (let  [{:keys [course-id]} course
          course (get courses course-id)
          {:keys [url]} (co/find-checkpoint course checkpoint-id)
+         course (co/add-tags course {})
          resource (r/find-resource resources url)]
     (new-checkpoint course checkpoint-id resource)))
 

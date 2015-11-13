@@ -1,5 +1,6 @@
 (ns offcourse.models.checkpoint
   (:require [schema.core :as schema :include-macros true]
+            [offcourse.models.label :as label :refer [from-string LabelCollection]]
             [offcourse.fake-data.index :as fake-data]))
 
 (schema/defrecord Checkpoint
@@ -7,7 +8,7 @@
      task :- schema/Str
      url :- schema/Str
      completed :- schema/Bool
-     tags :- #{schema/Str}])
+     tags :- (schema/cond-pre #{schema/Str} LabelCollection)])
 
 (defn new
   ([] (map->Checkpoint fake-data/checkpoint))
@@ -30,3 +31,9 @@
                resource (get resources url)]
            [checkpoint-id (assoc checkpoint :resource resource)]))
        checkpoints))
+
+(defn convert-tags [checkpoint tags]
+  (->> (:tags checkpoint)
+       (map #(label/from-string %1 tags))
+       (into {})
+       (assoc checkpoint :tags)))

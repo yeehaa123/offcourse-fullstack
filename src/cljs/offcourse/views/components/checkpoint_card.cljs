@@ -1,7 +1,8 @@
 (ns offcourse.views.components.checkpoint-card
   (:require [quiescent.dom :as d]
+            [offcourse.views.components.tags :refer [Tags]]
             [offcourse.views.components.temp-components
-             :refer [Map Checkbox Title Meta Tags CardSection GoToButton]]
+             :refer [Map Checkbox Title Meta CardSection GoToButton]]
             [offcourse.helpers.css :as css]))
 
 (defn CheckpointCard
