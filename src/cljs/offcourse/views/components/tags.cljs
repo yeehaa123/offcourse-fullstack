@@ -4,9 +4,8 @@
             [offcourse.helpers.css :as css]
             [cljs.core.match :refer-macros [match]]))
 
-(defn Tag [[label-name label-object] selected {:keys [onClick]}]
-  (let [selected (= selected label-name)
-        highlighted (if selected "selected" "not-selected")]
+(defn Tag [[label-name {:keys [selected?]}] selected {:keys [onClick]}]
+  (let [highlighted (if selected? "selected" "not-selected")]
     (d/span {:key label-name
              :onClick #(onClick (name label-name) %1)
              :className (css/classes "tag" highlighted)}

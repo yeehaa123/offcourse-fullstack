@@ -2,7 +2,7 @@
   (:require [schema.core :as schema :include-macros true]
             [offcourse.models.collection
              :refer [map->Collection Collection Collections]]
-            [offcourse.models.label :refer [Label LabelCollection]]
+            [offcourse.models.label :as label :refer [new LabelCollection]]
             [offcourse.models.course :as co :refer [Course]]
             [offcourse.models.courses :as cs]))
 
@@ -34,19 +34,21 @@
   (update-in viewmodel [:courses]
              #(cs/highlight %1 course-id checkpoint-id highlight)))
 
-(defn labels [names]
-  (->> names
-       (map (fn [name] [name (Label. name)]))
-       (into {})))
+(defn labels
+  ([names] (labels names nil))
+  ([names selected]
+   (->> names
+        (map (fn [name] [name (label/new name selected)]))
+        (into {}))))
 
 (defn refresh [{:keys [collection]} {:keys [collections tags users courses]}]
   (let [{:keys [collection-name collection-type]} collection
         collection-names (labels (keys (:named-collection collections)))
-        tag-names (if tags (labels (map keyword tags)) :unknown)
-        user-names (if users (labels (map keyword users)) :unknown)
         collection-name (if (= collection-name :unknown)
                           (second (keys collection-names))
                           collection-name)
+        tag-names (if tags (labels (map keyword tags) collection-name) :unknown)
+        user-names (if users (labels (map keyword users)) :unknown)
         {:keys [collection-ids]} (get-in collections [collection-type collection-name])
         collection (assoc collection :collection-ids collection-ids)
         found-courses (cs/find-courses courses collection-ids)

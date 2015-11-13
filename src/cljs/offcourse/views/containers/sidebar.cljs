@@ -4,7 +4,6 @@
             [offcourse.views.components.card :refer [Card]]
             [offcourse.views.components.collections-navigation :refer [Collections-Navigation]]
             [offcourse.views.components.course-card :refer [CourseCard]]
-            [offcourse.views.components.tags-card :refer [TagsCard]]
             [offcourse.views.components.checkpoint-card :refer [CheckpointCard]]
             [clojure.string :as string]
             [quiescent.dom :as d]
