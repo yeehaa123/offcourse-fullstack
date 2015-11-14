@@ -45,6 +45,3 @@
 
 (defn collection-names [collection]
   (keys collection))
-
-(defn get-course-ids [collection]
-  (get-in collection [:collections collection-type collection-name collection-ids]))
