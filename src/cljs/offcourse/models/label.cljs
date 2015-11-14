@@ -12,6 +12,7 @@
 (defn new-label
   ([name] (->Label name false false))
   ([name selected]
+
    (let [selected? (= name selected)]
      (->Label name selected? false))))
 

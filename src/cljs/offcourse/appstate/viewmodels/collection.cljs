@@ -2,7 +2,7 @@
   (:require [schema.core :as schema :include-macros true]
             [offcourse.models.collection
              :refer [map->Collection Collection Collections]]
-            [offcourse.models.label :as label :refer [new LabelCollection]]
+            [offcourse.models.label :as label :refer [from-set LabelCollection]]
             [offcourse.models.course :as co :refer [Course]]
             [offcourse.models.courses :as cs]))
 
@@ -36,16 +36,17 @@
 
 (defn refresh [{:keys [collection]} {:keys [collections tags users courses]}]
   (let [{:keys [collection-name collection-type]} collection
-        collection-names (label/from-set (keys (:named-collection collections)))
+        collection-names (keys (:named-collection collections))
         collection-name (if (= collection-name :unknown)
                           (second (keys collection-names))
                           collection-name)
-        tag-names (if tags (label/from-set (map keyword tags) collection-name) :unknown)
-        user-names (if users (label/from-set (map keyword users)) :unknown)
+        collection-labels (label/from-set collection-names collection-name)
+        tag-labels (if tags (label/from-set (map keyword tags) collection-name) :unknown)
+        user-labels (if users (label/from-set (map keyword users) collection-name) :unknown)
         {:keys [collection-ids]} (get-in collections [collection-type collection-name])
         collection (assoc collection :collection-ids collection-ids)
         found-courses (cs/find-courses courses collection-ids)
         courses (if (not-any? nil? (vals found-courses))
-                  (cs/add-tags found-courses tag-names)
+                  (cs/add-tags found-courses tag-labels)
                   :unknown)]
-    (new-collection collection-names tag-names user-names collection courses)))
+    (new-collection collection-labels tag-labels user-labels collection courses)))
