@@ -18,7 +18,7 @@
   (update-in store [:resources] #(into %1 resources)))
 
 (defn update-collections [store collections]
-  (assoc-in store [:collections :named-collection] collections))
+  (assoc-in store [:collections :flags] collections))
 
 (defn update-collection [store {:keys [collection-name collection-type] :as collection}]
   (assoc-in store [:collections collection-type collection-name] collection))

@@ -58,7 +58,7 @@
     (helpers/respond-ignore)))
 
 (defn- get-collection-names []
-  (let [collection-names (cl/collection-names (get-in @store [:collections :named-collection]))]
+  (let [collection-names (cl/collection-names (get-in @store [:collections :flags]))]
     (if-not collection-names
       (helpers/respond-not-found :collections)
       (helpers/respond-checked :collections))))
@@ -105,15 +105,26 @@
   (case type
     :checkpoint (save-checkpoint payload)))
 
+(defn get-labels-data [labels]
+  (let [label (->> labels
+                   (filter #(= :unknown (val %1)))
+                   first
+                   key)]
+    (case label
+      :flags (get-collection-names)
+      :tags (get-tags)
+      :users (get-users))))
+
 (defn get-data [{:keys [data]}]
-  (let [{:keys [type course] :as payload} data]
+  (let [{:keys [type course labels]} data]
     (case type
+      :labels (get-labels-data labels)
       :collection-names (get-collection-names)
       :tag-names        (get-tags)
       :user-names       (get-users)
       :collection       (get-collection (type data))
       :course           (get-course (type data))
-      :checkpoint       (get-course payload))))
+      :checkpoint       (get-course data))))
 
 (defn update-datastore [{:keys [type course tags users collection collections collection-names] :as payload}]
   (case type

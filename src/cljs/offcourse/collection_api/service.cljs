@@ -32,7 +32,7 @@
              :type :collection
              :collection collection)))
 
-(defn fetch-collection [{:keys [collection-type collection-name]}]
+(defn fetch-collection [{:keys [collection-type collection-name] :as c}]
   (case collection-type
     :user-collection (fetch-user-collection collection-name)
     :named-collection (fetch-named-collection collection-name)

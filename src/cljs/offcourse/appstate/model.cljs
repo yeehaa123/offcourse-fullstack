@@ -51,5 +51,6 @@
   (let [errors  (vm/check viewmodel)
         unknown-fields (keys errors)
         unknown-field (first unknown-fields)]
+    (println "ERROR:" errors)
     (when unknown-field
       [unknown-field viewmodel])))

@@ -3,12 +3,11 @@
 
 (def counter (atom 0))
 
-(defn respond-resource-required [[field {:keys [course collection]}]]
+(defn respond-resource-required [[field {:keys [course collection labels]}]]
   (swap! counter inc)
   (let [resource-data (case field
-                        :collection-names {:type field}
-                        :tag-names {:type field}
-                        :user-names {:type field}
+                        :labels      {:type field
+                                      :labels labels}
                         :collection  {:type :collection
                                       :collection collection}
                         :courses     {:type :collection

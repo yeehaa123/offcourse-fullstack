@@ -24,9 +24,9 @@
     :course     (co-vm/highlight-checkpoint viewmodel checkpoint-id highlight)
     :checkpoint (co-vm/highlight-checkpoint viewmodel checkpoint-id highlight)))
 
-
-(defn refresh [{:keys [level] :as viewmodel} store]
+(defn refresh [{:keys [level collection] :as viewmodel} store]
+  (println "RFC " viewmodel)
   (case level
-    :collection (cl-vm/refresh viewmodel store)
+    :collection (cl-vm/refresh collection store)
     :course     (co-vm/refresh viewmodel store)
     :checkpoint (cp-vm/refresh viewmodel store)))
