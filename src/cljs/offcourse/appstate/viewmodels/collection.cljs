@@ -27,7 +27,7 @@
 (defn new-collection
   ([] (map->CollectionViewmodel blank-vm))
   ([collection] (map->CollectionViewmodel
-                 (CollectionViewmodel. collection blank-lc :unknown :unknown)))
+                 (CollectionViewmodel. :collection blank-lc collection :unknown)))
   ([labels collection courses]
    (map->CollectionViewmodel {:level :collection
                               :labels labels

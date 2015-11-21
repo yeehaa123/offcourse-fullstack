@@ -28,7 +28,7 @@
                           (.stopPropagation event)
                           (>>! :requested-level
                                :level :collection
-                               :collection-type :named-collection
+                               :collection-type :flag-collection
                                :collection-name collection-name))
 
      :go-to-user-collection  (fn [user-name event]

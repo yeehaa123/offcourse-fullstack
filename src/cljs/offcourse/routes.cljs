@@ -41,7 +41,7 @@
 
   (defroute (:collection route-names) {collection-name :collection-name}
     (response :collection
-              :collection-type :named-collection
+              :collection-type :flag-collection
               :collection-name (keyword collection-name)))
 
   (defroute (:user-collection route-names) {user-name :user-name}
@@ -56,5 +56,5 @@
 
   (defroute (:home route-names) []
     (response :collection
-              :collection-type :named-collection
+              :collection-type :flag-collection
               :collection-name :unknown)))

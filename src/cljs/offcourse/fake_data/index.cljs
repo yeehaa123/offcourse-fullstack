@@ -82,7 +82,7 @@
   (->> raw-collections
        (map (fn [[collection-name collection-ids]]
               [collection-name {:collection-name collection-name
-                                :collection-type :named-collection
+                                :collection-type :flag-collection
                                 :collection-ids collection-ids}]))
        (into {})))
 

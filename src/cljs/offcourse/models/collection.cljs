@@ -13,6 +13,7 @@
   {schema/Any {schema/Any Collection}})
 
 (defn ->collection [collection-type collection-name collection-ids]
+  (println "TYPE " collection-type)
   (Collection. collection-type collection-name collection-ids))
 
 (defn find-user-collection [courses user-name]
@@ -28,7 +29,7 @@
                      :popular (into #{} (take 5 (iterate inc 2)))
                      :new (into #{} (take 4 (iterate inc 4)))}
         collection-ids (collection-name collections)]
-    (->collection :named-collection collection-name collection-ids)))
+    (->collection :flag-collection collection-name collection-ids)))
 
 (defn find-tag-collection [courses tag]
   (let [collection-ids (reduce (fn [acc [id course]]

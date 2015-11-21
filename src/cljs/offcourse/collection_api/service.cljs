@@ -8,7 +8,7 @@
 (defn wrap-collections [collections]
   (->> collections
        (map (fn [[id collection]]
-              [id (map->Collection collection)]))
+              [id collection]))
        (into {})))
 
 (defn fetch-named-collections [_]
@@ -35,7 +35,7 @@
 (defn fetch-collection [{:keys [collection-type collection-name] :as c}]
   (case collection-type
     :user-collection (fetch-user-collection collection-name)
-    :named-collection (fetch-named-collection collection-name)
+    :flag-collection (fetch-named-collection collection-name)
     :tag-collection (fetch-tags-collection collection-name)))
 
 (defn fetch [{:keys [type] :as payload}]
