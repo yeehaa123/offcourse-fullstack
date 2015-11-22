@@ -44,6 +44,9 @@
 (defn toggle-highlight [course-id checkpoint-id highlight appstate]
   (update-viewmodel appstate #(vm/toggle-highlight %1 course-id checkpoint-id highlight)))
 
+(defn toggle-highlight-label [label-name label-type highlight appstate]
+  (update-viewmodel appstate #(vm/toggle-highlight-label %1 label-name label-type highlight)))
+
 (defn refresh [store appstate]
   (update-viewmodel appstate #(vm/refresh %1 store)))
 

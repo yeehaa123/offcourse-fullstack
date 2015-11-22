@@ -18,11 +18,17 @@
                                  :course-id course-id
                                  :checkpoint-id checkpoint-id)))
 
-     :highlight         (fn [course-id checkpoint-id highlight]
+     :highlight-checkpoint (fn [course-id checkpoint-id highlight]
                           (>>! :requested-highlight-toggle
                                :course-id course-id
                                :checkpoint-id checkpoint-id
                                :highlight highlight))
+
+     :highlight-label (fn [label-type label-name highlight]
+                        (>>! :requested-highlight-label
+                             :label-name label-name
+                             :label-type label-type
+                             :highlight highlight))
 
      :go-to-collection  (fn [collection-name event]
                           (.stopPropagation event)

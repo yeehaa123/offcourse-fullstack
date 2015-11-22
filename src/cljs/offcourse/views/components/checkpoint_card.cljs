@@ -1,6 +1,6 @@
 (ns offcourse.views.components.checkpoint-card
   (:require [quiescent.dom :as d]
-            [offcourse.views.components.tags :refer [Tags]]
+            [offcourse.views.components.labels :refer [Labels]]
             [offcourse.views.components.temp-components
              :refer [Map Checkbox Title Meta CardSection GoToButton]]
             [offcourse.helpers.css :as css]))
@@ -13,11 +13,12 @@
     {:keys [url title content]}
     {:keys [go-to-checkpoint
             go-to-tag-collection
-            highlight] :as handlers}
+            highlight-label
+            highlight-checkpoint] :as handlers}
     in-sidebar?]
    (let [checkpoint (get-in course [:checkpoints checkpoint-id])
          {:keys [highlighted completed task checkpoint-id tags]} checkpoint
-         highlight (partial highlight course-id)
+         highlight (partial highlight-checkpoint course-id)
          highlighted (if highlighted "highlighted" "not-highlighted")
          basic   [[:checkbox (Checkbox course-id checkpoint-id completed handlers)]
                   [:title (Title task)]
@@ -27,7 +28,8 @@
                                  :goal goal)
                            (Meta :title title
                                  :url url))]
-                  [:tags (Tags tags {:onClick go-to-tag-collection})]]
+                  [:tags (Labels tags {:onClick go-to-tag-collection
+                                       :highlight highlight-label})]]
          extra    [:course-button (GoToButton course-id handlers)]
          sections (if in-sidebar? (conj basic extra) basic)]
 

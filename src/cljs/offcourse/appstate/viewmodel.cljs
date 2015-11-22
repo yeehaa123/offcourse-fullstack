@@ -18,6 +18,9 @@
     :course     (co-vm/check viewmodel)
     :checkpoint (cp-vm/check viewmodel)))
 
+(defn toggle-highlight-label [{:keys [level] :as viewmodel} label-name label-type highlight]
+  (cl-vm/highlight-label viewmodel label-name label-type highlight))
+
 (defn toggle-highlight [{:keys [level] :as viewmodel} course-id checkpoint-id highlight]
   (case level
     :collection (cl-vm/highlight-checkpoint viewmodel course-id checkpoint-id highlight)

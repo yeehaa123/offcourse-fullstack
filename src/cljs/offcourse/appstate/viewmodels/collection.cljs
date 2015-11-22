@@ -38,7 +38,7 @@
 
 (defn- update-courses [courses ids tag-labels]
   (let [courses (cs/find-courses courses ids)]
-    (if-not (empty?  courses)
+    (if-not (empty? courses)
       (cs/add-tags courses tag-labels)
       :unknown)))
 
@@ -52,6 +52,12 @@
 
 (defn highlight-checkpoint [viewmodel course-id checkpoint-id highlight]
   (update-in viewmodel [:courses] #(cs/highlight %1 course-id checkpoint-id highlight)))
+
+(defn highlight-label [viewmodel label-name label-type highlight]
+  (let [viewmodel (update-in viewmodel [:labels label-type] #(label/highlight %1 label-name highlight))
+        labels (get-in viewmodel [:labels :tags])
+        courses (get-in viewmodel [:courses])]
+    (update-in viewmodel [:courses] #(cs/add-tags %1 labels))))
 
 (defn check[viewmodel]
   (schema/check CollectionViewmodel viewmodel))

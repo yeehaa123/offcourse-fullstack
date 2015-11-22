@@ -752,7 +752,7 @@ textarea {
   background-color: #000000;
   color: #FFFFFF; }
 
-.app-is-learn .tag:hover {
+.app-is-learn .tag-is-highlighted {
   background-color: #E5CF39; }
 
 .dashboard {

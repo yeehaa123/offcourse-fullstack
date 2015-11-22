@@ -23,10 +23,10 @@
                (d/span {:onClick go-to-checkpoint} title)))))
 
 
-(defn TodoList [course-id items {:keys [toggle-done go-to-checkpoint highlight]}]
+(defn TodoList [course-id items {:keys [toggle-done go-to-checkpoint highlight-checkpoint]}]
   (let [toggle-done (partial toggle-done course-id)
         go-to-checkpoint (partial go-to-checkpoint course-id)
-        highlight (partial highlight course-id)]
+        highlight (partial highlight-checkpoint course-id)]
     (d/ul {:className (css/classes "todolist")}
           (for [[_ {:keys [checkpoint-id completed highlighted task]}] items]
             (TodoListItem [checkpoint-id completed highlighted task]
