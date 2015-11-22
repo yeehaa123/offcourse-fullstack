@@ -13,7 +13,6 @@
   {schema/Any {schema/Any Collection}})
 
 (defn ->collection [collection-type collection-name collection-ids]
-  (println "TYPE " collection-type)
   (Collection. collection-type collection-name collection-ids))
 
 (defn find-user-collection [courses user-name]

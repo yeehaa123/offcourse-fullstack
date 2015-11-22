@@ -65,8 +65,8 @@
 
 (defn refresh [{:keys [collection-name collection-type]} {:keys [collections tags users courses]}]
   (let [collection-names (keys (get-in collections [:flags]))
-        {:keys [collection-name collection-ids] :as collection} (update-collection collection-name collection-type collection-names collections)
+        {:keys [collection-name collection-ids] :as collection} (update-collection
+                                                                 collection-name collection-type collection-names collections)
         labels (create-label-collections collection-name collection-names tags users)
         courses (update-courses courses collection-ids (:tags labels))]
     (new-collection labels collection courses)))
-

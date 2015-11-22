@@ -26,10 +26,10 @@
   (update-in viewmodel [:course]
              #(co/highlight %1 checkpoint-id highlight)))
 
-(defn refresh [{:keys [course]} {:keys [courses resources]}]
+(defn refresh [{:keys [course]} {:keys [courses resources collections] :as store}]
   (let [course-id (:course-id course)
         course (get courses course-id)
-        course (co/add-tags course {})
+        course (co/add-tags course #{})
         urls (into #{} (co/get-resource-urls course))
         resources (r/find-resources resources urls)]
     (new-course course resources)))

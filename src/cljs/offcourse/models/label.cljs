@@ -19,7 +19,7 @@
 (defn from-string [tag-name tags]
   (if-not (empty? tags)
     [(keyword tag-name) ((keyword tag-name) tags)]
-    [(keyword tag-name) (new tag-name)]))
+    [(keyword tag-name) (new-label tag-name)]))
 
 (defn from-set
   ([names] (from-set names nil))

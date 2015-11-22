@@ -22,7 +22,7 @@
                   [:meta (Meta :curator curator
                                :learners 123
                                :handlers handlers)]
-                  [:tags (Tags tags selected-tag {:onClick go-to-tag-collection})]
+                  [:tags (Tags tags {:onClick go-to-tag-collection})]
                   [:list (TodoList course-id checkpoints handlers)]]]
     (d/section {:key course-id
                 :className (css/classes "card" highlighted)

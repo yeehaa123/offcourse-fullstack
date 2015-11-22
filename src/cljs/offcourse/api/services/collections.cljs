@@ -17,8 +17,6 @@
   (r/respond-fetched-collection (map->Collection (cl/find-tag-collection fake-data/courses collection-name))))
 
 (defn fetch-collection [{:keys [collection-type collection-name] :as c}]
-  (println "TYPE API" collection-type)
-  (println "NAME API " collection-name)
   (case collection-type
     :user-collection (fetch-user-collection collection-name)
     :flag-collection (fetch-named-collection collection-name)
