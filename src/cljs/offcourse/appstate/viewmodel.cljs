@@ -6,7 +6,7 @@
 
 (defn select [{:keys [type course-id checkpoint-id collection-type collection-name]}]
   (case type
-    :collection (cl-vm/new-collection {:collection-type collection-type
+    :collection (cl-vm/->collection {:collection-type collection-type
                                        :collection-name collection-name})
     :course     (co-vm/new-course {:course-id course-id})
     :checkpoint (cp-vm/new-checkpoint {:course-id course-id

@@ -27,3 +27,8 @@
    (->> names
         (map (fn [name] [name (new-label name selected)]))
         (into {}))))
+
+(defn ->collection [collection selection]
+  (if-not (empty? collection)
+    (from-set collection selection)
+    :unknown))

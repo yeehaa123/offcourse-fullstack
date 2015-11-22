@@ -19,7 +19,6 @@
                     (d/div {:className "layout-main"}
                            (let [{:keys [course resource]} viewmodel]
                              (case (:level viewmodel)
-                               :tags (CollectionView viewmodel handlers)
                                :collection (CollectionView viewmodel handlers)
                                :course (CourseView viewmodel handlers)
                                :checkpoint (Viewer resource)))))))

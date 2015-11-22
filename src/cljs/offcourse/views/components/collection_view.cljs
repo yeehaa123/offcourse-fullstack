@@ -5,7 +5,7 @@
 
 (defn CollectionView [{:keys [collection courses]} handlers]
   (let [{:keys [collection-name collection-type]} collection
-        courses (sort-by :course-id (vals courses))]
+        courses (vals courses)]
     (d/section {:className "cards"}
                (if (= collection-type :tag-collection)
                  (map #(CourseCard %1 collection-name handlers) courses)

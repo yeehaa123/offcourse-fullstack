@@ -21,7 +21,7 @@
 
 (defn find-courses [collection course-ids]
   (->> course-ids
-       (map (fn [id] [id (get collection id)]))
+       (keep (fn [id] [id (get collection id)]))
        (into {})))
 
 (defn add-tags [courses tags]
