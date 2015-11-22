@@ -1,7 +1,8 @@
-(ns offcourse.users-api.index
+(ns offcourse.api.index
   (:require-macros [cljs.core.async.macros :refer [go go-loop]])
   (:require [cljs.core.async :refer [chan mult tap merge timeout <! >!]]
-            [offcourse.users-api.service :as service]))
+            [offcourse.api.service :as service]
+            [offcourse.api.responder :as responder]))
 
 (def channel (chan))
 (def out (mult channel))
@@ -12,11 +13,12 @@
       (case type
         :not-found-data (go
                           #_(<! (timeout (rand-int 1000)))
-                          (>! channel (service/fetch payload)))
+                          (service/fetch payload))
         nil))
     (recur)))
 
 (defn init [inputs]
   (let [inputs (map #(tap %1 (chan)) inputs)
         input (merge inputs)]
+    (responder/init channel)
     (listen-for-actions input)))
