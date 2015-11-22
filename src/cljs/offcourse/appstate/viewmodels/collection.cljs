@@ -68,7 +68,5 @@
         {:keys [collection-name collection-ids] :as collection} (update-collection collection-name collection-type collection-names collections)
         labels (create-label-collections collection-name collection-names tags users)
         courses (update-courses courses collection-ids (:tags labels))]
-    (println collection-name)
-    (println collection-ids)
     (new-collection labels collection courses)))
 

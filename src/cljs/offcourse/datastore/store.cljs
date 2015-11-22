@@ -31,6 +31,7 @@
   (update-and-respond! #(model/update-resources %1 resources)))
 
 (defn- update-collections [collections]
+  (println collections)
   (update-and-respond! #(model/update-collections %1 collections)))
 
 (defn- update-collection [collection]

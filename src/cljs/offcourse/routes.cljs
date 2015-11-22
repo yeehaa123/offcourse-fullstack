@@ -56,5 +56,4 @@
 
   (defroute (:home route-names) []
     (response :collection
-              :collection-type :flag-collection
-              :collection-name :unknown)))
+              :collection-type :flag-collection)))
