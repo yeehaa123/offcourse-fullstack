@@ -1,30 +1,33 @@
 (ns offcourse.appstate.responder
-  (:require [offcourse.models.action :refer [respond]]))
+  (:require-macros [cljs.core.async.macros :refer [go go-loop]])
+  (:require [cljs.core.async :refer [chan mult tap merge timeout <! >!]]
+            [offcourse.models.action :refer [respond]]))
 
 (def counter (atom 0))
 
-(defn respond-resource-required [[field {:keys [course collection labels]}]]
-  (swap! counter inc)
-  (let [resource-data (case field
-                        :labels      {:type field
-                                      :labels labels}
-                        :collection  {:type :collection
-                                      :collection collection}
-                        :courses     {:type :collection
-                                      :collection collection}
-                        :course    {:type :course
-                                    :course course})]
-    (when (< @counter 200)
-      (respond :requested-data
-               :data resource-data))))
+(defn init [channel]
+  (defn respond-resource-required [[field data]]
+    (swap! counter inc)
+    (let [resource-data (if-not (= field :courses)
+                          {:type field
+                           field (field data)}
+                          {:type :collection
+                           :collection (:collection data)})]
+      (when (< @counter 200)
+        (go
+          (>! channel  (respond :requested-data
+                                :data resource-data))))))
 
-(defn respond-update [appstate]
-  (respond :updated-appstate
-           :appstate appstate))
+  (defn respond-commit [payload course-id checkpoint]
+    (go
+      (let [payload (assoc payload
+                           :course-id course-id
+                           :checkpoint checkpoint)]
+        (>! channel  (respond :requested-commit
+                              :payload payload)))))
 
-(defn respond-commit [payload course-id checkpoint]
-  (let [payload (assoc payload :course-id course-id
-                       :checkpoint checkpoint)]
-    (respond :requested-commit
-             :payload payload)))
 
+  (defn respond-update [appstate]
+    (go
+      (>! channel  (respond :updated-appstate
+                            :appstate appstate)))))

@@ -3,7 +3,8 @@
   (:require [offcourse.appstate.store :as store]
             [cljs.core.async :refer [>! chan tap mult merge]]
             [offcourse.appstate.service :as service]
-            [cljs.core.async :refer [>! <!]]))
+            [cljs.core.async :refer [>! <!]]
+            [offcourse.appstate.responder :as responder]))
 
 (def channel (chan))
 (def out (mult channel))
@@ -12,25 +13,26 @@
   (go-loop []
     (let [{type :type payload :payload} (<! input)]
       (case type
-        :requested-resource         (>! channel (store/set-level payload))
-        :requested-commit           (>! channel (store/commit-data payload))
-        :requested-level            (>! channel (service/switch-route payload))
-        :requested-done-toggle      (>! channel (service/toggle-done payload))
-        :requested-highlight-toggle (>! channel (store/toggle-highlight-checkpoint payload))
-        :requested-highlight-label  (>! channel (store/toggle-highlight-label payload))
+        :requested-resource         (store/set-level payload)
+        :requested-commit           (store/commit-data payload)
+        :requested-level            (service/switch-route payload)
+        :requested-done-toggle      (service/toggle-done payload)
+        :requested-highlight-toggle (store/highlight-checkpoint payload)
+        :requested-highlight-label  (store/highlight-label payload)
         :requested-mode-toggle      (store/toggle-mode)
         :requested-mode-switch      (store/set-mode payload)
-        :updated-data               (>! channel (store/refresh payload))
-        :checked-datastore          (>! channel (store/refresh payload))
-        :added-checkpoint           (>! channel (service/return-to-course payload))
-        :reloaded-code              (>! channel (store/force-refresh))
-        :requested-authentication   (>! channel (service/request-authentication payload))
-        :authenticated-user         (>! channel (store/set-user payload))
+        :updated-data               (store/refresh payload)
+        :checked-datastore          (store/refresh payload)
+        :added-checkpoint           (service/return-to-course payload)
+        :reloaded-code              (store/force-refresh)
+        :requested-authentication   (service/request-authentication payload)
+        :authenticated-user         (store/set-user payload)
         nil))
-    (recur)))
+        (recur)))
 
 
 (defn init [inputs]
   (let [inputs (map #(tap %1 (chan)) inputs)
         input (merge inputs)]
+    (responder/init channel)
     (listen-for-actions input)))

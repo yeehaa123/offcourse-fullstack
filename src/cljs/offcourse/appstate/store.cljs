@@ -24,13 +24,13 @@
 (defn toggle-mode []
   (update-and-respond! model/toggle-mode))
 
-(defn toggle-highlight-label [{:keys [label-name label-type highlight]}]
-  (update-and-respond! (partial model/toggle-highlight-label label-name label-type highlight)))
+(defn highlight-label [{:keys [label-name label-type highlight]}]
+  (update-and-respond! (partial model/highlight-label label-name label-type highlight)))
 
-(defn toggle-highlight-checkpoint [{:keys [course-id checkpoint-id highlight]}]
+(defn highlight-checkpoint [{:keys [course-id checkpoint-id highlight]}]
   (if course-id
-    (update-and-respond! (partial model/toggle-highlight course-id checkpoint-id highlight))
-    (update-and-respond! (partial model/toggle-highlight checkpoint-id highlight))))
+    (update-and-respond! (partial model/highlight-checkpoint course-id checkpoint-id highlight))
+    (update-and-respond! (partial model/highlight-checkpoint checkpoint-id highlight))))
 
 (defn set-user [{:keys [user-id]}]
   (update-and-respond! (partial model/set-user-id user-id)))
