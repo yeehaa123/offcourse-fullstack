@@ -11,7 +11,7 @@
   ([course handlers](CourseCard course nil handlers))
   ([{:keys [highlighted checkpoints goal curator course-id] :as course}
     selected-tag
-    {:keys [go-to-course highlight-label go-to-tag-collection] :as handlers}]
+    {:keys [go-to-course highlight-label go-to-collection] :as handlers}]
   (let [highlighted (if highlighted "highlighted" "not-highlighted")
         tags (c/get-tags course)
         sections [[:map (Map)]
@@ -19,7 +19,7 @@
                   [:meta (Meta :curator curator
                                :learners 123
                                :handlers handlers)]
-                  [:tags (Labels tags {:onClick go-to-tag-collection
+                  [:tags (Labels tags {:onClick (partial  go-to-collection :tags)
                                        :highlight (partial highlight-label :tags)})]
                   [:list (TodoList course-id checkpoints handlers)]]]
     (d/section {:key course-id

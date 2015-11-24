@@ -21,21 +21,21 @@
                                    (conj acc id)
                                    acc))
                                #{} courses)]
-    (->collection :user-collection user-name collection-ids)))
+    (->collection :users user-name collection-ids)))
 
 (defn named-collection [collection-name]
   (let [collections {:featured (into #{} (take 10 (iterate inc 1)))
                      :popular (into #{} (take 5 (iterate inc 2)))
                      :new (into #{} (take 4 (iterate inc 4)))}
         collection-ids (collection-name collections)]
-    (->collection :flag-collection collection-name collection-ids)))
+    (->collection :flags collection-name collection-ids)))
 
 (defn find-tag-collection [courses tag]
   (let [collection-ids (reduce (fn [acc [id course]]
                                  (if (co/has-tag? course (name tag))
                                    (conj acc id)
                                    acc)) #{} courses)]
-    (->collection. :tag-collection tag collection-ids)))
+    (->collection. :tags tag collection-ids)))
 
 (defn fetch-tags [collection]
   (apply set/union (map #(co/get-tags %1) (vals collection))))

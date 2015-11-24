@@ -12,7 +12,7 @@
     {:keys [course-id goal] :as course}
     {:keys [url title content]}
     {:keys [go-to-checkpoint
-            go-to-tag-collection
+            go-to-collection
             highlight-label
             highlight-checkpoint] :as handlers}
     in-sidebar?]
@@ -28,14 +28,14 @@
                                  :goal goal)
                            (Meta :title title
                                  :url url))]
-                  [:tags (Labels tags {:onClick go-to-tag-collection
-                                       :highlight highlight-label})]]
+                  [:tags (Labels tags {:onClick (partial go-to-collection :tags)
+                                       :highlight (partial highlight-label :tags)})]]
          extra    [:course-button (GoToButton course-id handlers)]
          sections (if in-sidebar? (conj basic extra) basic)]
 
      (d/section {:key checkpoint-id
                  :className (css/classes "card" highlighted)
                  :onClick #(go-to-checkpoint course-id checkpoint-id %1)
-                 :onMouseEnter #(highlight checkpoint-id true)
-                 :onMouseLeave #(highlight checkpoint-id false)}
+                 :onMouseEnter #(highlight checkpoint-id true %1)
+                 :onMouseLeave #(highlight checkpoint-id false %1)}
                 (map-indexed #(CardSection %1 %2) sections)))))

@@ -21,10 +21,10 @@
 
 (defn Meta [& data]
   (let [args (apply sorted-map data)
-        {:keys [go-to-user-collection]} (:handlers args)
+        {:keys [go-to-collection]} (:handlers args)
         fields (dissoc args :handlers)
         user (:curator fields)]
-    (d/div {:onClick #(go-to-user-collection user %1)}
+    (d/div {:onClick #(go-to-collection :users user %1)}
            (map-indexed #(MetaField %1 %2) fields))))
 
 

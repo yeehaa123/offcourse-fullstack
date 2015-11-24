@@ -19,10 +19,9 @@
     (res/respond-update @appstate)))
 
 (defn set-mode [{mode :mode}]
-  (update-and-respond! (partial model/set-mode mode)))
-
-(defn toggle-mode []
-  (update-and-respond! model/toggle-mode))
+  (if mode
+    (update-and-respond! (partial model/set-mode mode))
+    (update-and-respond! model/toggle-mode)))
 
 (defn highlight-label [{:keys [label-name label-type highlight]}]
   (update-and-respond! (partial model/highlight-label label-name label-type highlight)))

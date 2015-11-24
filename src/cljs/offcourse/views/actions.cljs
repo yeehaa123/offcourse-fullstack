@@ -4,52 +4,41 @@
 (defn init [output]
   (let [>>! (partial >>! output)]
 
-    {:set-mode          (fn [mode]
+    {:set-mode          (fn [mode event]
+                          (.stopPropagation event)
                           (>>! :requested-mode-switch
                                :mode mode))
 
-     :toggle-mode       (fn []
-                          (>>! :requested-mode-toggle))
+     :toggle-mode       (fn [event]
+                          (.stopPropagation event)
+                          (>>! :requested-mode-switch))
 
      :toggle-done       (fn [course-id checkpoint-id event]
-                          (do
-                            (.stopPropagation event)
-                            (>>! :requested-done-toggle
-                                 :course-id course-id
-                                 :checkpoint-id checkpoint-id)))
-
-     :highlight-checkpoint (fn [course-id checkpoint-id highlight]
-                          (>>! :requested-highlight-toggle
+                          (.stopPropagation event)
+                          (>>! :requested-done-toggle
                                :course-id course-id
-                               :checkpoint-id checkpoint-id
-                               :highlight highlight))
+                               :checkpoint-id checkpoint-id))
 
-     :highlight-label (fn [label-type label-name highlight]
+     :highlight-checkpoint (fn [course-id checkpoint-id highlight event]
+                             (.stopPropagation event)
+                             (>>! :requested-highlight-checkpoint
+                                  :course-id course-id
+                                  :checkpoint-id checkpoint-id
+                                  :highlight highlight))
+
+     :highlight-label (fn [label-type label-name highlight event]
+                        (.stopPropagation event)
                         (>>! :requested-highlight-label
                              :label-name label-name
                              :label-type label-type
                              :highlight highlight))
 
-     :go-to-collection  (fn [collection-name event]
+     :go-to-collection  (fn [collection-type collection-name event]
                           (.stopPropagation event)
                           (>>! :requested-level
                                :level :collection
-                               :collection-type :flag-collection
+                               :collection-type collection-type
                                :collection-name collection-name))
-
-     :go-to-user-collection  (fn [user-name event]
-                               (.stopPropagation event)
-                               (>>! :requested-level
-                                    :level :collection
-                                    :collection-type :user-collection
-                                    :collection-name (str "users/" user-name)))
-
-     :go-to-tag-collection      (fn [tag event]
-                                  (.stopPropagation event)
-                                  (>>! :requested-level
-                                       :level :collection
-                                       :collection-type :tag-collection
-                                       :collection-name (str "tags/" tag)))
 
      :go-to-course      (fn [course-id event]
                           (.stopPropagation event)
@@ -65,15 +54,18 @@
                                :checkpoint-id checkpoint-id))
 
 
-     :commit-checkpoint (fn [course-id checkpoint-id]
+     :commit-checkpoint (fn [course-id checkpoint-id event]
+                          (.stopPropagation event)
                           (>>! :requested-commit
                                :type :checkpoint
                                :course-id course-id
                                :checkpoint-id checkpoint-id))
 
-     :get-authorized    (fn [user-id]
+     :get-authorized    (fn [user-id event]
+                          (.stopPropagation event)
                           (>>! :requested-authentication))
 
-     :go-to             (fn [payload]
+     :go-to             (fn [payload event]
+                          (.stopPropagation event)
                           (>>! :requested-level
                                :payload payload))}))

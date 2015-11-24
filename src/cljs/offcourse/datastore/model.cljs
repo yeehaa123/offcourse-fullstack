@@ -5,12 +5,6 @@
 
 (defrecord DataStore [collections courses resources tags users])
 
-(defn wrap-collections [collections]
-  (->> collections
-       (map (fn [[id collection]]
-              [id collection]))
-       (into {})))
-
 (defn new-datastore []
   (->DataStore nil nil nil nil nil))
 
@@ -24,7 +18,7 @@
   (update-in store [:resources] #(into %1 resources)))
 
 (defn update-collections [store collections]
-  (assoc-in store [:collections :flags] (wrap-collections collections)))
+  (assoc-in store [:collections :flags] (into {} collections)))
 
 (defn update-collection [store {:keys [collection-name collection-type] :as collection}]
   (assoc-in store [:collections collection-type collection-name] collection))

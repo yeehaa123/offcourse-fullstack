@@ -10,8 +10,8 @@
         highlight (partial highlight label-name)]
     (d/span {:key label-name
              :onClick #(onClick (name label-name) %1)
-             :onMouseEnter #(highlight true)
-             :onMouseLeave #(highlight false)
+             :onMouseEnter #(highlight true %1)
+             :onMouseLeave #(highlight false %1)
              :className (css/classes "tag" highlighted selected)}
             (name label-name))))
 

@@ -6,7 +6,7 @@
 (defn Checkbox [completed {:keys [toggle-done]}]
   (let [completed (if completed "complete" "incomplete")]
     (d/span {:className (css/classes "checkbox" completed)
-             :onClick toggle-done})))
+             :onClick #(toggle-done %1)})))
 
 (defn TodoListItem [[checkpoint-id completed highlighted title]
                     {:keys [toggle-done go-to-checkpoint highlight]}]
@@ -16,11 +16,11 @@
         highlight (partial highlight checkpoint-id)]
     (d/li {:key checkpoint-id
            :className (css/classes "todolist_item" highlighted)
-           :onMouseEnter #(highlight true)
-           :onMouseLeave #(highlight false)}
+           :onMouseEnter #(highlight true %1)
+           :onMouseLeave #(highlight false %1)}
           (d/p {}
                (Checkbox completed {:toggle-done toggle-done})
-               (d/span {:onClick go-to-checkpoint} title)))))
+               (d/span {:onClick #(go-to-checkpoint %1)} title)))))
 
 
 (defn TodoList [course-id items {:keys [toggle-done go-to-checkpoint highlight-checkpoint]}]

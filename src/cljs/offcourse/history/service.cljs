@@ -40,14 +40,21 @@
   (str (course-token location-data)
        "/checkpoints/" (:checkpoint-id location-data)))
 
+(defn collection-token [{:keys [collection-name collection-type]}]
+  (if (= collection-type :flags)
+    (str (name collection-name))
+    (str (name collection-type) "/" (name collection-name))))
+
 (defn create-token [{level :level :as location-data}]
+  (println location-data)
   (case level
-    :collection (name (:collection-name location-data))
+    :collection (collection-token location-data)
     :course (course-token location-data)
     :checkpoint (checkpoint-token location-data)
     :home nil))
 
 (defn nav! [location-data]
+  (println location-data)
   (let [token (str "/" (create-token location-data))]
     (.setToken history token)))
 

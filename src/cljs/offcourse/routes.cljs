@@ -41,17 +41,17 @@
 
   (defroute (:collection route-names) {collection-name :collection-name}
     (response :collection
-              :collection-type :flag-collection
+              :collection-type :flags
               :collection-name (keyword collection-name)))
 
   (defroute (:user-collection route-names) {user-name :user-name}
     (response :collection
-              :collection-type :user-collection
+              :collection-type :users
               :collection-name (keyword user-name)))
 
   (defroute (:tag-collection route-names) {tag :tag}
     (response :collection
-              :collection-type :tag-collection
+              :collection-type :tags
               :collection-name (keyword tag)))
 
   (defroute (:home route-names) []

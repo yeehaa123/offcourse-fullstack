@@ -6,6 +6,11 @@
 (def counter (atom 0))
 
 (defn init [channel]
+
+  (defn -respond [& response]
+    (go
+      (>! channel  (apply respond response))))
+
   (defn respond-resource-required [[field data]]
     (swap! counter inc)
     (let [resource-data (if-not (= field :courses)
@@ -13,21 +18,33 @@
                            field (field data)}
                           {:type :collection
                            :collection (:collection data)})]
-      (when (< @counter 200)
-        (go
-          (>! channel  (respond :requested-data
-                                :data resource-data))))))
+      (when (< @counter 30)
+        (-respond :requested-data
+                  :data resource-data))))
 
   (defn respond-commit [payload course-id checkpoint]
-    (go
-      (let [payload (assoc payload
-                           :course-id course-id
-                           :checkpoint checkpoint)]
-        (>! channel  (respond :requested-commit
-                              :payload payload)))))
+    (let [payload (assoc payload
+                         :course-id course-id
+                         :checkpoint checkpoint)]
+      (-respond :requested-commit
+                :payload payload)))
 
 
   (defn respond-update [appstate]
-    (go
-      (>! channel  (respond :updated-appstate
-                            :appstate appstate)))))
+    (-respond :updated-appstate
+              :appstate appstate))
+
+  (defn switch-route [payload]
+    (-respond :requested-route
+              :payload payload))
+
+  (defn toggle-done [payload]
+    (-respond :requested-toggle-done
+              :payload payload))
+
+  (defn return-to-course [payload]
+    (switch-route (assoc payload :level :course)))
+
+  (defn request-authentication [payload]
+    (-respond :requested-authentication
+              :user-id "yeehaa")))
