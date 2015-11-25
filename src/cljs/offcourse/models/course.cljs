@@ -11,12 +11,9 @@
      checkpoints :- {schema/Int Checkpoint}
      tags :- schema/Any])
 
-
 (defn new
   ([curator] (fake-data/generate-course :new curator))
-  ([course course-id] (assoc course :course-id course-id))
-  ([course-id curator-id goal checkpoints]
-   (Course. course-id curator-id goal checkpoints #{})))
+  ([course course-id] (assoc course :course-id course-id)))
 
 (defn coerce-from-map [{:keys [checkpoints] :as course}]
   (let [checkpoints (->> checkpoints

@@ -9,7 +9,7 @@
             [markdown.core :refer [md->html]]
             [quiescent.dom :as d]))
 
-(defn App [{:keys [viewmodel user-id mode]} handlers]
+(defn App [{:keys [user-id mode] :as viewmodel} handlers]
   (d/section {:className (css/classes "app" mode "waypoints")}
              (d/div {:className "layout-sidebar"}
                     (Sidebar viewmodel handlers))

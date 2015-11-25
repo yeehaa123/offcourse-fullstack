@@ -30,6 +30,7 @@
          :tags                (response)
          :users               (response)
          :flags               (response)
+         :collection-names    (response)
          :collection          (response :collection-type collection-type
                                         :collection-name collection-name)
          :courses             (response :course-ids course-ids)

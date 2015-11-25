@@ -1,59 +1,77 @@
 (ns offcourse.appstate.model
-  (:require [offcourse.models.action :refer [respond]]
-            [offcourse.models.course :as co]
+  (:require [schema.core :as schema :include-macros true]
+            [offcourse.appstate.viewmodel :as vm]
+            [offcourse.models.action :refer [respond]]
+            [offcourse.models.collection :as cl :refer [Collection]]
+            [offcourse.models.label :as label :refer [Label LabelCollection]]
+            [offcourse.models.course :as co :refer [Course]]
             [offcourse.models.courses :as cs]
-            [offcourse.appstate.viewmodel :as vm]))
+            [schema.core :as schema]))
 
-(defrecord AppState [level mode course-collections viewmodel])
+(schema/defrecord AppState
+    [locked :- schema/Bool
+     current :- {}
+     proposed :- Viewmodel])
 
-(defn new-appstate []
-  (map->AppState {:user-id     :unknown
-                  :level       {:type :collection}
-                  :mode        :learn
-                  :viewmodel   {}}))
+(defn ->appstate []
+  (->AppState false (->viewmodel) (->viewmodel)))
 
-(defn set-viewmodel [appstate viewmodel]
-  (assoc-in appstate [:viewmodel] viewmodel))
+(schema/defrecord Viewmodel
+    [level :- Keyword
+     labels :- {Keyword LabelCollection}
+     collection :- Collection
+     courses :- {schema/Int Course}])
 
-(defn update-viewmodel [appstate fn]
-  (update-in appstate [:viewmodel] fn))
+(defn ->viewmodel
+  ([] (->Viewmodel nil nil nil nil))
+  ([level collection] (->Viewmodel level nil collection nil))
+  ([level labels collection] (->Viewmodel level labels collection nil))
+  ([level labels collection courses] (->Viewmodel level labels collection courses)))
 
-(defn set-mode [mode appstate]
-  (assoc-in appstate [:mode] mode))
+;; DON'T BELONG HERE
 
-(defn set-user-id [user-id appstate]
-  (assoc-in appstate [:user-id] user-id))
+(defn collections->labelCollection [collections]
+  (->> collections
+       (map (fn [[collection-name _]]
+              [collection-name (label/new-label collection-name)]))
+       (into {})))
 
-(defn set-level [level appstate]
-  (let [viewmodel (vm/select level (get-in appstate [:viewmodel :labels]))]
-    (assoc appstate :level level :viewmodel viewmodel)))
+(defn collections->labelCollections [all-collections]
+  (->> all-collections
+       (map (fn [[category collections]]
+              [category (collections->labelCollection collections)]))
+       (into {})))
 
-(defn toggle-mode [appstate]
-  (update-in appstate [:mode] #(if (= %1 :learn) :curate :learn)))
+(defn set-proposal [{:keys [level collection-type collection-name] :as payload} appstate]
+  (let [collection-name (or collection-name :featured)
+        collection (cl/->collection collection-type collection-name)]
+    (assoc-in appstate [:proposed] (->viewmodel level collection))))
 
-#_(defn add-checkpoint [appstate course]
-    (let [checkpoint (cp/new)
-          course (co/add-temp-checkpoint course checkpoint)]
-      (set-viewmodel appstate (vm/new-checkpoint course (:checkpoint-id checkpoint) {}))))
-
-#_(defn update-checkpoint [appstate course checkpoint-id resources]
-  (if (= :new checkpoint-id)
-    (add-checkpoint appstate course)
-    (refresh-checkpoint appstate course resources)))
-
-(defn highlight-checkpoint [course-id checkpoint-id highlight appstate]
-  (update-viewmodel appstate #(vm/toggle-highlight %1 course-id checkpoint-id highlight)))
-
-(defn highlight-label [label-name label-type highlight appstate]
-  (update-viewmodel appstate #(vm/toggle-highlight-label %1 label-name label-type highlight)))
-
-(defn refresh [store appstate]
-  (update-viewmodel appstate #(vm/refresh %1 store)))
-
-(defn unknown-data [{:keys [viewmodel]}]
-  (let [errors  (vm/check viewmodel)
+(defn unknown-data [viewmodel]
+  (let [errors  (schema/check Viewmodel viewmodel)
         unknown-fields (keys errors)
         unknown-field (first unknown-fields)]
     (println "ERROR:" errors)
     (when unknown-field
       [unknown-field viewmodel])))
+
+(defn lock-state [appstate]
+  (assoc-in appstate [:locked] true))
+
+(defn unlock-state [appstate]
+  (assoc-in appstate [:locked] false))
+
+(defn select-courses [courses ids tag-labels]
+  (let [courses (cs/find-courses courses ids)]
+    (if-not (empty? courses)
+      (cs/add-tags courses tag-labels)
+      :unknown)))
+
+(defn refresh [{:keys [collections courses] :as store} {:keys [proposed] :as appstate}]
+  (let [{:keys [level collection]} proposed
+        {:keys [collection-name collection-type]} collection
+        labels (collections->labelCollections collections)
+        new-collection (cl/find-collection collections collection-type collection-name)
+        collection (or new-collection collection)
+        courses (select-courses courses (:collection-ids collection) (:tags labels))]
+    (assoc-in appstate [:proposed] (->viewmodel level labels collection courses))))

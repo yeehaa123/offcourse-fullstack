@@ -41,11 +41,12 @@
 (defn set-of-buzzwords [min max]
   (->> buzzwords
        shuffle
-       (take (rand-int-between 0 5))
+       (take (rand-int-between min max))
        (map #(str/lower-case %1))
        (into #{})))
 
-(def course (rand-nth raw-courses))
+(defn course []
+  (rand-nth raw-courses))
 
 (def flags [:featured :new :popular])
 
@@ -55,8 +56,10 @@
        (take (rand-int 4))
        (into #{})))
 
+(def users ["yeehaa" "greg" "r2j2" "reika" "charlotte" "marijn"])
+
 (defn generate-user []
-  (rand-nth ["yeehaa" "greg" "r2j2" "reika" "charlotte" "marijn"]))
+  (rand-nth users))
 
 (defn- index-checkpoint [index {:keys [task completed]}]
   [index {:checkpoint-id index
@@ -71,7 +74,7 @@
        (into {})))
 
 (defn generate-course [id curator]
-  (-> course
+  (-> (course)
       (assoc :course-id id)
       (assoc :curator curator)
       (assoc :flags (generate-flags))

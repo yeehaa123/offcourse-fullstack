@@ -28,8 +28,8 @@
     :course     (co-vm/highlight-checkpoint viewmodel checkpoint-id highlight)
     :checkpoint (co-vm/highlight-checkpoint viewmodel checkpoint-id highlight)))
 
-(defn refresh [{:keys [level collection] :as viewmodel} store]
+(defn refresh [{:keys [level course collection] :as viewmodel} store]
   (case level
     :collection (cl-vm/refresh collection store)
-    :course     (co-vm/refresh viewmodel store)
+    :course     (co-vm/refresh course store)
     :checkpoint (cp-vm/refresh viewmodel store)))

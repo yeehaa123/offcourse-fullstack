@@ -11,17 +11,18 @@
 (def out (mult channel))
 (def handlers (actions/init channel))
 
-(defn- render [appstate handlers]
-  (q/render (App handlers appstate)
+(defn render [appstate handlers]
+  (q/render (App (assoc appstate :mode :learn
+                                 :user-id :unknown) handlers)
             (.querySelector js/document "#app"))
   (respond :rendered-view))
 
 (defn- listen-for-actions [input]
   (go-loop []
-    (let [{type :type payload :payload} (<! input)]
+    (let [{:keys [type payload]} (<! input)]
       (case type
-        :updated-appstate  (>! channel (render handlers (:appstate payload)))
-        :reloaded-appstate (>! channel (render handlers (:appstate payload)))
+        :updated-appstate  (>! channel (render (:appstate payload) handlers))
+        :reloaded-appstate (>! channel (render (:appstate payload) handlers))
         nil))
     (recur)))
 

@@ -14,9 +14,9 @@
       (case type
         :reloaded-code                  (store/force-refresh)
 
-        :requested-resource             (store/set-level payload)
+        :requested-level             (store/set-level payload)
         :requested-commit               (store/commit-data payload)
-        :requested-level                (responder/switch-route payload)
+        :requested-route                (responder/switch-route payload)
         :requested-done-toggle          (responder/toggle-done payload)
         :requested-highlight-checkpoint (store/highlight-checkpoint payload)
         :requested-highlight-label      (store/highlight-label payload)

@@ -24,8 +24,8 @@
     :default (js/parseInt id)))
 
 (defn response [type & args]
-  (let [payload (assoc (apply hash-map args) :type type)]
-    (>>! channel :requested-resource
+  (let [payload (assoc (apply hash-map args) :level type)]
+    (>>! channel :requested-level
          :payload payload)))
 
 (defn init []
@@ -56,4 +56,4 @@
 
   (defroute (:home route-names) []
     (response :collection
-              :collection-type :flag-collection)))
+              :collection-type :flags)))

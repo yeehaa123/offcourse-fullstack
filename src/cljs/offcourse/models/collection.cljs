@@ -12,8 +12,11 @@
 (def Collections
   {schema/Any {schema/Any Collection}})
 
-(defn ->collection [collection-type collection-name collection-ids]
-  (Collection. collection-type collection-name collection-ids))
+(defn ->collection
+  ([collection-type collection-name]
+   (Collection. collection-type collection-name nil))
+  ([collection-type collection-name collection-ids]
+   (Collection. collection-type collection-name collection-ids)))
 
 (defn find-user-collection [courses user-name]
   (let [collection-ids (reduce (fn [acc [id course]]
@@ -22,13 +25,6 @@
                                    acc))
                                #{} courses)]
     (->collection :users user-name collection-ids)))
-
-(defn named-collection [collection-name]
-  (let [collections {:featured (into #{} (take 10 (iterate inc 1)))
-                     :popular (into #{} (take 5 (iterate inc 2)))
-                     :new (into #{} (take 4 (iterate inc 4)))}
-        collection-ids (collection-name collections)]
-    (->collection :flags collection-name collection-ids)))
 
 (defn find-flag-collection [courses flag]
   (let [collection-ids (reduce (fn [acc [id course]]
@@ -43,6 +39,9 @@
                                    (conj acc id)
                                    acc)) #{} courses)]
     (->collection. :tags tag collection-ids)))
+
+(defn find-collection [collections collection-type collection-name]
+  (get-in collections [collection-type collection-name]))
 
 (defn fetch-tags [collection]
   (apply set/union (map #(co/get-tags %1) (vals collection))))

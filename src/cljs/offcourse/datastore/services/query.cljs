@@ -48,23 +48,13 @@
           (r/respond-not-found :resources {:urls missing-urls}))
         (r/respond-not-found :course {:course-id course-id}))))
 
-  (defn get-labels-data [labels]
-    (let [label (->> labels
-                     (filter #(= :unknown (val %1)))
-                     first
-                     key)]
-      (case label
-        :flags (get-flags)
-        :tags (get-tags)
-        :users (get-users))))
+  (defn get-labels-data []
+    (r/respond-not-found :collection-names))
 
   (defn get-data [{:keys [data]}]
-    (let [{:keys [type course labels]} data]
+    (let [{:keys [type course]} data]
       (case type
-        :labels (get-labels-data labels)
-        :collection-names (get-flags)
-        :tag-names        (get-tags)
-        :user-names       (get-users)
+        :labels           (get-labels-data)
         :collection       (get-collection (type data))
         :course           (get-course (type data))
         :checkpoint       (get-course data)))))

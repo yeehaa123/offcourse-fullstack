@@ -3,15 +3,19 @@
             [offcourse.appstate.responder :as res]
             [offcourse.models.course :as co]))
 
-(def appstate (atom (model/new-appstate)))
+(defonce appstate (atom (model/->appstate)))
 
 (defn update-and-maybe-respond! [f]
   (do
     (swap! appstate #(f %1))
-    (let [unknown-field (model/unknown-data @appstate)]
+    (let [unknown-field (model/unknown-data (:proposed @appstate))]
       (if unknown-field
-        (res/respond-resource-required unknown-field)
-        (res/respond-update @appstate)))))
+        (do
+          (swap! appstate model/lock-state)
+          (res/respond-resource-required unknown-field))
+        (do
+          (swap! appstate model/unlock-state)
+          (res/respond-update @appstate))))))
 
 (defn update-and-respond! [f]
   (do
@@ -24,20 +28,20 @@
     (update-and-respond! model/toggle-mode)))
 
 (defn highlight-label [{:keys [label-name label-type highlight]}]
-  (update-and-respond! (partial model/highlight-label label-name label-type highlight)))
+  (update-and-maybe-respond! (partial model/highlight-label label-name label-type highlight)))
 
 (defn highlight-checkpoint [{:keys [course-id checkpoint-id highlight]}]
   (if course-id
-    (update-and-respond! (partial model/highlight-checkpoint course-id checkpoint-id highlight))
-    (update-and-respond! (partial model/highlight-checkpoint checkpoint-id highlight))))
+    (update-and-maybe-respond! (partial model/highlight-checkpoint course-id checkpoint-id highlight))
+    (update-and-maybe-respond! (partial model/highlight-checkpoint checkpoint-id highlight))))
 
 (defn set-user [{:keys [user-id]}]
   (update-and-respond! (partial model/set-user-id user-id)))
 
-(defn set-level [level]
-  (update-and-maybe-respond! (partial model/set-level level)))
+(defn set-level [payload]
+  (update-and-maybe-respond! (partial model/set-proposal payload)))
 
-(defn refresh [{:keys [store] :as payload}]
+(defn refresh [{:keys [store]}]
   (update-and-maybe-respond! (partial model/refresh store)))
 
 (defn commit-data [{:keys [course-id checkpoint-id] :as payload}]

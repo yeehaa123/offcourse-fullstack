@@ -8,9 +8,7 @@
 
 (defn fetch [{:keys [type] :as payload}]
   (case type
-    :users            (uss/fetch-all-users)
-    :tags             (tas/fetch-all-tags)
-    :flags            (cls/fetch-all-flags)
+    :collection-names (cls/fetch-collection-names)
     :collection       (cls/fetch-collection payload)
     :courses          (cos/fetch-courses payload)
     :course           (cos/fetch-course payload)

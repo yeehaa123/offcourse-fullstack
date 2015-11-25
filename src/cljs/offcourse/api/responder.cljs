@@ -20,6 +20,9 @@
   (def respond-fetched-flags
     (partial respond-fetched :flags))
 
+  (def respond-fetched-collection-names
+    (partial respond-fetched :collection-names))
+
   (def respond-fetched-collection
     (partial respond-fetched :collection))
 

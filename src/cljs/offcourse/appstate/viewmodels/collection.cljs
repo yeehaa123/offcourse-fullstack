@@ -26,7 +26,8 @@
   (if-not name [(second names) :flags] [name type]))
 
 (defn- update-collection [collection-name collection-type collection-names collections]
-  (let [[collection-name collection-type] (select-collection-name collection-name collection-type collection-names)
+  (let [[collection-name collection-type] (select-collection-name collection-name
+                                                                  collection-type collection-names)
         collection-ids (get-in collections [collection-type collection-name :collection-ids])]
     (cl/->collection collection-type collection-name collection-ids)))
 

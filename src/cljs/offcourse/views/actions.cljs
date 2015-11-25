@@ -35,20 +35,20 @@
 
      :go-to-collection  (fn [collection-type collection-name event]
                           (.stopPropagation event)
-                          (>>! :requested-level
+                          (>>! :requested-route
                                :level :collection
                                :collection-type collection-type
                                :collection-name (keyword collection-name)))
 
      :go-to-course      (fn [course-id event]
                           (.stopPropagation event)
-                          (>>! :requested-level
+                          (>>! :requested-route
                                :level :course
                                :course-id course-id))
 
      :go-to-checkpoint  (fn [course-id checkpoint-id event]
                           (.stopPropagation event)
-                          (>>! :requested-level
+                          (>>! :requested-route
                                :level :checkpoint
                                :course-id course-id
                                :checkpoint-id checkpoint-id))
@@ -67,5 +67,5 @@
 
      :go-to             (fn [payload event]
                           (.stopPropagation event)
-                          (>>! :requested-level
+                          (>>! :requested-route
                                :payload payload))}))

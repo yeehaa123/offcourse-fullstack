@@ -20,16 +20,22 @@
       (update-datastore! fn)
       (r/respond-added store course-id)))
 
-  (defn update-tags [tags]
-    (update-and-respond! #(model/update-tags %1 tags)))
+  (defn update-collections [collection-names]
+    (let [empty-collections
+          (->> collection-names
+               (map (fn [[category collections]]
+                      [category (->> collections
+                                     (map (fn [name]
+                                            [(keyword name) (cl/->collection category name)]))
+                                     (into {}))]))
+               (into {}))]
+      (update-and-respond! #(model/update-collections %1 empty-collections))))
 
   (defn update-resources [{:keys [resources]}]
     (update-and-respond! #(model/update-resources %1 resources)))
 
-  (defn- update-flags [flags]
-    (update-and-respond! #(model/update-flags %1 flags)))
-
   (defn- update-collection [collection]
+    (println collection)
     (update-and-respond! #(model/update-collection %1 collection)))
 
   (defn- update-course [course]
@@ -37,9 +43,6 @@
 
   (defn- update-courses [{:keys [courses]}]
     (update-and-respond! #(model/update-courses %1 courses)))
-
-  (defn update-users [users]
-    (update-and-respond! #(model/update-users %1 users)))
 
   (defn- add-checkpoint [{:keys [course-id checkpoint]}]
     (let [course (model/find-course @store course-id)]
@@ -55,12 +58,10 @@
   (defn toggle-done [{:keys [course-id checkpoint-id]}]
     (update-and-respond! #(model/toggle-done %1 course-id checkpoint-id)))
 
-  (defn update-datastore [{:keys [type flags course tags users collection collections collection-names] :as payload}]
+  (defn update-datastore [{:keys [type course collection collection-names collection-names] :as payload}]
     (case type
-      :flags       (update-flags flags)
-      :tags        (update-tags tags)
-      :collection  (update-collection collection)
-      :course      (update-course course)
-      :users       (update-users users)
-      :courses     (update-courses payload)
-      :resources   (update-resources payload))))
+      :collection-names (update-collections collection-names)
+      :collection       (update-collection collection)
+      :course           (update-course course)
+      :courses          (update-courses payload)
+      :resources        (update-resources payload))))

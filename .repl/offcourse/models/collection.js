@@ -4,12 +4,12 @@ goog.require('cljs.core');
 goog.require('offcourse.models.course');
 goog.require('schema.core');
 goog.require('clojure.set');
-var bad_keys__25051__auto___56987 = cljs.core.seq.call(null,cljs.core.filter.call(null,(function (p1__25047__25052__auto__){
-return schema.core.required_key_QMARK_.call(null,p1__25047__25052__auto__);
+var bad_keys__21512__auto___50781 = cljs.core.seq.call(null,cljs.core.filter.call(null,(function (p1__21508__21513__auto__){
+return schema.core.required_key_QMARK_.call(null,p1__21508__21513__auto__);
 }),cljs.core.keys.call(null,null)));
-if(cljs.core.not.call(null,bad_keys__25051__auto___56987)){
+if(cljs.core.not.call(null,bad_keys__21512__auto___50781)){
 } else {
-throw (new Error(schema.utils.format_STAR_.call(null,"extra-key-schema? can not contain required keys: %s",cljs.core.vec.call(null,bad_keys__25051__auto___56987))));
+throw (new Error(schema.utils.format_STAR_.call(null,"extra-key-schema? can not contain required keys: %s",cljs.core.vec.call(null,bad_keys__21512__auto___50781))));
 }
 
 
@@ -47,11 +47,11 @@ var this__19780__auto____$1 = this;
 return cljs.core._lookup.call(null,this__19780__auto____$1,k__19781__auto__,null);
 });
 
-offcourse.models.collection.Collection.prototype.cljs$core$ILookup$_lookup$arity$3 = (function (this__19782__auto__,k56977,else__19783__auto__){
+offcourse.models.collection.Collection.prototype.cljs$core$ILookup$_lookup$arity$3 = (function (this__19782__auto__,k50771,else__19783__auto__){
 var self__ = this;
 var this__19782__auto____$1 = this;
-var G__56979 = (((k56977 instanceof cljs.core.Keyword))?k56977.fqn:null);
-switch (G__56979) {
+var G__50773 = (((k50771 instanceof cljs.core.Keyword))?k50771.fqn:null);
+switch (G__50773) {
 case "collection-type":
 return self__.collection_type;
 
@@ -65,7 +65,7 @@ return self__.collection_ids;
 
 break;
 default:
-return cljs.core.get.call(null,self__.__extmap,k56977,else__19783__auto__);
+return cljs.core.get.call(null,self__.__extmap,k50771,else__19783__auto__);
 
 }
 });
@@ -83,10 +83,10 @@ return cljs.core.pr_sequential_writer.call(null,writer__19795__auto__,pr_pair__1
 
 offcourse.models.collection.Collection.prototype.cljs$core$IIterable$ = true;
 
-offcourse.models.collection.Collection.prototype.cljs$core$IIterable$_iterator$arity$1 = (function (G__56976){
+offcourse.models.collection.Collection.prototype.cljs$core$IIterable$_iterator$arity$1 = (function (G__50770){
 var self__ = this;
-var G__56976__$1 = this;
-return (new cljs.core.RecordIter((0),G__56976__$1,3,new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"collection-type","collection-type",-448917118),new cljs.core.Keyword(null,"collection-name","collection-name",600435477),new cljs.core.Keyword(null,"collection-ids","collection-ids",-1373265385)], null),cljs.core._iterator.call(null,self__.__extmap)));
+var G__50770__$1 = this;
+return (new cljs.core.RecordIter((0),G__50770__$1,3,new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"collection-type","collection-type",-448917118),new cljs.core.Keyword(null,"collection-name","collection-name",600435477),new cljs.core.Keyword(null,"collection-ids","collection-ids",-1373265385)], null),cljs.core._iterator.call(null,self__.__extmap)));
 });
 
 offcourse.models.collection.Collection.prototype.cljs$core$IMeta$_meta$arity$1 = (function (this__19778__auto__){
@@ -152,21 +152,21 @@ return (new offcourse.models.collection.Collection(self__.collection_type,self__
 }
 });
 
-offcourse.models.collection.Collection.prototype.cljs$core$IAssociative$_assoc$arity$3 = (function (this__19787__auto__,k__19788__auto__,G__56976){
+offcourse.models.collection.Collection.prototype.cljs$core$IAssociative$_assoc$arity$3 = (function (this__19787__auto__,k__19788__auto__,G__50770){
 var self__ = this;
 var this__19787__auto____$1 = this;
-var pred__56980 = cljs.core.keyword_identical_QMARK_;
-var expr__56981 = k__19788__auto__;
-if(cljs.core.truth_(pred__56980.call(null,new cljs.core.Keyword(null,"collection-type","collection-type",-448917118),expr__56981))){
-return (new offcourse.models.collection.Collection(G__56976,self__.collection_name,self__.collection_ids,self__.__meta,self__.__extmap,null));
+var pred__50774 = cljs.core.keyword_identical_QMARK_;
+var expr__50775 = k__19788__auto__;
+if(cljs.core.truth_(pred__50774.call(null,new cljs.core.Keyword(null,"collection-type","collection-type",-448917118),expr__50775))){
+return (new offcourse.models.collection.Collection(G__50770,self__.collection_name,self__.collection_ids,self__.__meta,self__.__extmap,null));
 } else {
-if(cljs.core.truth_(pred__56980.call(null,new cljs.core.Keyword(null,"collection-name","collection-name",600435477),expr__56981))){
-return (new offcourse.models.collection.Collection(self__.collection_type,G__56976,self__.collection_ids,self__.__meta,self__.__extmap,null));
+if(cljs.core.truth_(pred__50774.call(null,new cljs.core.Keyword(null,"collection-name","collection-name",600435477),expr__50775))){
+return (new offcourse.models.collection.Collection(self__.collection_type,G__50770,self__.collection_ids,self__.__meta,self__.__extmap,null));
 } else {
-if(cljs.core.truth_(pred__56980.call(null,new cljs.core.Keyword(null,"collection-ids","collection-ids",-1373265385),expr__56981))){
-return (new offcourse.models.collection.Collection(self__.collection_type,self__.collection_name,G__56976,self__.__meta,self__.__extmap,null));
+if(cljs.core.truth_(pred__50774.call(null,new cljs.core.Keyword(null,"collection-ids","collection-ids",-1373265385),expr__50775))){
+return (new offcourse.models.collection.Collection(self__.collection_type,self__.collection_name,G__50770,self__.__meta,self__.__extmap,null));
 } else {
-return (new offcourse.models.collection.Collection(self__.collection_type,self__.collection_name,self__.collection_ids,self__.__meta,cljs.core.assoc.call(null,self__.__extmap,k__19788__auto__,G__56976),null));
+return (new offcourse.models.collection.Collection(self__.collection_type,self__.collection_name,self__.collection_ids,self__.__meta,cljs.core.assoc.call(null,self__.__extmap,k__19788__auto__,G__50770),null));
 }
 }
 }
@@ -178,10 +178,10 @@ var this__19792__auto____$1 = this;
 return cljs.core.seq.call(null,cljs.core.concat.call(null,new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [(new cljs.core.PersistentVector(null,2,(5),cljs.core.PersistentVector.EMPTY_NODE,[new cljs.core.Keyword(null,"collection-type","collection-type",-448917118),self__.collection_type],null)),(new cljs.core.PersistentVector(null,2,(5),cljs.core.PersistentVector.EMPTY_NODE,[new cljs.core.Keyword(null,"collection-name","collection-name",600435477),self__.collection_name],null)),(new cljs.core.PersistentVector(null,2,(5),cljs.core.PersistentVector.EMPTY_NODE,[new cljs.core.Keyword(null,"collection-ids","collection-ids",-1373265385),self__.collection_ids],null))], null),self__.__extmap));
 });
 
-offcourse.models.collection.Collection.prototype.cljs$core$IWithMeta$_with_meta$arity$2 = (function (this__19779__auto__,G__56976){
+offcourse.models.collection.Collection.prototype.cljs$core$IWithMeta$_with_meta$arity$2 = (function (this__19779__auto__,G__50770){
 var self__ = this;
 var this__19779__auto____$1 = this;
-return (new offcourse.models.collection.Collection(self__.collection_type,self__.collection_name,self__.collection_ids,G__56976,self__.__extmap,self__.__hash));
+return (new offcourse.models.collection.Collection(self__.collection_type,self__.collection_name,self__.collection_ids,G__50770,self__.__extmap,self__.__hash));
 });
 
 offcourse.models.collection.Collection.prototype.cljs$core$ICollection$_conj$arity$2 = (function (this__19785__auto__,entry__19786__auto__){
@@ -212,13 +212,13 @@ offcourse.models.collection.__GT_Collection = (function offcourse$models$collect
 return (new offcourse.models.collection.Collection(collection_type,collection_name,collection_ids,null,null,null));
 });
 
-offcourse.models.collection.map__GT_Collection = (function offcourse$models$collection$map__GT_Collection(G__56978){
-return (new offcourse.models.collection.Collection(new cljs.core.Keyword(null,"collection-type","collection-type",-448917118).cljs$core$IFn$_invoke$arity$1(G__56978),new cljs.core.Keyword(null,"collection-name","collection-name",600435477).cljs$core$IFn$_invoke$arity$1(G__56978),new cljs.core.Keyword(null,"collection-ids","collection-ids",-1373265385).cljs$core$IFn$_invoke$arity$1(G__56978),null,cljs.core.dissoc.call(null,G__56978,new cljs.core.Keyword(null,"collection-type","collection-type",-448917118),new cljs.core.Keyword(null,"collection-name","collection-name",600435477),new cljs.core.Keyword(null,"collection-ids","collection-ids",-1373265385)),null));
+offcourse.models.collection.map__GT_Collection = (function offcourse$models$collection$map__GT_Collection(G__50772){
+return (new offcourse.models.collection.Collection(new cljs.core.Keyword(null,"collection-type","collection-type",-448917118).cljs$core$IFn$_invoke$arity$1(G__50772),new cljs.core.Keyword(null,"collection-name","collection-name",600435477).cljs$core$IFn$_invoke$arity$1(G__50772),new cljs.core.Keyword(null,"collection-ids","collection-ids",-1373265385).cljs$core$IFn$_invoke$arity$1(G__50772),null,cljs.core.dissoc.call(null,G__50772,new cljs.core.Keyword(null,"collection-type","collection-type",-448917118),new cljs.core.Keyword(null,"collection-name","collection-name",600435477),new cljs.core.Keyword(null,"collection-ids","collection-ids",-1373265385)),null));
 });
 
 
-schema.utils.declare_class_schema_BANG_.call(null,offcourse.models.collection.Collection,schema.utils.assoc_when.call(null,schema.core.record_STAR_.call(null,offcourse.models.collection.Collection,cljs.core.merge.call(null,new cljs.core.PersistentArrayMap(null, 3, [new cljs.core.Keyword(null,"collection-type","collection-type",-448917118),cljs.core.Keyword,new cljs.core.Keyword(null,"collection-name","collection-name",600435477),cljs.core.Keyword,new cljs.core.Keyword(null,"collection-ids","collection-ids",-1373265385),cljs.core.PersistentHashSet.fromArray([schema.core.Num], true)], null),null),(function (p1__26408__26409__auto__){
-return offcourse.models.collection.map__GT_Collection.call(null,cljs.core.into.call(null,cljs.core.PersistentArrayMap.EMPTY,p1__26408__26409__auto__));
+schema.utils.declare_class_schema_BANG_.call(null,offcourse.models.collection.Collection,schema.utils.assoc_when.call(null,schema.core.record_STAR_.call(null,offcourse.models.collection.Collection,cljs.core.merge.call(null,new cljs.core.PersistentArrayMap(null, 3, [new cljs.core.Keyword(null,"collection-type","collection-type",-448917118),cljs.core.Keyword,new cljs.core.Keyword(null,"collection-name","collection-name",600435477),cljs.core.Keyword,new cljs.core.Keyword(null,"collection-ids","collection-ids",-1373265385),cljs.core.PersistentHashSet.fromArray([schema.core.Num], true)], null),null),(function (p1__22823__22824__auto__){
+return offcourse.models.collection.map__GT_Collection.call(null,cljs.core.into.call(null,cljs.core.PersistentArrayMap.EMPTY,p1__22823__22824__auto__));
 })),new cljs.core.Keyword(null,"extra-validator-fn","extra-validator-fn",1562905865),null));
 
 
@@ -227,14 +227,14 @@ return offcourse.models.collection.map__GT_Collection.call(null,cljs.core.into.c
  */
 offcourse.models.collection.strict_map__GT_Collection = (function offcourse$models$collection$strict_map__GT_Collection(var_args){
 var args__20231__auto__ = [];
-var len__20224__auto___56989 = arguments.length;
-var i__20225__auto___56990 = (0);
+var len__20224__auto___50783 = arguments.length;
+var i__20225__auto___50784 = (0);
 while(true){
-if((i__20225__auto___56990 < len__20224__auto___56989)){
-args__20231__auto__.push((arguments[i__20225__auto___56990]));
+if((i__20225__auto___50784 < len__20224__auto___50783)){
+args__20231__auto__.push((arguments[i__20225__auto___50784]));
 
-var G__56991 = (i__20225__auto___56990 + (1));
-i__20225__auto___56990 = G__56991;
+var G__50785 = (i__20225__auto___50784 + (1));
+i__20225__auto___50784 = G__50785;
 continue;
 } else {
 }
@@ -245,66 +245,66 @@ var argseq__20232__auto__ = ((((1) < args__20231__auto__.length))?(new cljs.core
 return offcourse.models.collection.strict_map__GT_Collection.cljs$core$IFn$_invoke$arity$variadic((arguments[(0)]),argseq__20232__auto__);
 });
 
-offcourse.models.collection.strict_map__GT_Collection.cljs$core$IFn$_invoke$arity$variadic = (function (m56975,p__56985){
-var vec__56986 = p__56985;
-var drop_extra_keys_QMARK___25050__auto__ = cljs.core.nth.call(null,vec__56986,(0),null);
-if(cljs.core.truth_((function (){var or__19166__auto__ = drop_extra_keys_QMARK___25050__auto__;
+offcourse.models.collection.strict_map__GT_Collection.cljs$core$IFn$_invoke$arity$variadic = (function (m50769,p__50779){
+var vec__50780 = p__50779;
+var drop_extra_keys_QMARK___21511__auto__ = cljs.core.nth.call(null,vec__50780,(0),null);
+if(cljs.core.truth_((function (){var or__19166__auto__ = drop_extra_keys_QMARK___21511__auto__;
 if(cljs.core.truth_(or__19166__auto__)){
 return or__19166__auto__;
 } else {
-return cljs.core._EQ_.call(null,cljs.core.count.call(null,m56975),3);
+return cljs.core._EQ_.call(null,cljs.core.count.call(null,m50769),3);
 }
 })())){
 } else {
-throw (new Error(schema.utils.format_STAR_.call(null,"Wrong number of keys: expected %s, got %s",cljs.core.sort.call(null,new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"collection-type","collection-type",-448917118),new cljs.core.Keyword(null,"collection-name","collection-name",600435477),new cljs.core.Keyword(null,"collection-ids","collection-ids",-1373265385)], null)),cljs.core.sort.call(null,cljs.core.keys.call(null,m56975)))));
+throw (new Error(schema.utils.format_STAR_.call(null,"Wrong number of keys: expected %s, got %s",cljs.core.sort.call(null,new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"collection-type","collection-type",-448917118),new cljs.core.Keyword(null,"collection-name","collection-name",600435477),new cljs.core.Keyword(null,"collection-ids","collection-ids",-1373265385)], null)),cljs.core.sort.call(null,cljs.core.keys.call(null,m50769)))));
 }
 
-return (new offcourse.models.collection.Collection((function (){var m__24953__auto__ = m56975;
-var k__24954__auto__ = new cljs.core.Keyword(null,"collection-type","collection-type",-448917118);
-var temp__4423__auto__ = cljs.core.find.call(null,m__24953__auto__,k__24954__auto__);
+return (new offcourse.models.collection.Collection((function (){var m__21414__auto__ = m50769;
+var k__21415__auto__ = new cljs.core.Keyword(null,"collection-type","collection-type",-448917118);
+var temp__4423__auto__ = cljs.core.find.call(null,m__21414__auto__,k__21415__auto__);
 if(cljs.core.truth_(temp__4423__auto__)){
-var pair__24955__auto__ = temp__4423__auto__;
-return cljs.core.val.call(null,pair__24955__auto__);
+var pair__21416__auto__ = temp__4423__auto__;
+return cljs.core.val.call(null,pair__21416__auto__);
 } else {
-throw (new Error(schema.utils.format_STAR_.call(null,"Key %s not found in %s",k__24954__auto__,m__24953__auto__)));
+throw (new Error(schema.utils.format_STAR_.call(null,"Key %s not found in %s",k__21415__auto__,m__21414__auto__)));
 }
-})(),(function (){var m__24953__auto__ = m56975;
-var k__24954__auto__ = new cljs.core.Keyword(null,"collection-name","collection-name",600435477);
-var temp__4423__auto__ = cljs.core.find.call(null,m__24953__auto__,k__24954__auto__);
+})(),(function (){var m__21414__auto__ = m50769;
+var k__21415__auto__ = new cljs.core.Keyword(null,"collection-name","collection-name",600435477);
+var temp__4423__auto__ = cljs.core.find.call(null,m__21414__auto__,k__21415__auto__);
 if(cljs.core.truth_(temp__4423__auto__)){
-var pair__24955__auto__ = temp__4423__auto__;
-return cljs.core.val.call(null,pair__24955__auto__);
+var pair__21416__auto__ = temp__4423__auto__;
+return cljs.core.val.call(null,pair__21416__auto__);
 } else {
-throw (new Error(schema.utils.format_STAR_.call(null,"Key %s not found in %s",k__24954__auto__,m__24953__auto__)));
+throw (new Error(schema.utils.format_STAR_.call(null,"Key %s not found in %s",k__21415__auto__,m__21414__auto__)));
 }
-})(),(function (){var m__24953__auto__ = m56975;
-var k__24954__auto__ = new cljs.core.Keyword(null,"collection-ids","collection-ids",-1373265385);
-var temp__4423__auto__ = cljs.core.find.call(null,m__24953__auto__,k__24954__auto__);
+})(),(function (){var m__21414__auto__ = m50769;
+var k__21415__auto__ = new cljs.core.Keyword(null,"collection-ids","collection-ids",-1373265385);
+var temp__4423__auto__ = cljs.core.find.call(null,m__21414__auto__,k__21415__auto__);
 if(cljs.core.truth_(temp__4423__auto__)){
-var pair__24955__auto__ = temp__4423__auto__;
-return cljs.core.val.call(null,pair__24955__auto__);
+var pair__21416__auto__ = temp__4423__auto__;
+return cljs.core.val.call(null,pair__21416__auto__);
 } else {
-throw (new Error(schema.utils.format_STAR_.call(null,"Key %s not found in %s",k__24954__auto__,m__24953__auto__)));
+throw (new Error(schema.utils.format_STAR_.call(null,"Key %s not found in %s",k__21415__auto__,m__21414__auto__)));
 }
 })(),null,null,null));
 });
 
 offcourse.models.collection.strict_map__GT_Collection.cljs$lang$maxFixedArity = (1);
 
-offcourse.models.collection.strict_map__GT_Collection.cljs$lang$applyTo = (function (seq56983){
-var G__56984 = cljs.core.first.call(null,seq56983);
-var seq56983__$1 = cljs.core.next.call(null,seq56983);
-return offcourse.models.collection.strict_map__GT_Collection.cljs$core$IFn$_invoke$arity$variadic(G__56984,seq56983__$1);
+offcourse.models.collection.strict_map__GT_Collection.cljs$lang$applyTo = (function (seq50777){
+var G__50778 = cljs.core.first.call(null,seq50777);
+var seq50777__$1 = cljs.core.next.call(null,seq50777);
+return offcourse.models.collection.strict_map__GT_Collection.cljs$core$IFn$_invoke$arity$variadic(G__50778,seq50777__$1);
 });
 offcourse.models.collection.Collections = cljs.core.PersistentArrayMap.fromArray([schema.core.Any,cljs.core.PersistentArrayMap.fromArray([schema.core.Any,offcourse.models.collection.Collection], true, false)], true, false);
 offcourse.models.collection.__GT_collection = (function offcourse$models$collection$__GT_collection(collection_type,collection_name,collection_ids){
 return (new offcourse.models.collection.Collection(collection_type,collection_name,collection_ids,null,null,null));
 });
 offcourse.models.collection.find_user_collection = (function offcourse$models$collection$find_user_collection(courses,user_name){
-var collection_ids = cljs.core.reduce.call(null,(function (acc,p__56994){
-var vec__56995 = p__56994;
-var id = cljs.core.nth.call(null,vec__56995,(0),null);
-var course = cljs.core.nth.call(null,vec__56995,(1),null);
+var collection_ids = cljs.core.reduce.call(null,(function (acc,p__50788){
+var vec__50789 = p__50788;
+var id = cljs.core.nth.call(null,vec__50789,(0),null);
+var course = cljs.core.nth.call(null,vec__50789,(1),null);
 if(cljs.core._EQ_.call(null,cljs.core.name.call(null,user_name),new cljs.core.Keyword(null,"curator","curator",-553328342).cljs$core$IFn$_invoke$arity$1(course))){
 return cljs.core.conj.call(null,acc,id);
 } else {
@@ -318,11 +318,24 @@ var collections = new cljs.core.PersistentArrayMap(null, 3, [new cljs.core.Keywo
 var collection_ids = collection_name.call(null,collections);
 return offcourse.models.collection.__GT_collection.call(null,new cljs.core.Keyword(null,"flags","flags",1775418075),collection_name,collection_ids);
 });
+offcourse.models.collection.find_flag_collection = (function offcourse$models$collection$find_flag_collection(courses,flag){
+var collection_ids = cljs.core.reduce.call(null,(function (acc,p__50792){
+var vec__50793 = p__50792;
+var id = cljs.core.nth.call(null,vec__50793,(0),null);
+var course = cljs.core.nth.call(null,vec__50793,(1),null);
+if(cljs.core.truth_(offcourse.models.course.has_flag_QMARK_.call(null,course,flag))){
+return cljs.core.conj.call(null,acc,id);
+} else {
+return acc;
+}
+}),cljs.core.PersistentHashSet.EMPTY,courses);
+return (new offcourse.models.collection.__GT_collection(new cljs.core.Keyword(null,"flags","flags",1775418075),flag,collection_ids));
+});
 offcourse.models.collection.find_tag_collection = (function offcourse$models$collection$find_tag_collection(courses,tag){
-var collection_ids = cljs.core.reduce.call(null,(function (acc,p__56998){
-var vec__56999 = p__56998;
-var id = cljs.core.nth.call(null,vec__56999,(0),null);
-var course = cljs.core.nth.call(null,vec__56999,(1),null);
+var collection_ids = cljs.core.reduce.call(null,(function (acc,p__50796){
+var vec__50797 = p__50796;
+var id = cljs.core.nth.call(null,vec__50797,(0),null);
+var course = cljs.core.nth.call(null,vec__50797,(1),null);
 if(cljs.core.truth_(offcourse.models.course.has_tag_QMARK_.call(null,course,cljs.core.name.call(null,tag)))){
 return cljs.core.conj.call(null,acc,id);
 } else {
@@ -332,13 +345,18 @@ return acc;
 return (new offcourse.models.collection.__GT_collection(new cljs.core.Keyword(null,"tags","tags",1771418977),tag,collection_ids));
 });
 offcourse.models.collection.fetch_tags = (function offcourse$models$collection$fetch_tags(collection){
-return cljs.core.apply.call(null,clojure.set.union,cljs.core.map.call(null,(function (p1__57000_SHARP_){
-return offcourse.models.course.get_tags.call(null,p1__57000_SHARP_);
+return cljs.core.apply.call(null,clojure.set.union,cljs.core.map.call(null,(function (p1__50798_SHARP_){
+return offcourse.models.course.get_tags.call(null,p1__50798_SHARP_);
 }),cljs.core.vals.call(null,collection)));
 });
 offcourse.models.collection.fetch_users = (function offcourse$models$collection$fetch_users(collection){
-return cljs.core.into.call(null,cljs.core.PersistentHashSet.EMPTY,cljs.core.map.call(null,(function (p1__57001_SHARP_){
-return offcourse.models.course.get_user.call(null,p1__57001_SHARP_);
+return cljs.core.into.call(null,cljs.core.PersistentHashSet.EMPTY,cljs.core.map.call(null,(function (p1__50799_SHARP_){
+return offcourse.models.course.get_user.call(null,p1__50799_SHARP_);
+}),cljs.core.vals.call(null,collection)));
+});
+offcourse.models.collection.fetch_flags = (function offcourse$models$collection$fetch_flags(collection){
+return cljs.core.apply.call(null,clojure.set.union,cljs.core.map.call(null,(function (p1__50800_SHARP_){
+return offcourse.models.course.get_flags.call(null,p1__50800_SHARP_);
 }),cljs.core.vals.call(null,collection)));
 });
 offcourse.models.collection.collection_names = (function offcourse$models$collection$collection_names(collection){
