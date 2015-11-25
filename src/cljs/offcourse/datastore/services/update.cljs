@@ -26,8 +26,8 @@
   (defn update-resources [{:keys [resources]}]
     (update-and-respond! #(model/update-resources %1 resources)))
 
-  (defn- update-collections [collections]
-    (update-and-respond! #(model/update-collections %1 collections)))
+  (defn- update-flags [flags]
+    (update-and-respond! #(model/update-flags %1 flags)))
 
   (defn- update-collection [collection]
     (update-and-respond! #(model/update-collection %1 collection)))
@@ -40,7 +40,6 @@
 
   (defn update-users [users]
     (update-and-respond! #(model/update-users %1 users)))
-
 
   (defn- add-checkpoint [{:keys [course-id checkpoint]}]
     (let [course (model/find-course @store course-id)]
@@ -56,9 +55,9 @@
   (defn toggle-done [{:keys [course-id checkpoint-id]}]
     (update-and-respond! #(model/toggle-done %1 course-id checkpoint-id)))
 
-  (defn update-datastore [{:keys [type course tags users collection collections collection-names] :as payload}]
+  (defn update-datastore [{:keys [type flags course tags users collection collections collection-names] :as payload}]
     (case type
-      :collections (update-collections collections)
+      :flags       (update-flags flags)
       :tags        (update-tags tags)
       :collection  (update-collection collection)
       :course      (update-course course)

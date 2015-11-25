@@ -7,6 +7,7 @@
     [course-id :- schema/Num
      curator :- schema/Str
      goal :- schema/Str
+     flags :- #{schema/Keyword }
      checkpoints :- {schema/Int Checkpoint}
      tags :- schema/Any])
 
@@ -61,8 +62,14 @@
   (let [tags (get-tags course)]
     (contains? tags tag)))
 
+(defn has-flag? [{:keys [flags]} flag]
+  (contains? flags flag))
+
 (defn get-user [{:keys [curator] :as course}]
   curator)
+
+(defn get-flags [{:keys [flags] :as flags}]
+  flags)
 
 (defn add-tags [{:keys [checkpoints] :as course} tags]
   (->> checkpoints

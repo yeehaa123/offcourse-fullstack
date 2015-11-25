@@ -30,6 +30,13 @@
         collection-ids (collection-name collections)]
     (->collection :flags collection-name collection-ids)))
 
+(defn find-flag-collection [courses flag]
+  (let [collection-ids (reduce (fn [acc [id course]]
+                                 (if (co/has-flag? course flag)
+                                   (conj acc id)
+                                   acc)) #{} courses)]
+    (->collection. :flags flag collection-ids)))
+
 (defn find-tag-collection [courses tag]
   (let [collection-ids (reduce (fn [acc [id course]]
                                  (if (co/has-tag? course (name tag))
@@ -42,6 +49,9 @@
 
 (defn fetch-users [collection]
   (into #{} (map #(co/get-user %1) (vals collection))))
+
+(defn fetch-flags [collection]
+  (apply set/union (map #(co/get-flags %1) (vals collection))))
 
 (defn collection-names [collection]
   (keys collection))

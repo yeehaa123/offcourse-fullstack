@@ -30,8 +30,8 @@
         collection-ids (get-in collections [collection-type collection-name :collection-ids])]
     (cl/->collection collection-type collection-name collection-ids)))
 
-(defn- create-label-collections [selection collection-names tags users]
-  (let [flag-labels (label/->collection collection-names selection)
+(defn- create-label-collections [selection flags tags users]
+  (let [flag-labels (label/->collection flags selection)
         tag-labels (label/->collection (map keyword tags) selection)
         user-labels (label/->collection (map keyword users) selection)]
     (LabelCollections. flag-labels tag-labels user-labels)))
@@ -47,6 +47,7 @@
 (defn ->collection
   ([] blank-vm)
   ([collection] (CollectionViewmodel. :collection blank-label-collections collection :unknown))
+  ([collection labels] (CollectionViewmodel. :collection (or labels blank-label-collections) collection :unknown))
   ([collection courses labels]
    (CollectionViewmodel. :collection labels (cl/map->Collection collection) courses)))
 
@@ -54,7 +55,8 @@
   (update-in viewmodel [:courses] #(cs/highlight %1 course-id checkpoint-id highlight)))
 
 (defn highlight-label [viewmodel label-name label-type highlight]
-  (let [viewmodel (update-in viewmodel [:labels label-type] #(label/highlight %1 label-name highlight))
+  (let [viewmodel (update-in viewmodel [:labels label-type]
+                             #(label/highlight %1 label-name highlight))
         labels (get-in viewmodel [:labels :tags])
         courses (get-in viewmodel [:courses])]
     (update-in viewmodel [:courses] #(cs/add-tags %1 labels))))
@@ -62,10 +64,10 @@
 (defn check[viewmodel]
   (schema/check CollectionViewmodel viewmodel))
 
-(defn refresh [{:keys [collection-name collection-type]} {:keys [collections tags users courses]}]
-  (let [collection-names (keys (get-in collections [:flags]))
-        {:keys [collection-name collection-ids] :as collection} (update-collection
-                                                                 collection-name collection-type collection-names collections)
-        labels (create-label-collections collection-name collection-names tags users)
+(defn refresh [{:keys [collection-name collection-type]}
+               {:keys [collections flags tags users courses]}]
+  (let [{:keys [collection-name collection-ids] :as collection} (update-collection collection-name
+                                                                 collection-type flags collections)
+        labels (create-label-collections collection-name flags tags users)
         courses (update-courses courses collection-ids (:tags labels))]
     (->collection collection courses labels)))

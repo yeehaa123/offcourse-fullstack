@@ -10,7 +10,7 @@
   (case type
     :users            (uss/fetch-all-users)
     :tags             (tas/fetch-all-tags)
-    :collections      (cls/fetch-named-collections payload)
+    :flags            (cls/fetch-all-flags)
     :collection       (cls/fetch-collection payload)
     :courses          (cos/fetch-courses payload)
     :course           (cos/fetch-course payload)

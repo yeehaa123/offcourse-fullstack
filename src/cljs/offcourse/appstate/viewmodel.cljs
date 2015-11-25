@@ -4,10 +4,11 @@
             [offcourse.appstate.viewmodels.checkpoint :as cp-vm]))
 
 
-(defn select [{:keys [type course-id checkpoint-id collection-type collection-name]}]
+(defn select [{:keys [type course-id checkpoint-id collection-type collection-name]} labels]
   (case type
     :collection (cl-vm/->collection {:collection-type collection-type
-                                       :collection-name collection-name})
+                                     :collection-name collection-name}
+                                    labels)
     :course     (co-vm/new-course {:course-id course-id})
     :checkpoint (cp-vm/new-checkpoint {:course-id course-id
                                        :checkpoint-id checkpoint-id})))

@@ -29,7 +29,7 @@
        (case type
          :tags                (response)
          :users               (response)
-         :collections         (response)
+         :flags               (response)
          :collection          (response :collection-type collection-type
                                         :collection-name collection-name)
          :courses             (response :course-ids course-ids)
@@ -37,6 +37,5 @@
          :resources           (response :urls urls)))))
 
   (defn respond-checked [store]
-    (println (keys @store))
     (respond :checked-datastore
            :store @store)))

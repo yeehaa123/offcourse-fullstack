@@ -25,7 +25,7 @@
   (assoc-in appstate [:user-id] user-id))
 
 (defn set-level [level appstate]
-  (let [viewmodel (vm/select level)]
+  (let [viewmodel (vm/select level (get-in appstate [:viewmodel :labels]))]
     (assoc appstate :level level :viewmodel viewmodel)))
 
 (defn toggle-mode [appstate]

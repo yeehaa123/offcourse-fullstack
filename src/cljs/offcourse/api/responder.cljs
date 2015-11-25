@@ -17,8 +17,8 @@
   (def respond-fetched-course
     (partial respond-fetched :course))
 
-  (def respond-fetched-collections
-    (partial respond-fetched :collections))
+  (def respond-fetched-flags
+    (partial respond-fetched :flags))
 
   (def respond-fetched-collection
     (partial respond-fetched :collection))

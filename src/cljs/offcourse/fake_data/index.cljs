@@ -47,6 +47,14 @@
 
 (def course (rand-nth raw-courses))
 
+(def flags [:featured :new :popular])
+
+(defn generate-flags []
+  (->> flags
+       shuffle
+       (take (rand-int 4))
+       (into #{})))
+
 (defn generate-user []
   (rand-nth ["yeehaa" "greg" "r2j2" "reika" "charlotte" "marijn"]))
 
@@ -66,6 +74,7 @@
   (-> course
       (assoc :course-id id)
       (assoc :curator curator)
+      (assoc :flags (generate-flags))
       (update-in [:checkpoints] index-checkpoints)))
 
 (def courses

@@ -6,10 +6,10 @@
 
 (defn init [store]
 
-  (defn- get-collection-names []
-    (let [collection-names (cl/collection-names (get-in @store [:collections :flags]))]
-      (if-not collection-names
-        (r/respond-not-found :collections)
+  (defn- get-flags []
+    (let [flags (:flags @store)]
+      (if-not flags
+        (r/respond-not-found :flags)
         (r/respond-checked store))))
 
   (defn- get-tags []
@@ -54,7 +54,7 @@
                      first
                      key)]
       (case label
-        :flags (get-collection-names)
+        :flags (get-flags)
         :tags (get-tags)
         :users (get-users))))
 
@@ -62,7 +62,7 @@
     (let [{:keys [type course labels]} data]
       (case type
         :labels (get-labels-data labels)
-        :collection-names (get-collection-names)
+        :collection-names (get-flags)
         :tag-names        (get-tags)
         :user-names       (get-users)
         :collection       (get-collection (type data))

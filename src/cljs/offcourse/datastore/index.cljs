@@ -11,8 +11,7 @@
   (go-loop []
     (let [{type :type payload :payload} (<! input)]
       (case type
-        :requested-data             (>! channel (store/get-data payload))
-
+        :requested-data             (store/get-data payload)
         :requested-toggle-done      (store/toggle-done payload)
         :requested-commit           (store/commit-data payload)
         :fetched-data               (store/update-datastore payload)

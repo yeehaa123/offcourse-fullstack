@@ -38,7 +38,7 @@
                           (>>! :requested-level
                                :level :collection
                                :collection-type collection-type
-                               :collection-name collection-name))
+                               :collection-name (keyword collection-name)))
 
      :go-to-course      (fn [course-id event]
                           (.stopPropagation event)
