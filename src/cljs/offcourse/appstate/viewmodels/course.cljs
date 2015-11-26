@@ -8,16 +8,9 @@
      course :- Course
      resources :- schema/Any])
 
-(defn new-course
-  ([] (map->CourseViewmodel {:level :course
-                             :course :unknown}))
-  ([course]
-   (map->CourseViewmodel {:level :course
-                          :course course}))
-   ([course resources]
-    (map->CourseViewmodel {:level :course
-                           :course course
-                           :resources resources})))
+(defn ->viewmodel
+  ([course] (->CourseViewmodel :course course nil))
+  ([course resources] (->CourseViewmodel :course course resources)))
 
 (defn check[viewmodel]
   (schema/check CourseViewmodel viewmodel))
@@ -26,9 +19,10 @@
   (update-in viewmodel [:course]
              #(co/highlight %1 checkpoint-id highlight)))
 
-(defn refresh [{:keys [course-id]} {:keys [courses resources collections] :as store}]
-  (let [course (get courses course-id)
+(defn refresh [{:keys [level course]} {:keys [courses resources collections]}]
+  (let [{:keys [course-id]} course
+        course (get courses course-id)
         course (co/add-tags course #{})
         urls (into #{} (co/get-resource-urls course))
         resources (r/find-resources resources urls)]
-    (new-course course resources)))
+    (->viewmodel course resources)))

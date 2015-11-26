@@ -38,5 +38,5 @@
          :resources           (response :urls urls)))))
 
   (defn respond-checked [store]
-    (respond :checked-datastore
+    (-respond :checked-datastore
            :store @store)))

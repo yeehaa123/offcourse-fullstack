@@ -14,7 +14,7 @@
       (case type
         :reloaded-code                  (store/force-refresh)
 
-        :requested-level             (store/set-level payload)
+        :requested-level                (store/set-level payload)
         :requested-commit               (store/commit-data payload)
         :requested-route                (responder/switch-route payload)
         :requested-done-toggle          (responder/toggle-done payload)
@@ -23,8 +23,8 @@
         :requested-mode-switch          (store/set-mode payload)
         :requested-authentication       (responder/request-authentication payload)
 
-        :updated-data                   (store/refresh payload)
-        :checked-datastore              (store/refresh payload)
+        :updated-data                   (store/refresh-viewmodel payload)
+        :checked-datastore              (store/refresh-viewmodel payload)
         :added-checkpoint               (responder/return-to-course payload)
         :authenticated-user             (store/set-user payload)
 

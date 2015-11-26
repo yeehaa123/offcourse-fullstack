@@ -1,35 +1,38 @@
 (ns offcourse.appstate.viewmodel
-  (:require [offcourse.appstate.viewmodels.collection :as cl-vm]
-            [offcourse.appstate.viewmodels.course :as co-vm]
-            [offcourse.appstate.viewmodels.checkpoint :as cp-vm]))
+  (:require [schema.core :as schema :include-macros true]
+            [offcourse.appstate.viewmodels.collection :as clvm :refer [CollectionViewmodel]]
+            [offcourse.appstate.viewmodels.course :as covm :refer [CourseViewmodel]]
+            [offcourse.appstate.viewmodels.checkpoint :as cpvm :refer [CheckpointViewmodel]]
+            [offcourse.models.collection :as cl :refer [Collection]]
+            [offcourse.models.label :as label :refer [Label LabelCollection]]
+            [offcourse.models.course :as co :refer [Course]]
+            [offcourse.models.courses :as cs]))
 
+(defprotocol VM
+  (check [this])
+  (refresh [this store]))
 
-(defn select [{:keys [type course-id checkpoint-id collection-type collection-name]} labels]
-  (case type
-    :collection (cl-vm/->collection {:collection-type collection-type
-                                     :collection-name collection-name}
-                                    labels)
-    :course     (co-vm/new-course {:course-id course-id})
-    :checkpoint (cp-vm/new-checkpoint {:course-id course-id
-                                       :checkpoint-id checkpoint-id})))
+(extend-protocol VM
+  CollectionViewmodel
+  (check [viewmodel] (clvm/check viewmodel))
+  (refresh [viewmodel store] (clvm/refresh viewmodel store))
+  CourseViewmodel
+  (check [viewmodel] (covm/check viewmodel))
+  (refresh [viewmodel store] (covm/refresh viewmodel store))
+  CheckpointViewmodel
+  (check [viewmodel] (cpvm/check viewmodel))
+  (refresh [viewmodel store] (cpvm/refresh viewmodel store)))
 
-(defn check[{:keys [level] :as viewmodel}]
-  (case level
-    :collection (cl-vm/check viewmodel)
-    :course     (co-vm/check viewmodel)
-    :checkpoint (cp-vm/check viewmodel)))
+(defmulti select
+  (fn [{:keys [level]}] level))
 
-(defn toggle-highlight-label [{:keys [level] :as viewmodel} label-name label-type highlight]
-  (cl-vm/highlight-label viewmodel label-name label-type highlight))
+(defmethod select :collection [{:keys [level collection-type collection-name]}]
+  (let [collection-name (or collection-name :featured)
+        collection (cl/->collection collection-type collection-name)]
+    (clvm/->viewmodel level collection)))
 
-(defn toggle-highlight [{:keys [level] :as viewmodel} course-id checkpoint-id highlight]
-  (case level
-    :collection (cl-vm/highlight-checkpoint viewmodel course-id checkpoint-id highlight)
-    :course     (co-vm/highlight-checkpoint viewmodel checkpoint-id highlight)
-    :checkpoint (co-vm/highlight-checkpoint viewmodel checkpoint-id highlight)))
+(defmethod select :course [{:keys [course-id]}]
+  (covm/->viewmodel (co/->course course-id)))
 
-(defn refresh [{:keys [level course collection] :as viewmodel} store]
-  (case level
-    :collection (cl-vm/refresh collection store)
-    :course     (co-vm/refresh course store)
-    :checkpoint (cp-vm/refresh viewmodel store)))
+(defmethod select :checkpoint [{:keys [course-id checkpoint-id]}]
+  (cpvm/->viewmodel (co/->course course-id) checkpoint-id))

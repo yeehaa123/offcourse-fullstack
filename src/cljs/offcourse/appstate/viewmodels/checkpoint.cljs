@@ -8,15 +8,11 @@
      course :- Course
      checkpoint-id :- schema/Int])
 
-(defn new-checkpoint
-  ([{:keys [course-id checkpoint-id] :as checkpoint}]
-   (map->CheckpointViewmodel {:level :checkpoint
-                              :course {:course-id course-id}
-                              :checkpoint-id checkpoint-id}))
-  ([course checkpoint-id resource]
-   (map->CheckpointViewmodel {:level :checkpoint
-                              :course course
-                              :checkpoint-id checkpoint-id})))
+(defn ->viewmodel [course checkpoint-id]
+  (->CheckpointViewmodel :checkpoint course checkpoint-id))
+
+(defn check [viewmodel]
+  (schema/check CheckpointViewmodel viewmodel))
 
 (defn refresh [{:keys [course checkpoint-id]}{:keys [courses resources]}]
   (let  [{:keys [course-id]} course
@@ -24,7 +20,4 @@
          {:keys [url]} (co/find-checkpoint course checkpoint-id)
          course (co/add-tags course {})
          resource (r/find-resource resources url)]
-    (new-checkpoint course checkpoint-id resource)))
-
-(defn check [viewmodel]
-  (schema/check CheckpointViewmodel viewmodel))
+    (->viewmodel course checkpoint-id)))

@@ -35,3 +35,15 @@
 
 (defn highlight [collection label-name highlight]
   (assoc-in collection [label-name :highlighted?] highlight))
+
+(defn collections->labelCollection [collections]
+  (->> collections
+       (map (fn [[collection-name _]]
+              [collection-name (new-label collection-name)]))
+       (into {})))
+
+(defn collections->labelCollections [all-collections]
+  (->> all-collections
+       (map (fn [[category collections]]
+              [category (collections->labelCollection collections)]))
+       (into {})))

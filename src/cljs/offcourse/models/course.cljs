@@ -11,6 +11,9 @@
      checkpoints :- {schema/Int Checkpoint}
      tags :- schema/Any])
 
+(defn ->course
+  ([course-id] (->Course course-id nil nil nil nil nil)))
+
 (defn new
   ([curator] (fake-data/generate-course :new curator))
   ([course course-id] (assoc course :course-id course-id)))

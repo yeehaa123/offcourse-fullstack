@@ -18,7 +18,7 @@
                            field (field data)}
                           {:type :collection
                            :collection (:collection data)})]
-      (when (< @counter 10)
+      (when (< @counter 40)
         (-respond :requested-data
                   :data resource-data))))
 
@@ -32,7 +32,7 @@
 
   (defn respond-update [appstate]
     (-respond :updated-appstate
-              :appstate (:proposed appstate)))
+              :appstate (:current appstate)))
 
   (defn switch-route [payload]
     (-respond :requested-route

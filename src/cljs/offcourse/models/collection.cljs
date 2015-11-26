@@ -14,9 +14,9 @@
 
 (defn ->collection
   ([collection-type collection-name]
-   (Collection. collection-type collection-name nil))
+   (Collection. collection-type (keyword collection-name) nil))
   ([collection-type collection-name collection-ids]
-   (Collection. collection-type collection-name collection-ids)))
+   (Collection. collection-type (keyword collection-name) collection-ids)))
 
 (defn find-user-collection [courses user-name]
   (let [collection-ids (reduce (fn [acc [id course]]
