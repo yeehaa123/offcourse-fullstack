@@ -16,6 +16,9 @@
 (defn ->appstate []
   (->AppState false nil nil))
 
+(defn refresh-current [appstate viewmodel]
+  (assoc-in appstate [:current] viewmodel))
+
 (defn refresh-proposal [appstate proposal]
   (assoc-in appstate [:proposed] proposal))
 

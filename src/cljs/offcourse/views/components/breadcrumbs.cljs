@@ -13,7 +13,7 @@
         options {:key (:level crumb)
                  :className "btn btn-light btn-level"}
         options (if link?
-                  (assoc options :onClick #(on-click crumb))
+                  (assoc options :onClick #(on-click crumb %1))
                   options)]
       (d/li options title)))
 

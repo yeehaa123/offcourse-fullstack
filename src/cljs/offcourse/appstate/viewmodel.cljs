@@ -10,18 +10,26 @@
 
 (defprotocol VM
   (check [this])
-  (refresh [this store]))
+  (refresh [this store])
+  (highlight-checkpoint [this payload])
+  (highlight-label [this payload]))
 
 (extend-protocol VM
   CollectionViewmodel
   (check [viewmodel] (clvm/check viewmodel))
   (refresh [viewmodel store] (clvm/refresh viewmodel store))
+  (highlight-checkpoint [viewmodel payload] (clvm/highlight-checkpoint viewmodel payload))
+  (highlight-label [viewmodel payload] (println payload))
   CourseViewmodel
   (check [viewmodel] (covm/check viewmodel))
   (refresh [viewmodel store] (covm/refresh viewmodel store))
+  (highlight-checkpoint [viewmodel payload] (covm/highlight-checkpoint viewmodel payload))
+  (highlight-label [viewmodel payload] (println payload))
   CheckpointViewmodel
   (check [viewmodel] (cpvm/check viewmodel))
-  (refresh [viewmodel store] (cpvm/refresh viewmodel store)))
+  (refresh [viewmodel store] (cpvm/refresh viewmodel store))
+  (highlight-checkpoint [viewmodel payload] viewmodel)
+  (highlight-label [viewmodel payload] (cpvm/highlight-label viewmodel payload)))
 
 (defmulti select
   (fn [{:keys [level]}] level))

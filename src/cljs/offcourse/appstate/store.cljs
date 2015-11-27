@@ -6,7 +6,7 @@
 
 (defonce appstate (atom (model/->appstate)))
 
-(defn update-and-maybe-respond! [proposal]
+(defn evaluate-proposal [proposal]
   (do
     (swap! appstate model/refresh-proposal proposal)
     (let [unknown-field (model/unknown-data (:proposed @appstate))]
@@ -18,20 +18,24 @@
           (swap! appstate model/unlock-state)
           (res/respond-update @appstate))))))
 
-(defn highlight-label [{:keys [label-name label-type highlight]}]
-  (println "HIGHLIGHT LB"))
+(defn update-current! [viewmodel]
+  (swap! appstate model/refresh-current viewmodel)
+  (res/respond-update @appstate))
 
-(defn highlight-checkpoint [{:keys [course-id checkpoint-id highlight]}]
-  (println "HIGHLIGHT CP"))
+(defn highlight-label [payload]
+  (update-current! (vm/highlight-label (:current @appstate) payload)))
+
+(defn highlight-checkpoint [payload]
+  (vm/highlight-checkpoint (:current @appstate) payload))
 
 (defn set-user [{:keys [user-id]}]
   (println "SET USER"))
 
 (defn set-level [payload]
-  (update-and-maybe-respond! (vm/select payload)))
+  (evaluate-proposal (vm/select payload)))
 
 (defn refresh-viewmodel [{:keys [store]}]
-  (update-and-maybe-respond! (vm/refresh (:proposed @appstate) store)))
+  (evaluate-proposal (vm/refresh (:proposed @appstate) store)))
 
 (defn force-refresh []
   (res/respond-update appstate))

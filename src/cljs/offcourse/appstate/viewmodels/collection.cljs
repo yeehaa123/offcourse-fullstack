@@ -14,7 +14,6 @@
 (defn ->viewmodel
   ([] (->CollectionViewmodel nil nil nil nil))
   ([level collection] (->CollectionViewmodel level nil collection nil))
-  ([level labels collection] (->CollectionViewmodel level labels collection nil))
   ([level labels collection courses] (->CollectionViewmodel level labels collection courses)))
 
 (defn select-courses [courses ids tag-labels]
@@ -22,6 +21,9 @@
     (if-not (empty? courses)
       (cs/add-tags courses tag-labels)
       :unknown)))
+
+(defn highlight-checkpoint [viewmodel {:keys [course-id checkpoint-id highlight]}]
+  (assoc-in viewmodel [:courses course-id :checkpoints checkpoint-id :highlighted] highlight))
 
 (defn check [viewmodel]
   (schema/check CollectionViewmodel viewmodel))

@@ -52,9 +52,6 @@
 (defn toggle-done [course checkpoint-id]
   (update-in course [:checkpoints checkpoint-id] #(cp/toggle-done %1)))
 
-(defn highlight [course checkpoint-id highlight]
-  (update-in course [:checkpoints checkpoint-id :highlighted] (fn [] highlight)))
-
 (defn get-tags [{:keys [checkpoints]}]
   (reduce (fn [tag-acc [_ {:keys [tags]}]] (into tag-acc tags)) (sorted-set) checkpoints))
 
@@ -70,9 +67,3 @@
 
 (defn get-flags [{:keys [flags] :as flags}]
   flags)
-
-(defn add-tags [{:keys [checkpoints] :as course} tags]
-  (->> checkpoints
-       (map (fn [[id checkpoint]] [id (cp/convert-tags checkpoint tags)]))
-       (into {})
-       (assoc course :checkpoints)))

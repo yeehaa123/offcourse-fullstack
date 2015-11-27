@@ -9,11 +9,10 @@
 
 (defn CourseCard
   ([course handlers](CourseCard course nil handlers))
-  ([{:keys [highlighted checkpoints goal curator course-id] :as course}
+  ([{:keys [highlighted checkpoints goal curator tags course-id] :as course}
     selected-tag
     {:keys [go-to-course highlight-label go-to-collection] :as handlers}]
   (let [highlighted (if highlighted "highlighted" "not-highlighted")
-        tags (c/get-tags course)
         sections [[:map (Map)]
                   [:title (Title goal)]
                   [:meta (Meta :curator curator

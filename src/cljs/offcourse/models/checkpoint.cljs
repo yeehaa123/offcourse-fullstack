@@ -31,9 +31,3 @@
                resource (get resources url)]
            [checkpoint-id (assoc checkpoint :resource resource)]))
        checkpoints))
-
-(defn convert-tags [checkpoint tags]
-  (->> (:tags checkpoint)
-       (map #(label/from-string %1 tags))
-       (into {})
-       (assoc checkpoint :tags)))
