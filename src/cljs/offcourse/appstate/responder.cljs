@@ -18,7 +18,7 @@
                            field (field data)}
                           {:type :collection
                            :collection (:collection data)})]
-      (when (< @counter 40)
+      (when (< @counter 1000000000)
         (-respond :requested-data
                   :data resource-data))))
 
