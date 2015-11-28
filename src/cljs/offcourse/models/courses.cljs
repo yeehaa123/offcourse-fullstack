@@ -23,9 +23,3 @@
   (->> course-ids
        (keep (fn [id] [id (get collection id)]))
        (into {})))
-
-(defn add-tags [courses tags]
-  (->> courses
-       vals
-       (map (fn [{:keys [course-id] :as course}] [course-id (co/add-tags course tags)]))
-       (into {})))

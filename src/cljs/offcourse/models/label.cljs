@@ -22,3 +22,15 @@
    (->> names
         (map (fn [name] [(keyword name) (->label name selected)]))
         (into (sorted-map)))))
+
+(defn collections->labelCollection [collections]
+  (->> collections
+       (map (fn [[collection-name _]]
+              [collection-name (->label collection-name)]))
+       (into {})))
+
+(defn collections->labelCollections [all-collections]
+  (->> all-collections
+       (map (fn [[category collections]]
+              [category (collections->labelCollection collections)]))
+       (into {})))

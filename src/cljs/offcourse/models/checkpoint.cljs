@@ -1,6 +1,6 @@
 (ns offcourse.models.checkpoint
   (:require [schema.core :as schema :include-macros true]
-            [offcourse.models.label :as label :refer [from-string LabelCollection]]
+            [offcourse.models.label :as label :refer [LabelCollection]]
             [offcourse.fake-data.index :as fake-data]))
 
 (schema/defrecord Checkpoint

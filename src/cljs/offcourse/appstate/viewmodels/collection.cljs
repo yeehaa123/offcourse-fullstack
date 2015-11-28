@@ -1,5 +1,6 @@
 (ns offcourse.appstate.viewmodels.collection
   (:require [schema.core :as schema :include-macros true]
+            [offcourse.appstate.viewmodels.helpers :as helpers]
             [offcourse.models.collection :as cl :refer [Collection Collections]]
             [offcourse.models.label :as label :refer [LabelCollection]]
             [offcourse.models.course :as co :refer [Course]]
@@ -18,9 +19,8 @@
 
 (defn select-courses [courses ids tag-labels]
   (let [courses (cs/find-courses courses ids)]
-    (if-not (empty? courses)
-      (cs/add-tags courses tag-labels)
-      :unknown)))
+    (when-not (empty? courses)
+      (helpers/add-tag-labels-to-courses courses tag-labels))))
 
 (defn highlight-checkpoint [viewmodel {:keys [course-id checkpoint-id highlight]}]
   (assoc-in viewmodel [:courses course-id :checkpoints checkpoint-id :highlighted] highlight))

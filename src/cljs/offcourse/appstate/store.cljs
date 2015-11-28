@@ -26,7 +26,7 @@
   (update-current! (vm/highlight-label (:current @appstate) payload)))
 
 (defn highlight-checkpoint [payload]
-  (vm/highlight-checkpoint (:current @appstate) payload))
+  (update-current! (vm/highlight-checkpoint (:current @appstate) payload)))
 
 (defn set-user [{:keys [user-id]}]
   (println "SET USER"))

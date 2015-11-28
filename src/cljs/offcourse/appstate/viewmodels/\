@@ -22,11 +22,19 @@
 (defmulti highlight-label
   (fn [_ {:keys [label-type]}] label-type))
 
+(defn highlight-checkpoint-labels [{:keys [checkpoints] :as course} label-name highlight]
+  (->> checkpoints
+       (map (fn [[id checkpoint]] [id (if (get-in checkpoint [:tags label-name])
+                                      (assoc-in checkpoint [:tags label-name :highlighted?] highlight)
+                                      checkpoint)]))
+       (into {})
+       (assoc-in course [:checkpoints])))
+
 (defmethod highlight-label :tags
   [{:keys [course] :as viewmodel} {:keys [label-name highlight]}]
-  (let [course (helpers/highlight-checkpoints-labels course label-name highlight)
-        course (helpers/add-tag-labels-to-course course)]
-    (assoc-in viewmodel [:course] course)))
+  (let [course (highlight-checkpoint-labels course label-name highlight)
+        course (helpers/add-tags-labels-to-course course)]
+    (assoc-in viewmodel [:course] course)
 
 (defn refresh [{:keys [level course]} {:keys [courses resources collections]}]
   (let [{:keys [course-id]} course
