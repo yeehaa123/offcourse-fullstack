@@ -1,6 +1,5 @@
 (ns offcourse.appstate.viewmodels.collection
   (:require [schema.core :as schema :include-macros true]
-            [offcourse.appstate.viewmodels.helpers :as helpers]
             [offcourse.models.collection :as cl :refer [Collection Collections]]
             [offcourse.models.label :as label :refer [LabelCollection]]
             [offcourse.models.course :as co :refer [Course]]

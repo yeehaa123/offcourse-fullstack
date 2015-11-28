@@ -25,12 +25,10 @@
         (into (sorted-map)))))
 
 (defn collections->labelCollection
+  ([collections] (collections->labelCollection collections nil))
   ([collections selected] (medley/map-vals
                            (fn [{:keys [collection-name]}]
-                             (->label collection-name selected)) collections))
-  ([collections] (medley/map-vals
-                  (fn [{:keys [collection-name]}]
-                    (->label collection-name)) collections)))
+                             (->label collection-name selected)) collections)))
 
 (defn collections->labelCollections [all-collections collection-type collection-name]
   (->> all-collections

@@ -15,5 +15,5 @@
                     (Logo handlers))
              (case level
                :collection (Collections-Navigation labels handlers)
-               :course (CourseCard course handlers)
-               :checkpoint (CheckpointCard checkpoint-id course resource handlers true))))
+               :course (CourseCard course labels handlers)
+               :checkpoint (CheckpointCard checkpoint-id course labels resource handlers true))))

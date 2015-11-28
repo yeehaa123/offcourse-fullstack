@@ -14,7 +14,6 @@
   (r/respond-fetched-collection (map->Collection (cl/find-tag-collection fake-data/courses collection-name))))
 
 (defn fetch-collection [{:keys [collection-type collection-name] :as c}]
-  (println c)
   (case collection-type
     :users (fetch-user-collection collection-name)
     :flags (fetch-flag-collection collection-name)

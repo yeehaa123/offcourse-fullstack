@@ -3,12 +3,13 @@
             [offcourse.views.components.checkpoint-card :refer [CheckpointCard]]
             [offcourse.helpers.css :as css]))
 
-(defn CourseView [{:keys [level course resources]} handlers]
+(defn CourseView [{:keys [level course labels resources]} handlers]
   (let [{:keys [course-id goal]} course
         checkpoints (keys (:checkpoints course))]
     (d/section {:className "cards"}
                (map #(CheckpointCard %1
                                      course
+                                     labels
                                      (get resources (:url %1))
                                      handlers)
                     checkpoints))))

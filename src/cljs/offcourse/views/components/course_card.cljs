@@ -8,9 +8,12 @@
             [offcourse.helpers.css :as css]))
 
 (defn CourseCard
+  ([course labels handlers] (CourseCard course labels handlers false))
   ([{:keys [highlighted checkpoints goal curator tags course-id] :as course}
     labels
-    {:keys [go-to-course highlight-label go-to-collection] :as handlers}]
+    {:keys [go-to-course highlight-label go-to-collection] :as handlers}
+    in-sidebar?]
+
   (let [highlighted (if highlighted "highlighted" "not-highlighted")
         sections [[:map (Map)]
                   [:title (Title goal)]
@@ -21,6 +24,7 @@
                                  {:onClick (partial go-to-collection :tags)
                                   :highlight (partial highlight-label :tags)})]
                   [:list (TodoList course-id checkpoints handlers)]]]
+
     (d/section {:key course-id
                 :className (css/classes "card" highlighted)
                 :onClick #(go-to-course course-id %1)}

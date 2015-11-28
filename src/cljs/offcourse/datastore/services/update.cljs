@@ -35,7 +35,6 @@
     (update-and-respond! #(model/update-resources %1 resources)))
 
   (defn- update-collection [collection]
-    (println collection)
     (update-and-respond! #(model/update-collection %1 collection)))
 
   (defn- update-course [course]
