@@ -1,5 +1,6 @@
 (ns offcourse.models.label
-  (:require [schema.core :as schema :include-macros true]))
+  (:require [schema.core :as schema :include-macros true]
+            [medley.core :as medley]))
 
 (schema/defrecord Label
     [label-name :- (schema/cond-pre schema/Keyword schema/Str)
@@ -23,14 +24,18 @@
         (map (fn [name] [(keyword name) (->label name selected)]))
         (into (sorted-map)))))
 
-(defn collections->labelCollection [collections]
-  (->> collections
-       (map (fn [[collection-name _]]
-              [collection-name (->label collection-name)]))
-       (into {})))
+(defn collections->labelCollection
+  ([collections selected] (medley/map-vals
+                           (fn [{:keys [collection-name]}]
+                             (->label collection-name selected)) collections))
+  ([collections] (medley/map-vals
+                  (fn [{:keys [collection-name]}]
+                    (->label collection-name)) collections)))
 
-(defn collections->labelCollections [all-collections]
+(defn collections->labelCollections [all-collections collection-type collection-name]
   (->> all-collections
        (map (fn [[category collections]]
-              [category (collections->labelCollection collections)]))
+              (if (= collection-type category)
+                [category (collections->labelCollection collections collection-name)]
+                [category (collections->labelCollection collections)])))
        (into {})))

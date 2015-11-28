@@ -19,7 +19,7 @@
   (check [viewmodel] (clvm/check viewmodel))
   (refresh [viewmodel store] (clvm/refresh viewmodel store))
   (highlight-checkpoint [viewmodel payload] (clvm/highlight-checkpoint viewmodel payload))
-  (highlight-label [viewmodel payload] viewmodel)
+  (highlight-label [viewmodel payload] (clvm/highlight-label viewmodel payload))
   CourseViewmodel
   (check [viewmodel] (covm/check viewmodel))
   (refresh [viewmodel store] (covm/refresh viewmodel store))
