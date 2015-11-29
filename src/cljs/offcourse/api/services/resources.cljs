@@ -9,6 +9,6 @@
                       [url (rs/new url (str "fake-resource " index))]))
        (into {})))
 
-(defn fetch-resources [{:keys [urls]}]
+(defn fetch-resources [urls]
   (let [resources (map (fn [url] [url (all-resources url)]) urls)]
     (r/respond-fetched-resources resources)))

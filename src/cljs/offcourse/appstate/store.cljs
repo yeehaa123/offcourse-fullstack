@@ -28,9 +28,6 @@
 (defn highlight-checkpoint [payload]
   (update-current! (vm/highlight-checkpoint (:current @appstate) payload)))
 
-(defn set-user [{:keys [user-id]}]
-  (println "SET USER"))
-
 (defn set-level [payload]
   (evaluate-proposal (vm/select payload)))
 
@@ -39,3 +36,12 @@
 
 (defn force-refresh []
   (res/respond-update appstate))
+
+(defn set-user [{:keys [user-id]}]
+  (println "SET USER"))
+
+(defn set-mode [payload]
+  (println "SET MODE"))
+
+(defn commit-data [payload]
+  (println "COMMIT DATA"))

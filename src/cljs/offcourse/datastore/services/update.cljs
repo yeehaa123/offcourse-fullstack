@@ -4,7 +4,6 @@
             [clojure.set :as set]
             [offcourse.datastore.responder :as r]))
 
-
 (defn init [store]
 
   (defn- update-datastore! [fn]

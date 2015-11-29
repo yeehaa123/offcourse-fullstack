@@ -18,7 +18,10 @@
   ([collection-type collection-name collection-ids]
    (Collection. collection-type (keyword collection-name) collection-ids)))
 
-(defn find-user-collection [courses user-name]
+(defmulti fetch
+  (fn [collection-type _ _] collection-type))
+
+(defmethod fetch :users [_ courses user-name]
   (let [collection-ids (reduce (fn [acc [id course]]
                                  (if (= (name user-name) (:curator course))
                                    (conj acc id)
@@ -26,14 +29,14 @@
                                #{} courses)]
     (->collection :users user-name collection-ids)))
 
-(defn find-flag-collection [courses flag]
+(defmethod fetch :flags [_ courses flag]
   (let [collection-ids (reduce (fn [acc [id course]]
                                  (if (co/has-flag? course flag)
                                    (conj acc id)
                                    acc)) #{} courses)]
     (->collection. :flags flag collection-ids)))
 
-(defn find-tag-collection [courses tag]
+(defmethod fetch :tags [_ courses tag]
   (let [collection-ids (reduce (fn [acc [id course]]
                                  (if (co/has-tag? course (name tag))
                                    (conj acc id)
@@ -43,13 +46,16 @@
 (defn find-collection [collections collection-type collection-name]
   (get-in collections [collection-type collection-name]))
 
-(defn fetch-tags [collection]
+(defmulti fetch-names
+  (fn [type _] type))
+
+(defmethod fetch-names :tags [_ collection]
   (apply set/union (map #(co/get-tags %1) (vals collection))))
 
-(defn fetch-users [collection]
+(defmethod fetch-names :users [_ collection]
   (into #{} (map #(co/get-user %1) (vals collection))))
 
-(defn fetch-flags [collection]
+(defmethod fetch-names :flags [_ collection]
   (apply set/union (map #(co/get-flags %1) (vals collection))))
 
 (defn collection-names [collection]

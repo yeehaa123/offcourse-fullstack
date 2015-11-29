@@ -6,24 +6,6 @@
 
 (defn init [store]
 
-  (defn- get-flags []
-    (let [flags (:flags @store)]
-      (if-not flags
-        (r/respond-not-found :flags)
-        (r/respond-checked store))))
-
-  (defn- get-tags []
-    (let [tags (:tags @store)]
-      (if tags
-        (r/respond-checked store)
-        (r/respond-not-found :tags))))
-
-  (defn- get-users []
-    (let [users (:users @store)]
-      (if users
-        (r/respond-checked store)
-        (r/respond-not-found :users))))
-
   (defn- get-collection [{:keys [collection-type collection-name collection-ids] :as collection}]
     (let [store-collection-ids (model/get-collection-ids @store collection-type collection-name)]
       (if-not (or collection-ids store-collection-ids)
@@ -36,7 +18,7 @@
         (r/respond-checked store)
         (r/respond-not-found :course {:course-id course-id}))))
 
-  (defn fetch-resources [course-id]
+  (defn get-resources [course-id]
     (let [course (model/find-course @store course-id)
           checkpoints (vals (:checkpoints course))
           course-urls (into #{} (map :url checkpoints))
