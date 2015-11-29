@@ -1,42 +1,29 @@
 (ns offcourse.datastore.services.query
-  (:require [offcourse.datastore.model :as model]
-            [offcourse.models.collection :as cl]
-            [clojure.set :as set]
+  (:require [offcourse.datastore.model :as model :refer [missing? present?]]
+            [medley.core :as medley]
             [offcourse.datastore.responder :as r]))
 
-(defn init [store]
+(defmulti check-present?
+  (fn [_ type _] type))
 
-  (defn- get-collection [{:keys [collection-type collection-name collection-ids] :as collection}]
-    (let [store-collection-ids (model/get-collection-ids @store collection-type collection-name)]
-      (if-not (or collection-ids store-collection-ids)
-        (r/respond-not-found :collection collection)
-        (r/respond-not-found :courses {:course-ids collection-ids}))))
+(defmethod check-present? :collection [store _ {:keys [collection-type collection-name]
+                                          :as collection}]
+  (let [present-ids (present? @store :collection-ids collection)]
+    (if present-ids
+      (check-present? store :courses {:course-ids present-ids})
+      (r/respond-not-found :collection collection))))
 
-  (defn- get-course [{:keys [course-id]}]
-    (let [course (model/find-course @store course-id)]
-      (if course
-        (r/respond-checked store)
-        (r/respond-not-found :course {:course-id course-id}))))
+(defmethod check-present? :courses [store _ {:keys [course-ids]}]
+  (let [missing-ids (missing? @store :course-ids course-ids)]
+    (if-not missing-ids
+      (r/respond-checked store)
+      (r/respond-not-found :courses {:course-ids missing-ids}))))
 
-  (defn get-resources [course-id]
-    (let [course (model/find-course @store course-id)
-          checkpoints (vals (:checkpoints course))
-          course-urls (into #{} (map :url checkpoints))
-          store-urls (into #{} (map :url (vals (:resources @store))))
-          missing-urls (set/difference course-urls store-urls)]
-      (if course
-        (if (empty? missing-urls)
-          (r/respond-checked store)
-          (r/respond-not-found :resources {:urls missing-urls}))
-        (r/respond-not-found :course {:course-id course-id}))))
+(defmethod check-present? :course [store _ {:keys [course-id] :as course}]
+  (let [present-course (present? @store :course course-id)]
+    (if present-course
+      (r/respond-checked store)
+      (r/respond-not-found :course course))))
 
-  (defn get-labels-data []
-    (r/respond-not-found :collection-names))
-
-  (defn get-data [{:keys [data]}]
-    (let [{:keys [type course]} data]
-      (case type
-        :labels           (get-labels-data)
-        :collection       (get-collection (type data))
-        :course           (get-course (type data))
-        :checkpoint       (get-course data)))))
+(defmethod check-present? :labels [_]
+  (r/respond-not-found :collection-names))

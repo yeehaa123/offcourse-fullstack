@@ -1,52 +1,34 @@
 (ns offcourse.datastore.model
-  (:require [offcourse.models.action :refer [respond]]
-            [clojure.set :as set]
-            [offcourse.models.courses :as cs]))
+  (:require [clojure.set :as set]
+            [offcourse.models.action :refer [respond]]))
 
-(defrecord DataStore [collections courses resources tags users])
+(defrecord DataStore [collections courses resources])
 
 (defn new-datastore []
-  (->DataStore nil nil nil nil nil))
+  (->DataStore nil nil nil))
 
-(defn update-tags [store tags]
-  (update-in store [:tags] #(into %1 tags)))
+(defmulti present?
+  (fn [store type data] type))
 
-(defn update-flags [store flags]
-  (assoc-in store [:flags] flags))
-
-(defn update-users [store users]
-  (update-in store [:users] #(into %1 users)))
-
-(defn update-resources [store resources]
-  (update-in store [:resources] #(into %1 resources)))
-
-(defn update-collections [store collections]
-  (assoc-in store [:collections] collections))
-
-(defn update-collection [store {:keys [collection-name collection-type] :as collection}]
-  (assoc-in store [:collections collection-type collection-name] collection))
-
-(defn update-cache [store fn]
-  (update-in store [:courses] fn))
-
-(defn update-course [store course]
-  (update-cache store #(cs/update-course %1 course)))
-
-(defn update-courses [store courses]
-  (update-cache store #(cs/update-courses %1 courses)))
-
-(defn add-checkpoint [store course-id checkpoint]
-  (update-cache store #(cs/add-checkpoint %1 course-id checkpoint)))
-
-(defn toggle-done [store course-id checkpoint-id]
-  (update-cache store #(cs/toggle-done %1 course-id checkpoint-id)))
-
-(defn find-course [store course-id]
-  (cs/find-course (:courses store) course-id))
-
-(defn missing-ids [store collection-ids]
-  (let [courses-ids (into #{} (keys (:courses @store)))]
-    (set/difference collection-ids courses-ids)))
-
-(defn get-collection-ids [store collection-type collection-name]
+(defmethod present? :collection-ids [store _ {:keys [collection-name collection-type]}]
   (get-in store [:collections collection-type collection-name :collection-ids]))
+
+(defmethod present? :courses [store _ course-ids]
+  (->> course-ids
+       (keep #(get-in store [:courses %1]))))
+
+(defmethod present? :course-ids [store _ course-ids]
+  (->> course-ids
+       (present? store :courses)
+       (map :course-id)
+       (into #{})))
+
+(defmethod present? :course [store _ course-id]
+  (get-in store [:courses course-id]))
+
+(defmulti missing?
+  (fn [store type data] type))
+
+(defmethod missing? :course-ids [store _ course-ids]
+  (let [present-ids (present? store :course-ids course-ids)]
+    (set/difference course-ids present-ids)))
