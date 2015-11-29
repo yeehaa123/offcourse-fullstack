@@ -1,20 +1,20 @@
 (ns offcourse.datastore.store
   (:require [offcourse.datastore.model :as model]
-            [offcourse.datastore.services.query :as query]
-            [offcourse.datastore.services.refresh :as refresh]
-            [offcourse.datastore.services.update :as update]))
+            [offcourse.datastore.services.query :refer [check]]
+            [offcourse.datastore.services.refresh :refer [refresh]]
+            [offcourse.datastore.services.update :refer [modify]]))
 
 (def store (atom (model/new-datastore)))
 
-(defn update-datastore [payload]
+(defn refresh-store [payload]
   (let [type (:type payload)
         data (type payload)]
-  (refresh/refresh store type data)))
+  (refresh store type data)))
 
-(defn check-present? [{:keys [type data]}]
+(defn check-store [{:keys [type data]}]
   (let [type (:type data)
         data (type data)]
-    (query/check-present? store type data)))
+    (check store type data)))
 
 (defn toggle-done [payload]
-  (update/toggle-done store payload))
+  (modify :toggle-done store payload))

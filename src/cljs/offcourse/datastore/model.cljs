@@ -1,6 +1,5 @@
 (ns offcourse.datastore.model
-  (:require [clojure.set :as set]
-            [offcourse.models.action :refer [respond]]))
+  (:require [clojure.set :as set]))
 
 (defrecord DataStore [collections courses resources])
 
@@ -8,7 +7,7 @@
   (->DataStore nil nil nil))
 
 (defmulti present?
-  (fn [store type data] type))
+  (fn [_ type _] type))
 
 (defmethod present? :collection-ids [store _ {:keys [collection-name collection-type]}]
   (get-in store [:collections collection-type collection-name :collection-ids]))

@@ -6,6 +6,9 @@
     (swap! store fn)
     (r/respond-updated store)))
 
-(defn toggle-done [store {:keys [course-id checkpoint-id]}]
+(defmulti modify
+  (fn [type _] type))
+
+(defmethod modify :toggle-done [_ store {:keys [course-id checkpoint-id]}]
   (update-and-respond! store #(update-in %1 [:courses course-id
                                              :checkpoints checkpoint-id :completed] not)))

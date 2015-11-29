@@ -1,5 +1,5 @@
 (ns offcourse.datastore.index
-  (:require-macros [cljs.core.async.macros :refer [go go-loop]])
+  (:require-macros [cljs.core.async.macros :refer [go-loop]])
   (:require        [cljs.core.async :refer [>! chan tap merge mult <!]]
                    [offcourse.datastore.store :as store]
                    [offcourse.datastore.responder :as r]))
@@ -11,9 +11,9 @@
   (go-loop []
     (let [{type :type payload :payload} (<! input)]
       (case type
-        :requested-data             (store/check-present? payload)
+        :requested-data             (store/check-store payload)
         :requested-toggle-done      (store/toggle-done payload)
-        :fetched-data               (store/update-datastore payload)
+        :fetched-data               (store/refresh-store payload)
         nil))
     (recur)))
 
