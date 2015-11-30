@@ -1,6 +1,6 @@
 (ns offcourse.appstate.viewmodels.collection
   (:require [schema.core :as schema :include-macros true]
-            [offcourse.models.collection :as cl :refer [Collection Collections]]
+            [offcourse.models.collection :as cl :refer [Collection]]
             [offcourse.models.label :as label :refer [LabelCollection]]
             [offcourse.models.course :as co :refer [Course]]
             [offcourse.models.courses :as cs]
@@ -29,7 +29,7 @@
 (defn refresh [{:keys [level collection]} {:keys [collections courses] :as store}]
   (let [{:keys [collection-name collection-type]} collection
         labels (label/collections->labelCollections collections collection-type collection-name)
-        new-collection (cl/find-collection collections collection-type collection-name)
+        new-collection (get-in collections [collection-type collection-name])
         collection (or new-collection collection)
         courses (cs/find-courses courses (:collection-ids collection))
         courses (medley/map-vals #(assoc %1 :tags (co/get-tags %1)) courses)]

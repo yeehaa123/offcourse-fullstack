@@ -7,7 +7,7 @@
     [course-id :- schema/Num
      curator :- schema/Str
      goal :- schema/Str
-     flags :- #{schema/Keyword }
+     flags :- #{schema/Keyword}
      checkpoints :- {schema/Int Checkpoint}
      tags :- schema/Any])
 
@@ -53,17 +53,17 @@
   (update-in course [:checkpoints checkpoint-id] #(cp/toggle-done %1)))
 
 (defn get-tags [{:keys [checkpoints]}]
-  (reduce (fn [tag-acc [_ {:keys [tags]}]] (into tag-acc tags)) (sorted-set) checkpoints))
+  (reduce (fn [tag-acc [_ {:keys [tags]}]] (into tag-acc (map keyword tags))) (sorted-set) checkpoints))
 
 (defn has-tag? [course tag]
   (let [tags (get-tags course)]
-    (contains? tags tag)))
+    (contains? tags (keyword tag))))
 
 (defn has-flag? [{:keys [flags]} flag]
   (contains? flags flag))
 
 (defn get-user [{:keys [curator] :as course}]
-  curator)
+  (keyword curator))
 
 (defn get-flags [{:keys [flags] :as flags}]
   flags)
