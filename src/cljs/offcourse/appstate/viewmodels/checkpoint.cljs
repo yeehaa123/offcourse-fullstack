@@ -24,6 +24,6 @@
          course (get courses course-id)
          course (assoc course :tags (co/get-tags course))
          labels {:tags (label/->labelCollection (:tags course))}
-         {:keys [url]} (co/find-checkpoint course checkpoint-id)
+         {:keys [url]} (get-in course [:checkpoint checkpoint-id])
          resource (r/find-resource resources url)]
     (->viewmodel course checkpoint-id labels)))

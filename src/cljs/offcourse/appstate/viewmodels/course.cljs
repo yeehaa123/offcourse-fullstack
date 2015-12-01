@@ -28,6 +28,6 @@
         course (get courses course-id)
         course (assoc course :tags (co/get-tags course))
         labels {:tags (label/->labelCollection (:tags course))}
-        urls (into #{} (co/get-resource-urls course))
+        urls #{}
         resources (r/find-resources resources urls)]
     (->viewmodel course labels resources)))

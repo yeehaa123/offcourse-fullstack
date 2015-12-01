@@ -4,7 +4,8 @@
 (defrecord Resource [url title content])
 
 (defn new
-  ([resource] (map->Resource resource))
+  ([resource]
+   (map->Resource resource))
   ([url _]
    (let [{:keys [title text]} (fake-data/generate-content)]
      (Resource. url title text)))

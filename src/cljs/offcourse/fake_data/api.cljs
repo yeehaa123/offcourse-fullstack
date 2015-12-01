@@ -1,46 +1,41 @@
 (ns offcourse.fake-data.api
   (:require [offcourse.fake-data.index :as fake-data]
-            [schema.core :as schema :include-macros true]
-            [offcourse.models.collection :as cl :refer [Collection CollectionNames]]
+            [offcourse.models.collection :as cl :refer [Collection]]
             [clojure.set :as set]
-            [offcourse.models.course :as co]
-            [offcourse.api.responder :as r]))
+            [offcourse.models.course :as co]))
+
+(defn- collect-ids [acc courses name selector]
+  (reduce (fn [acc [id course]]
+            (if (co/has? selector course name) (conj acc id) acc))
+          acc courses))
 
 (defmulti fetch
-  (fn [collection-type _] collection-type))
+  (fn [collection-type _ _] collection-type))
 
-(defmethod fetch :users [_ user-name]
-  (let [collection-ids (reduce (fn [acc [id course]]
-                                 (if (= (name user-name) (:curator course))
-                                   (conj acc id)
-                                   acc))
-                               #{} fake-data/courses)]
-    (cl/->collection :users user-name collection-ids)))
+(defmethod fetch :names [_]
+  (->> [:users :flags :tags]
+       (map (fn [type] [type (fetch :name type)]))
+       (into {})))
 
-(defmethod fetch :flags [_ flag]
-  (let [collection-ids (reduce (fn [acc [id course]]
-                                 (if (co/has-flag? course flag)
-                                   (conj acc id)
-                                   acc))
-                               #{} fake-data/courses)]
-    (cl/->collection. :flags flag collection-ids)))
+(defmethod fetch :name [_ type]
+  (case type
+    :tags (apply set/union (map #(co/get-tags %1) (vals fake-data/courses)))
+    :users (into #{} (map #(keyword (:curator %1)) (vals fake-data/courses)))
+    :flags (apply set/union (map :flags (vals fake-data/courses)))))
 
-(defmethod fetch :tags [_ tag]
-  (let [collection-ids (reduce (fn [acc [id course]]
-                                 (if (co/has-tag? course (name tag))
-                                   (conj acc id)
-                                   acc))
-                               #{} fake-data/courses)]
-    (cl/->collection. :tags tag collection-ids)))
+(defmethod fetch :collection [_ collection-type collection-name]
+  (let [singular {:users :user
+                  :tags :tag
+                  :flags :flag}
+        collection-ids (collect-ids #{} fake-data/courses collection-name
+                                    (collection-type singular))]
+    (cl/->collection (name collection-type) (name collection-name) collection-ids)))
 
-(defmulti fetch-names
-  (fn [type] type))
+(defmethod fetch :courses [_ _ course-ids]
+  (map #(get-in fake-data/courses [%1]) course-ids))
 
-(defmethod fetch-names :tags [_]
-  (apply set/union (map #(co/get-tags %1) (vals fake-data/courses))))
+(defmethod fetch :course [_ _ course-id]
+  (get-in fake-data/courses [course-id]))
 
-(defmethod fetch-names :users [_]
-  (into #{} (map #(co/get-user %1) (vals fake-data/courses))))
-
-(defmethod fetch-names :flags [_]
-  (apply set/union (map #(co/get-flags %1) (vals fake-data/courses))))
+(defmethod fetch :resources [_ urls]
+  (map (fn [url] [url (fake-data/all-resources url)]) urls))
