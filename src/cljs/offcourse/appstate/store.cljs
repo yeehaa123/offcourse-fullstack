@@ -35,7 +35,7 @@
   (evaluate-proposal (vm/refresh (:proposed @appstate) store)))
 
 (defn force-refresh []
-  (res/respond-update appstate))
+  (res/respond-update @appstate))
 
 (defn set-user [{:keys [user-id]}]
   (println "SET USER"))

@@ -10,8 +10,11 @@
      checkpoint-id :- schema/Int
      labels :- {Keyword LabelCollection}])
 
-(defn ->viewmodel [course checkpoint-id labels]
-  (->CheckpointViewmodel :checkpoint course checkpoint-id labels))
+(defn ->viewmodel
+  ([course checkpoint-id]
+   (->CheckpointViewmodel :checkpoint course checkpoint-id nil))
+  ([course checkpoint-id labels]
+   (->CheckpointViewmodel :checkpoint course checkpoint-id labels)))
 
 (defn check [viewmodel]
   (schema/check CheckpointViewmodel viewmodel))
@@ -19,7 +22,7 @@
 (defn highlight-label [viewmodel {:keys [label-name label-type highlight]}]
   (assoc-in viewmodel [:labels label-type label-name :highlighted?] highlight))
 
-(defn refresh [{:keys [course checkpoint-id]}{:keys [courses resources]}]
+(defn refresh [{:keys [course checkpoint-id]} {:keys [courses resources]}]
   (let  [{:keys [course-id]} course
          course (get courses course-id)
          course (assoc course :tags (co/get-tags course))

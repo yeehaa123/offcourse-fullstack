@@ -13,7 +13,6 @@
     (let [{type :type payload :payload} (<! input)]
       (case type
         :reloaded-code                  (store/force-refresh)
-
         :requested-level                (store/set-level payload)
         :requested-commit               (store/commit-data payload)
         :requested-route                (responder/switch-route payload)
@@ -22,7 +21,6 @@
         :requested-highlight-label      (store/highlight-label payload)
         :requested-mode-switch          (store/set-mode payload)
         :requested-authentication       (responder/request-authentication payload)
-
         :updated-data                   (store/refresh-viewmodel payload)
         :checked-datastore              (store/refresh-viewmodel payload)
         :added-checkpoint               (responder/return-to-course payload)

@@ -38,4 +38,4 @@
   (get-in fake-data/courses [course-id]))
 
 (defmethod fetch :resources [_ urls]
-  (map (fn [url] [url (fake-data/all-resources url)]) urls))
+  (println urls))

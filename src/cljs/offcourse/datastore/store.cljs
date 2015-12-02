@@ -4,7 +4,7 @@
             [offcourse.datastore.services.refresh :refer [refresh]]
             [offcourse.datastore.services.update :refer [modify]]))
 
-(def store (atom (model/new-datastore)))
+(defonce store (atom (model/new-datastore)))
 
 (defn refresh-store [payload]
   (let [type (:type payload)

@@ -1,7 +1,6 @@
 (ns offcourse.fake-data.index
   (:require [clojure.string :as str]
             [faker.lorem :as lorem]
-            [offcourse.models.resource :as rs]
             [offcourse.fake-data.buzzwords :refer [buzzwords]]
             [offcourse.fake-data.courses :refer [raw-courses]]))
 
@@ -101,9 +100,3 @@
 
 (defn named-collection [collection-name]
   (collection-name named-collections))
-
-(def all-resources
-  #_(->> urls
-         (map-indexed (fn [index url]
-                        [url (rs/new url (str "fake-resource " index))]))
-         (into {})))
