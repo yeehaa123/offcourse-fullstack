@@ -15,9 +15,10 @@
 (defn ->course
   ([course-id] (->Course course-id nil nil nil nil nil)))
 
-(defn coerce-from-map [{:keys [checkpoints] :as course}]
+(defn coerce-from-map [{:keys [curator checkpoints] :as course}]
   (let [checkpoints (medley/map-vals map->Checkpoint checkpoints)
-        course      (assoc course :checkpoints checkpoints)]
+        course      (assoc course
+                           :checkpoints checkpoints)]
     (map->Course course)))
 
 (defn get-tags [{:keys [checkpoints]}]
@@ -34,4 +35,4 @@
   (contains? flags flag))
 
 (defmethod has? :user [_ {:keys [curator]} user]
-  (= curator user))
+  (= (keyword curator) user))

@@ -6,13 +6,14 @@
 
 (defn- collect-ids [acc courses name selector]
   (reduce (fn [acc [id course]]
+            (println (:curator course) name)
             (if (co/has? selector course name) (conj acc id) acc))
           acc courses))
 
 (defmulti fetch
   (fn [collection-type _ _] collection-type))
 
-(defmethod fetch :names [_]
+(defmethod fetch :collection-names [_]
   (->> [:users :flags :tags]
        (map (fn [type] [type (fetch :name type)]))
        (into {})))
@@ -31,10 +32,10 @@
                                     (collection-type singular))]
     (cl/->collection (name collection-type) (name collection-name) collection-ids)))
 
-(defmethod fetch :courses [_ _ course-ids]
+(defmethod fetch :courses [_ course-ids]
   (map #(get-in fake-data/courses [%1]) course-ids))
 
-(defmethod fetch :course [_ _ course-id]
+(defmethod fetch :course [_ course-id]
   (get-in fake-data/courses [course-id]))
 
 (defmethod fetch :resources [_ urls]

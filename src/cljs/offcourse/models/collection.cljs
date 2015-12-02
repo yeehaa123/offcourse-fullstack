@@ -1,5 +1,6 @@
 (ns offcourse.models.collection
   (:require [offcourse.models.course :as co]
+            [offcourse.protocols.validatable :refer [Validatable]]
             [schema.core :as schema :include-macros true]
             [clojure.set :as set]))
 
@@ -8,8 +9,12 @@
      collection-name :- schema/Keyword
      collection-ids :- #{schema/Num}])
 
-(def Collections
-  {schema/Keyword #{schema/Keyword}})
+(def check (schema/checker Collection))
+
+(extend-type Collection
+  Validatable
+  (check [collection]
+    (check collection)))
 
 (defn ->collection
   ([collection-type collection-name]
@@ -19,6 +24,3 @@
 
 (defn coerce-from-map [{:keys [collection-type collection-name collection-ids] :as collection}]
   (->collection (keyword collection-type) (keyword collection-name) collection-ids))
-
-(defn check [collection]
-  (schema/check Collection collection))
