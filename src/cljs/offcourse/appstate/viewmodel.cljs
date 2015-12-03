@@ -3,33 +3,8 @@
             [offcourse.appstate.viewmodels.collection :as clvm :refer [CollectionViewmodel]]
             [offcourse.appstate.viewmodels.course :as covm :refer [CourseViewmodel]]
             [offcourse.appstate.viewmodels.checkpoint :as cpvm :refer [CheckpointViewmodel]]
-            [offcourse.models.collection :as cl :refer [Collection]]
-            [offcourse.models.label :as label :refer [Label LabelCollection]]
-            [offcourse.models.course :as co :refer [Course]]
-            [offcourse.models.courses :as cs]))
-
-(defprotocol VM
-  (check [this])
-  (refresh [this store])
-  (highlight-checkpoint [this payload])
-  (highlight-label [this payload]))
-
-(extend-protocol VM
-  CollectionViewmodel
-  (check [viewmodel] (clvm/check viewmodel))
-  (refresh [viewmodel store] (clvm/refresh viewmodel store))
-  (highlight-checkpoint [viewmodel payload] (clvm/highlight-checkpoint viewmodel payload))
-  (highlight-label [viewmodel payload] (clvm/highlight-label viewmodel payload))
-  CourseViewmodel
-  (check [viewmodel] (covm/check viewmodel))
-  (refresh [viewmodel store] (covm/refresh viewmodel store))
-  (highlight-checkpoint [viewmodel payload] (covm/highlight-checkpoint viewmodel payload))
-  (highlight-label [viewmodel payload] (covm/highlight-label viewmodel payload))
-  CheckpointViewmodel
-  (check [viewmodel] (cpvm/check viewmodel))
-  (refresh [viewmodel store] (cpvm/refresh viewmodel store))
-  (highlight-checkpoint [viewmodel payload] viewmodel)
-  (highlight-label [viewmodel payload] (cpvm/highlight-label viewmodel payload)))
+            [offcourse.models.collection :as cl]
+            [offcourse.models.course :as co :refer [Course]]))
 
 (defmulti select
   (fn [{:keys [level]}] level))

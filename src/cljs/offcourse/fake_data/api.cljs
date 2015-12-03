@@ -6,7 +6,6 @@
 
 (defn- collect-ids [acc courses name selector]
   (reduce (fn [acc [id course]]
-            (println (:curator course) name)
             (if (co/has? selector course name) (conj acc id) acc))
           acc courses))
 

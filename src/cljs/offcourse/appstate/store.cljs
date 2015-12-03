@@ -1,38 +1,51 @@
 (ns offcourse.appstate.store
-  (:require [offcourse.appstate.model :as model]
+  (:require [offcourse.protocols.highlightable :as hl]
+            [offcourse.protocols.validatable :refer [valid?]]
+            [offcourse.protocols.refreshable :refer [refresh]]
+            [offcourse.appstate.model :as model]
             [offcourse.appstate.viewmodel :as vm]
-            [offcourse.appstate.responder :as res]
-            [offcourse.models.course :as co]))
+            [offcourse.appstate.responder :as res]))
 
 (defonce appstate (atom (model/->appstate)))
 
 (defn evaluate-proposal [proposal]
   (do
     (swap! appstate model/refresh-proposal proposal)
-    (let [unknown-field (model/unknown-data (:proposed @appstate))]
-      (if unknown-field
+    (let [unknown-field (model/unknown-data (:proposed @appstate))
+          valid? (valid? (:proposed @appstate))]
+      (cond
+        (and valid? unknown-field)
         (do
-          (swap! appstate model/lock-state)
-          (res/respond-resource-required unknown-field))
-        (do
+          (println "valid and missing field")
           (swap! appstate model/unlock-state)
-          (res/respond-update @appstate))))))
+          (res/respond-resource-required unknown-field)
+          (res/respond-update @appstate))
+        (= valid? true)
+        (do
+          (println "valid")
+          (swap! appstate model/unlock-state)
+          (res/respond-update @appstate))
+        (not valid?)
+        (do
+          (println "invalid")
+          (swap! appstate model/lock-state)
+          (res/respond-resource-required unknown-field))))))
 
 (defn update-current! [viewmodel]
   (swap! appstate model/refresh-current viewmodel)
   (res/respond-update @appstate))
 
 (defn highlight-label [payload]
-  (update-current! (vm/highlight-label (:current @appstate) payload)))
+  (update-current! (hl/highlight-label (:current @appstate) payload)))
 
 (defn highlight-checkpoint [payload]
-  (update-current! (vm/highlight-checkpoint (:current @appstate) payload)))
+  (update-current! (hl/highlight-checkpoint (:current @appstate) payload)))
 
 (defn set-level [payload]
   (evaluate-proposal (vm/select payload)))
 
 (defn refresh-viewmodel [{:keys [store]}]
-  (evaluate-proposal (vm/refresh (:proposed @appstate) store)))
+  (evaluate-proposal (refresh (:proposed @appstate) store)))
 
 (defn force-refresh []
   (res/respond-update @appstate))

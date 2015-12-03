@@ -1,8 +1,6 @@
 (ns offcourse.models.collection
-  (:require [offcourse.models.course :as co]
-            [offcourse.protocols.validatable :refer [Validatable]]
-            [schema.core :as schema :include-macros true]
-            [clojure.set :as set]))
+  (:require [schema.core :as schema :include-macros true]
+            [offcourse.protocols.validatable :refer [Validatable]]))
 
 (schema/defrecord Collection
     [collection-type :- schema/Keyword
