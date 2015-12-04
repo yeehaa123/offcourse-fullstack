@@ -1,9 +1,10 @@
 (ns offcourse.appstate.viewmodels.checkpoint
   (:require [schema.core :as schema :include-macros true]
-            [offcourse.protocols.validatable :refer [Validatable unknown-field]]
+            [offcourse.protocols.validatable :refer [Validatable valid? unknown-field]]
             [offcourse.protocols.highlightable :refer [Highlightable]]
             [offcourse.protocols.refreshable :refer [Refreshable]]
             [offcourse.models.course :as co :refer [Course]]
+            [offcourse.models.resource :as rs :refer [Resource]]
             [offcourse.models.label :as label :refer [LabelCollection]]
             [offcourse.models.resource :as r]))
 
@@ -11,7 +12,7 @@
     [level :- Keyword
      course :- Course
      checkpoint-id :- schema/Int
-     resource :- schema/Str
+     resource :- Resource
      labels :- {Keyword LabelCollection}])
 
 (defn ->viewmodel
@@ -36,10 +37,8 @@
       (if (or (=  unknown-field :resource) (not errors)) true false)))
   Refreshable
   (refresh [{:keys [course checkpoint-id]} {:keys [courses resources]}]
-    (let  [{:keys [course-id]} course
-           course (get courses course-id)
-           course (assoc course :tags (co/get-tags course))
+    (let  [course (get courses (:course-id course))
            labels {:tags (label/->labelCollection (:tags course))}
-           {:keys [url]} (get-in course [:checkpoint checkpoint-id])
-           resource (r/find-resource resources url)]
-      (->viewmodel course checkpoint-id nil labels))))
+           resource-url (get-in course [:checkpoints checkpoint-id :resource-url])
+           resource (or (get resources resource-url) (rs/->resource resource-url))]
+    (->viewmodel course checkpoint-id resource labels))))

@@ -13,11 +13,11 @@
 
   (defn respond-resource-required [[field data]]
     (swap! counter inc)
-    (let [resource-data (if-not (= field :courses)
+    (let [resource-data (case field
+                          :courses {:type :collection
+                                    :collection (:collection data)}
                           {:type field
-                           field (field data)}
-                          {:type :collection
-                           :collection (:collection data)})]
+                           field (field data)})]
       (when (< @counter 40)
         (-respond :requested-data
                   :data resource-data))))

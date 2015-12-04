@@ -4,6 +4,7 @@
             [offcourse.protocols.highlightable :refer [Highlightable]]
             [offcourse.protocols.refreshable :refer [Refreshable]]
             [offcourse.models.course :as co :refer [Course]]
+            [offcourse.models.resource :as rs :refer [Resource]]
             [offcourse.models.label :as label :refer [LabelCollection]]
             [offcourse.models.resource :as r]))
 
@@ -11,7 +12,7 @@
     [level :- Keyword
      course :- Course
      labels :- {Keyword LabelCollection}
-     resources :- schema/Any])
+     resources :- {schema/Str Resource}])
 
 (def check (schema/checker CourseViewmodel))
 
@@ -33,10 +34,11 @@
       (if errors false true)))
   Refreshable
   (refresh [{:keys [level course]} {:keys [courses resources collections]}]
-    (let [{:keys [course-id]} course
-          course (get courses course-id)
-          course (assoc course :tags (co/get-tags course))
+    (let [course (get courses (:course-id course))
           labels {:tags (label/->labelCollection (:tags course))}
-          urls #{}
-          resources (r/find-resources resources urls)]
+          resource-urls (co/get-urls course)
+          resources (->> resource-urls
+                         (map (fn [url]
+                                [url (or (get resources url) (rs/->resource url))]))
+                         (into {}))]
       (->viewmodel course labels resources))))

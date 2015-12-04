@@ -23,7 +23,7 @@
 
   (defn respond-not-found
     ([type] (respond-not-found type {}))
-    ([type {:keys [course-id course-ids user-name collection-type collection-name urls] :as payload}]
+    ([type {:keys [course-id resource-urls course-ids user-name collection-type collection-name resource-url urls] :as payload}]
      (let [response (partial -respond :not-found-data
                        :type type)]
        (case type
@@ -35,7 +35,8 @@
                                         :collection-name collection-name)
          :courses             (response :course-ids course-ids)
          :course              (response :course-id course-id)
-         :resources           (response :urls urls)))))
+         :resource            (response :resource-url resource-url)
+         :resources           (response :resource-urls resource-urls)))))
 
   (defn respond-checked [store]
     (-respond :checked-datastore

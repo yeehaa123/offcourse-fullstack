@@ -14,6 +14,8 @@
            "yahoo.com"
            "offcourse.io"])
 
+(def users ["yeehaa" "greg" "r2j2" "reika" "charlotte" "marijn"])
+
 (defn rand-int-between [min max]
   (let [dev (- max min)]
     (+ (rand-int dev) min)))
@@ -56,7 +58,6 @@
        (take (rand-int 4))
        (into #{})))
 
-(def users ["yeehaa" "greg" "r2j2" "reika" "charlotte" "marijn"])
 
 (defn generate-user []
   (rand-nth users))
@@ -64,7 +65,7 @@
 (defn- index-checkpoint [index {:keys [task completed]}]
   [index {:checkpoint-id index
           :task task
-          :url (rand-nth urls)
+          :resource-url (rand-nth urls)
           :completed completed
           :tags (set-of-buzzwords 0 5)}])
 

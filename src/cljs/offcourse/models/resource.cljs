@@ -1,20 +1,27 @@
 (ns offcourse.models.resource
-  (:require [offcourse.fake-data.index :as fake-data]))
+  (:require [schema.core :as schema :include-macros true]
+            [offcourse.protocols.validatable :refer [Validatable]]
+            [medley.core :as medley]))
 
-(defrecord Resource [url title content])
+(schema/defrecord Resource
+    [resource-url  :- schema/Str
+     resource-type :- schema/Keyword
+     title         :- schema/Str
+     authors       :- #{schema/Str}
+     tags          :- #{schema/Keyword}
+     content       :- schema/Str])
 
-(defn new
-  ([resource]
-   (map->Resource resource))
-  ([url _]
-   (let [{:keys [title text]} (fake-data/generate-content)]
-     (Resource. url title text)))
-  ([url title content] (Resource. url title content)))
+(def check (schema/checker Resource))
 
-(defn find-resource [collection url]
-  (get collection url))
+(extend-type Resource
+  Validatable
+  (check [collection]
+    (check collection)))
 
-(defn find-resources [collection urls]
-  (->> urls
-       (map (fn [url][url (get collection url)]))
-       (into {})))
+(defn ->resource [url]
+  (->Resource url nil nil nil nil nil))
+
+(defn coerce-from-map [{:keys [resource-type authors tags] :as resource}]
+  (map->Resource (assoc resource :authors (into #{} authors)
+                                 :resource-type (keyword resource-type)
+                                 :tags (into #{} (map keyword tags)))))

@@ -37,5 +37,11 @@
 (defmethod refresh :courses [store _ courses]
   (update-and-respond! store #(reduce add-course %1 courses)))
 
+(defmethod refresh :resource [store _ {:keys [resource-url] :as resource}]
+  (update-and-respond! store #(assoc-in %1 [:resources resource-url] resource)))
+
 (defmethod refresh :resources [store _ resources]
-  (update-in store [:resources] #(into %1 resources)))
+  (println "RSS " resources)
+  (let [resources (->> resources
+                       (map (fn [{:keys [resource-url] :as resource}] [resource-url resource])))]
+    (update-and-respond! store (fn [store] (update-in store [:resources] #(merge %1 resources))))))

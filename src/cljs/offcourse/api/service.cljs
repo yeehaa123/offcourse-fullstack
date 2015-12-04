@@ -6,7 +6,19 @@
             [offcourse.models.name-collections :as cls]
             [offcourse.models.course :as co]
             [offcourse.models.courses :as cs]
+            [offcourse.models.resource :as rs]
+            [offcourse.models.resources :as rss]
             [offcourse.api.responder :as r]))
+
+(defn create-resource [resource-url]
+  {:resource-url resource-url
+   :resource-type "markdown"
+   :title "TEST 1 2 3"
+   :authors nil
+   :tags ["Algorithm"
+          "Benchmarking"
+          "Back-end"]
+   :content "BLA BLA BLA"})
 
 (defmulti fetch
   (fn [{:keys [type]}] type))
@@ -37,6 +49,12 @@
                     (co/coerce-from-map))]
     (check-and-respond type course)))
 
-(defmethod fetch :resources [{:keys [type urls]}]
-  (let [resources (api/fetch :resources urls)]
-    (r/respond-fetched-resources resources)))
+(defmethod fetch :resources [{:keys [type resource-urls]}]
+  (let [resources (->> resource-urls
+                       (map #(rs/coerce-from-map (create-resource %1)))
+                       (rss/->resources))]
+    (check-and-respond type resources)))
+
+(defmethod fetch :resource [{:keys [type resource-url] :as payload}]
+  (let [resource (rs/coerce-from-map (create-resource resource-url))]
+    (check-and-respond type resource)))

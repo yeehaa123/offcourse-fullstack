@@ -26,3 +26,12 @@
 
 (defmethod check :labels [_]
   (r/respond-not-found :collection-names))
+
+(defmethod check :resource [store _ resource]
+  (r/respond-not-found :resource resource))
+
+(defmethod check :resources [store _ resources]
+  (let [resource-urls (->> resources
+                  keys
+                  (into #{}))]
+    (r/respond-not-found :resources {:resource-urls resource-urls})))
