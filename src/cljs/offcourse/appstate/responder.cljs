@@ -31,7 +31,6 @@
 
 
   (defn respond-update [appstate]
-    (println "updated appstate")
     (-respond :updated-appstate
               :appstate (:current appstate)))
 

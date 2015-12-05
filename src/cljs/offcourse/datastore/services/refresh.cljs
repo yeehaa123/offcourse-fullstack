@@ -41,7 +41,6 @@
   (update-and-respond! store #(assoc-in %1 [:resources resource-url] resource)))
 
 (defmethod refresh :resources [store _ resources]
-  (println "RSS " resources)
   (let [resources (->> resources
                        (map (fn [{:keys [resource-url] :as resource}] [resource-url resource])))]
     (update-and-respond! store (fn [store] (update-in store [:resources] #(merge %1 resources))))))

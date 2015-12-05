@@ -6,29 +6,28 @@
             [offcourse.helpers.css :as css]))
 
 (defn CheckpointCard
-  ([checkpoint-id course labels resource handlers]
-   (CheckpointCard checkpoint-id course labels resource handlers false))
-  ([checkpoint-id
+  ([checkpoint course labels resource handlers]
+   (CheckpointCard checkpoint course labels resource handlers false))
+  ([{:keys [checkpoint-id] :as checkpoint}
     {:keys [course-id goal] :as course}
     labels
-    {:keys [url title content]}
+    {:keys [resource-url title content]}
     {:keys [go-to-checkpoint
             go-to-collection
             highlight-label
             highlight-checkpoint] :as handlers}
     in-sidebar?]
-   (let [checkpoint (get-in course [:checkpoints checkpoint-id])
-         {:keys [highlighted completed task checkpoint-id tags]} checkpoint
+   (let [{:keys [highlighted completed task checkpoint-id tags]} checkpoint
          highlight (partial highlight-checkpoint course-id)
          highlighted (if highlighted "highlighted" "not-highlighted")
          basic   [[:checkbox (Checkbox course-id checkpoint-id completed handlers)]
                   [:title (Title task)]
                   [:meta (if in-sidebar?
                            (Meta :title title
-                                 :url url
+                                 :url resource-url
                                  :goal goal)
                            (Meta :title title
-                                 :url url))]
+                                 :url resource-url))]
                   [:tags (Labels tags (:tags labels) {:onClick (partial go-to-collection :tags)
                                               :highlight (partial highlight-label :tags)})]]
          extra    [:course-button (GoToButton course-id handlers)]

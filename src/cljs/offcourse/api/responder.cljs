@@ -6,7 +6,6 @@
 (defn init [channel]
 
   (defn respond-fetched [field data]
-    (println field)
     (go
       (>! channel (respond :fetched-data
                            :type field
