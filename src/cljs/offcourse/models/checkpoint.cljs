@@ -1,5 +1,6 @@
 (ns offcourse.models.checkpoint
   (:require [schema.core :as schema :include-macros true]
+            [offcourse.protocols.validatable :refer [Validatable]]
             [offcourse.fake-data.index :as fake-data]))
 
 (schema/defrecord Checkpoint
@@ -7,25 +8,20 @@
      task :- schema/Str
      resource-url :- schema/Str
      completed :- schema/Bool
-     tags :- #{schema/Str}])
+     tags :- #{schema/Keyword}])
 
-(defn new
-  ([checkpoint] (map->Checkpoint checkpoint))
-  ([checkpoint checkpoint-id] (map->Checkpoint (assoc checkpoint :checkpoint-id checkpoint-id)))
-  ([checkpoint-id task url completed]
-   (Checkpoint. checkpoint-id task url completed (fake-data/set-of-buzzwords 0 5))))
+(def check (schema/checker Checkpoint))
 
-(defn toggle-done [checkpoint]
-  (update-in checkpoint [:completed] not))
+(extend-type Checkpoint
+  Validatable
+  (check [course]
+    (check course))
+  (valid? [course]
+    (if-not (check course) true false)))
 
-(defn add-resource [checkpoint resource]
-  (assoc checkpoint
-         :url (:url resource)
-         :resource resource))
-
-(defn add-resources [checkpoints resources]
-  (map (fn [[checkpoint-id checkpoint]]
-         (let [url (:url checkpoint)
-               resource (get resources url)]
-           [checkpoint-id (assoc checkpoint :resource resource)]))
-       checkpoints))
+(defn coerce-from-map [{:keys [tags] :as checkpoint}]
+  (let [tags (->> tags
+                  (map #(keyword %1))
+                  (into #{}))
+        checkpoint (assoc checkpoint :tags tags)]
+    (map->Checkpoint checkpoint)))

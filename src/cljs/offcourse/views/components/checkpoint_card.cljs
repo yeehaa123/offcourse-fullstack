@@ -17,7 +17,6 @@
             highlight-label
             highlight-checkpoint] :as handlers}
     in-sidebar?]
-
    (let [checkpoint (get-in course [:checkpoints checkpoint-id])
          {:keys [highlighted completed task checkpoint-id tags]} checkpoint
          highlight (partial highlight-checkpoint course-id)

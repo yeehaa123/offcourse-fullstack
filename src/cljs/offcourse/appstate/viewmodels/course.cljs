@@ -4,6 +4,7 @@
             [offcourse.protocols.highlightable :refer [Highlightable]]
             [offcourse.protocols.refreshable :refer [Refreshable]]
             [offcourse.models.course :as co :refer [Course]]
+            [offcourse.protocols.augmentable :as ab]
             [offcourse.models.resource :as rs :refer [Resource]]
             [offcourse.models.label :as label :refer [LabelCollection]]
             [offcourse.models.resource :as r]))
@@ -34,10 +35,11 @@
       (if errors false true)))
   Refreshable
   (refresh [{:keys [level course]} {:keys [courses resources collections]}]
-    (let [course (get courses (:course-id course))
+    (let [course (-> courses
+                     (get (:course-id course))
+                     (ab/augment))
           labels {:tags (label/->labelCollection (:tags course))}
-          resource-urls (co/get-urls course)
-          resources (->> resource-urls
+          resources (->> (:resource-urls course)
                          (map (fn [url]
                                 [url (or (get resources url) (rs/->resource url))]))
                          (into {}))]

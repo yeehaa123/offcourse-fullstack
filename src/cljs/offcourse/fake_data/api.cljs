@@ -1,12 +1,14 @@
 (ns offcourse.fake-data.api
   (:require [offcourse.fake-data.index :as fake-data]
             [offcourse.models.collection :as cl :refer [Collection]]
+            [offcourse.protocols.taggable :as tb]
+            [offcourse.protocols.queryable :as qb]
             [clojure.set :as set]
             [offcourse.models.course :as co]))
 
 (defn- collect-ids [acc courses name selector]
   (reduce (fn [acc [id course]]
-            (if (co/has? selector course name) (conj acc id) acc))
+            (if (qb/has? course selector name) (conj acc id) acc))
           acc courses))
 
 (defmulti fetch
@@ -19,7 +21,7 @@
 
 (defmethod fetch :name [_ type]
   (case type
-    :tags (apply set/union (map #(co/get-tags %1) (vals fake-data/courses)))
+    :tags (apply set/union (map #(tb/get-tags %1) (vals fake-data/courses)))
     :users (into #{} (map #(keyword (:curator %1)) (vals fake-data/courses)))
     :flags (apply set/union (map :flags (vals fake-data/courses)))))
 

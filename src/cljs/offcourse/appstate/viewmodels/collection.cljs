@@ -2,6 +2,7 @@
   (:require [schema.core :as schema :include-macros true]
             [offcourse.protocols.validatable :refer [Validatable]]
             [offcourse.protocols.highlightable :refer [Highlightable]]
+            [offcourse.protocols.taggable :as tb]
             [offcourse.protocols.refreshable :refer [Refreshable]]
             [offcourse.models.collection :as cl :refer [Collection]]
             [offcourse.models.label :as label :refer [LabelCollection]]
@@ -41,5 +42,5 @@
           new-collection (get-in collections [collection-type collection-name])
           collection (or new-collection collection)
           courses (cs/find-courses courses (:collection-ids collection))
-          courses (medley/map-vals #(assoc %1 :tags (co/get-tags %1)) courses)]
+          courses (medley/map-vals #(assoc %1 :tags (tb/get-tags %1)) courses)]
       (->viewmodel level labels collection courses))))

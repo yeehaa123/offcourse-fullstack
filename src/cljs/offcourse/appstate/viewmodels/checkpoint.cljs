@@ -3,6 +3,7 @@
             [offcourse.protocols.validatable :refer [Validatable valid? unknown-field]]
             [offcourse.protocols.highlightable :refer [Highlightable]]
             [offcourse.protocols.refreshable :refer [Refreshable]]
+            [offcourse.protocols.augmentable :as ab]
             [offcourse.models.course :as co :refer [Course]]
             [offcourse.models.resource :as rs :refer [Resource]]
             [offcourse.models.label :as label :refer [LabelCollection]]
@@ -37,8 +38,10 @@
       (if (or (=  unknown-field :resource) (not errors)) true false)))
   Refreshable
   (refresh [{:keys [course checkpoint-id]} {:keys [courses resources]}]
-    (let  [course (get courses (:course-id course))
-           labels {:tags (label/->labelCollection (:tags course))}
-           resource-url (get-in course [:checkpoints checkpoint-id :resource-url])
-           resource (or (get resources resource-url) (rs/->resource resource-url))]
-    (->viewmodel course checkpoint-id resource labels))))
+    (let [course (-> courses
+                     (get (:course-id course))
+                     (ab/augment))
+          labels {:tags (label/->labelCollection (:tags course))}
+          resource-url (get-in course [:checkpoints checkpoint-id :resource-url])
+          resource (or (get resources resource-url) (rs/->resource resource-url))]
+      (->viewmodel course checkpoint-id resource labels))))
