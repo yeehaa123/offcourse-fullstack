@@ -1,10 +1,11 @@
 (ns offcourse.appstate.viewmodel
   (:require [schema.core :as schema :include-macros true]
-            [offcourse.appstate.viewmodels.collection :as clvm :refer [CollectionViewmodel]]
-            [offcourse.appstate.viewmodels.course :as covm :refer [CourseViewmodel]]
-            [offcourse.appstate.viewmodels.checkpoint :as cpvm :refer [CheckpointViewmodel]]
+            [offcourse.appstate.models.collection-viewmodel :as clvm :refer [CollectionViewmodel]]
+            [offcourse.appstate.models.course-viewmodel :as covm :refer [CourseViewmodel]]
+            [offcourse.appstate.models.checkpoint-viewmodel :as cpvm :refer [CheckpointViewmodel]]
+            [offcourse.models.course :as co]
             [offcourse.models.collection :as cl]
-            [offcourse.models.course :as co :refer [Course]]))
+            [offcourse.models.checkpoint :as cp]))
 
 (defmulti select
   (fn [{:keys [level]}] level))
@@ -18,4 +19,4 @@
   (covm/->viewmodel (co/->course course-id)))
 
 (defmethod select :checkpoint [{:keys [course-id checkpoint-id]}]
-  (cpvm/->viewmodel (co/->course course-id) checkpoint-id))
+  (cpvm/->viewmodel (co/->course course-id) (cp/->checkpoint checkpoint-id)))

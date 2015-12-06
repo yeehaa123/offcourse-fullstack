@@ -1,6 +1,6 @@
-(ns offcourse.appstate.viewmodels.course
+(ns offcourse.appstate.models.course-viewmodel
   (:require [schema.core :as schema :include-macros true]
-            [offcourse.protocols.validatable :refer [Validatable]]
+            [offcourse.protocols.validatable :refer [unknown-field Validatable]]
             [offcourse.protocols.highlightable :refer [Highlightable]]
             [offcourse.protocols.refreshable :refer [Refreshable]]
             [offcourse.models.course :as co :refer [Course]]
@@ -31,8 +31,9 @@
   (check [viewmodel]
     (check viewmodel))
   (valid? [viewmodel]
-    (let [errors (check viewmodel)]
-      (if errors false true)))
+    (let [errors (check viewmodel)
+          unknown-field (unknown-field errors)]
+      (if (or (=  unknown-field :resources) (not errors)) true false)))
   Refreshable
   (refresh [{:keys [level course]} {:keys [courses resources collections]}]
     (let [course (-> courses

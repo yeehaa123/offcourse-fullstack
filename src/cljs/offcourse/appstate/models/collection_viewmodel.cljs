@@ -1,4 +1,4 @@
-(ns offcourse.appstate.viewmodels.collection
+(ns offcourse.appstate.models.collection-viewmodel
   (:require [schema.core :as schema :include-macros true]
             [offcourse.protocols.validatable :refer [Validatable]]
             [offcourse.protocols.highlightable :refer [Highlightable]]

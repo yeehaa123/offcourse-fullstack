@@ -8,7 +8,7 @@
 (defn CheckpointCard
   ([checkpoint course labels resource handlers]
    (CheckpointCard checkpoint course labels resource handlers false))
-  ([{:keys [checkpoint-id] :as checkpoint}
+  ([{:keys [checkpoint-id tags] :as checkpoint}
     {:keys [course-id goal] :as course}
     labels
     {:keys [resource-url title content]}

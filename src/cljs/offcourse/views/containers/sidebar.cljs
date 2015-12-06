@@ -9,11 +9,11 @@
             [quiescent.dom :as d]
             [offcourse.views.actions :as actions]))
 
-(defn Sidebar [{:keys [level labels course resource collection checkpoint-id] :as vm} handlers]
+(defn Sidebar [{:keys [level labels course resource collection checkpoint] :as vm} handlers]
   (d/section {:className (css/classes "sidebar")}
              (d/div {:className "sidebar-logo"}
                     (Logo handlers))
              (case level
                :collection (Collections-Navigation labels handlers)
                :course (CourseCard course labels handlers)
-               :checkpoint (CheckpointCard checkpoint-id course labels resource handlers true))))
+               :checkpoint (CheckpointCard checkpoint course labels resource handlers true))))

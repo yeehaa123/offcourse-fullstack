@@ -1,18 +1,18 @@
-(ns offcourse.models.name-collections
+(ns offcourse.models.collections
   (:require [offcourse.protocols.validatable :refer [Validatable]]
             [schema.core :as schema :include-macros true]))
 
-(schema/defrecord NameCollections
+(schema/defrecord Collections
     [users :- #{schema/Keyword}
      flags :- #{schema/Keyword}
      tags :- #{schema/Keyword}])
 
-(def check (schema/checker NameCollections))
+(def check (schema/checker Collections))
 
-(extend-type NameCollections
+(extend-type Collections
   Validatable
   (check [collection]
     (check collection)))
 
 (defn coerce-from-map [collections]
-  (map->NameCollections collections))
+  (map->Collections collections))

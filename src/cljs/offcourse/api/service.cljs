@@ -3,7 +3,7 @@
             [schema.core :as schema :include-macros true]
             [offcourse.protocols.validatable :refer [check]]
             [offcourse.models.collection :as cl]
-            [offcourse.models.name-collections :as cls]
+            [offcourse.models.collections :as cls]
             [offcourse.models.course :as co]
             [offcourse.models.courses :as cs]
             [offcourse.models.resource :as rs]

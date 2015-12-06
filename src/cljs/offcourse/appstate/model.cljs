@@ -1,7 +1,7 @@
 (ns offcourse.appstate.model
   (:require [schema.core :as schema :include-macros true]
             [offcourse.protocols.validatable :refer [check unknown-field]]
-            [offcourse.appstate.viewmodels.collection :refer [CollectionViewmodel]]))
+            [offcourse.appstate.models.collection-viewmodel :refer [CollectionViewmodel]]))
 
 (schema/defrecord AppState
     [locked :- schema/Bool

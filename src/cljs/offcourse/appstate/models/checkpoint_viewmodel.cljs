@@ -1,26 +1,26 @@
-(ns offcourse.appstate.viewmodels.checkpoint
+(ns offcourse.appstate.models.checkpoint-viewmodel
   (:require [schema.core :as schema :include-macros true]
             [offcourse.protocols.validatable :refer [Validatable valid? unknown-field]]
             [offcourse.protocols.highlightable :refer [Highlightable]]
             [offcourse.protocols.refreshable :refer [Refreshable]]
             [offcourse.protocols.augmentable :as ab]
-            [offcourse.models.course :as co :refer [Course]]
-            [offcourse.models.resource :as rs :refer [Resource]]
             [offcourse.models.label :as label :refer [LabelCollection]]
-            [offcourse.models.resource :as r]))
+            [offcourse.models.course :as co :refer [Course]]
+            [offcourse.models.checkpoint :as cp :refer [Checkpoint]]
+            [offcourse.models.resource :as rs :refer [Resource]]))
 
 (schema/defrecord CheckpointViewmodel
     [level :- Keyword
      course :- Course
-     checkpoint-id :- schema/Int
+     checkpoint :- Checkpoint
      resource :- Resource
      labels :- {Keyword LabelCollection}])
 
 (defn ->viewmodel
-  ([course checkpoint-id]
-   (->CheckpointViewmodel :checkpoint course checkpoint-id nil nil))
-  ([course checkpoint-id resource labels]
-   (->CheckpointViewmodel :checkpoint course checkpoint-id resource labels)))
+  ([course checkpoint]
+   (->CheckpointViewmodel :checkpoint course checkpoint nil nil))
+  ([course checkpoint resource labels]
+   (->CheckpointViewmodel :checkpoint course checkpoint resource labels)))
 
 (def check (schema/checker CheckpointViewmodel))
 
@@ -37,11 +37,10 @@
           unknown-field (unknown-field errors)]
       (if (or (=  unknown-field :resource) (not errors)) true false)))
   Refreshable
-  (refresh [{:keys [course checkpoint-id]} {:keys [courses resources]}]
-    (let [course (-> courses
-                     (get (:course-id course))
-                     (ab/augment))
-          labels {:tags (label/->labelCollection (:tags course))}
-          resource-url (get-in course [:checkpoints checkpoint-id :resource-url])
+  (refresh [{:keys [course checkpoint]} {:keys [courses resources]}]
+    (let [course (get-in courses [(:course-id course)])
+          checkpoint (get-in course [:checkpoints (:checkpoint-id checkpoint)])
+          labels {:tags (label/->labelCollection (:tags checkpoint))}
+          resource-url (get-in course [:checkpoints (:checkpoint-id checkpoint) :resource-url])
           resource (or (get resources resource-url) (rs/->resource resource-url))]
-      (->viewmodel course checkpoint-id resource labels))))
+      (->viewmodel course checkpoint resource labels))))

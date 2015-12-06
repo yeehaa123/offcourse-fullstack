@@ -12,6 +12,9 @@
 
 (def check (schema/checker Checkpoint))
 
+(defn ->checkpoint
+  ([checkpoint-id] (->Checkpoint checkpoint-id nil nil nil nil)))
+
 (extend-type Checkpoint
   Validatable
   (check [course]

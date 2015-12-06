@@ -7,6 +7,8 @@
 
   (defn respond-fetched [field data]
     (go
+      (when (or (= field :resources) (= field :resource))
+        (<! (timeout (rand-int 3000))))
       (>! channel (respond :fetched-data
                            :type field
                            field data))))

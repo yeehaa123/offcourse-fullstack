@@ -16,6 +16,9 @@
     (let [resource-data (case field
                           :courses {:type :collection
                                     :collection (:collection data)}
+                          :checkpoint {:type :checkpoint
+                                       :checkpoint (assoc (:checkpoint data)
+                                                          :course-id (:course-id data))}
                           {:type field
                            field (field data)})]
       (when (< @counter 40)
