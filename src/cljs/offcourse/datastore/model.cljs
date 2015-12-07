@@ -5,7 +5,7 @@
             [offcourse.protocols.refreshable :refer [Refreshable]]
             [offcourse.datastore.implementations.available :as av-impl]
             [offcourse.datastore.implementations.refreshable :as rf-impl]
-            [offcourse.datastore.implementations.checkable :as ck-impl]
+            [offcourse.datastore.implementations.validatable :as va-impl]
             [offcourse.models.course :refer [Course]]
             [offcourse.models.resource :refer [Resource]]))
 
@@ -31,7 +31,7 @@
 (extend-type DataStore
   Validatable
   (check [store type data]
-    (ck-impl/check store type data))
+    (va-impl/check store type data))
   (valid? [store]
     (if-not (check store) true false))
   Available
