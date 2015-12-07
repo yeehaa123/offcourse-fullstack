@@ -12,7 +12,7 @@
     (let [{type :type payload :payload} (<! input)]
       (case type
         :requested-data             (store/check-store payload)
-        :requested-toggle-done      (store/toggle-done payload)
+        :requested-toggle-done      (store/modify-store :toggle-done payload)
         :fetched-data               (store/refresh-store payload)
         nil))
     (recur)))

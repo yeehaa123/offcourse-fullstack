@@ -1,6 +1,6 @@
 (ns offcourse.datastore.responder
-  (:require-macros [cljs.core.async.macros :refer [go go-loop]])
-  (:require [cljs.core.async :refer [chan mult tap merge timeout <! >!]]
+  (:require-macros [cljs.core.async.macros :refer [go]])
+  (:require [cljs.core.async :refer [<!]]
             [offcourse.protocols.validatable :refer [valid? check]]
             [offcourse.models.action :refer [respond]]))
 

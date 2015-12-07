@@ -3,9 +3,11 @@
             [offcourse.protocols.validatable :refer [Validatable]]
             [offcourse.protocols.available :refer [Available]]
             [offcourse.protocols.refreshable :refer [Refreshable]]
+            [offcourse.protocols.modifiable :refer [Modifiable]]
             [offcourse.datastore.implementations.available :as av-impl]
             [offcourse.datastore.implementations.refreshable :as rf-impl]
             [offcourse.datastore.implementations.validatable :as va-impl]
+            [offcourse.datastore.implementations.modifiable :as ma-impl]
             [offcourse.models.course :refer [Course]]
             [offcourse.models.resource :refer [Resource]]))
 
@@ -39,6 +41,9 @@
     (av-impl/available store selector field))
   (unavailable [store selector field]
     (av-impl/unavailable store selector field))
+  Modifiable
+  (modify [store type payload]
+    (ma-impl/modify store type payload))
   Refreshable
   (refresh [store type field]
     (rf-impl/refresh store type field)))

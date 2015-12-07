@@ -2,8 +2,8 @@
   (:require [offcourse.datastore.model :as model]
             [offcourse.datastore.responder :as r]
             [offcourse.protocols.refreshable :refer [refresh]]
-            [offcourse.protocols.validatable :refer [check]]
-            [offcourse.datastore.services.modify :refer [modify]]))
+            [offcourse.protocols.modifiable :refer [modify]]
+            [offcourse.protocols.validatable :refer [check]]))
 
 (defonce store (atom (model/->datastore)))
 
@@ -22,5 +22,7 @@
       (apply r/respond-not-found missing-data)
       (r/respond-checked store))))
 
-(defn toggle-done [payload]
-  (modify :toggle-done store payload))
+(defn modify-store [type payload]
+  (do
+    (swap! store #(modify %1 type payload))
+    (r/respond-updated store)))
