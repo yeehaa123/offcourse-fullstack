@@ -1,7 +1,7 @@
 (ns offcourse.protocols.validatable)
 
 (defprotocol Validatable
-  (check [this])
+  (check [this] [this type data])
   (valid? [this]))
 
 (defn unknown-field [errors]

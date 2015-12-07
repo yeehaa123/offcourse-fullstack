@@ -2,13 +2,14 @@
   (:require [offcourse.fake-data.index :as fake-data]
             [offcourse.models.collection :as cl :refer [Collection]]
             [offcourse.protocols.taggable :as tb]
-            [offcourse.protocols.queryable :as qb]
+            [offcourse.protocols.available :as av]
+            [offcourse.fake-data.implementations.available]
             [clojure.set :as set]
             [offcourse.models.course :as co]))
 
 (defn- collect-ids [acc courses name selector]
   (reduce (fn [acc [id course]]
-            (if (qb/has? course selector name) (conj acc id) acc))
+            (if (av/has? course selector name) (conj acc id) acc))
           acc courses))
 
 (defmulti fetch

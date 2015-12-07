@@ -4,7 +4,7 @@
             [offcourse.protocols.augmentable :refer [Augmentable]]
             [offcourse.protocols.linkable :as lb :refer [Linkable]]
             [offcourse.protocols.taggable :as tb :refer [Taggable]]
-            [offcourse.protocols.queryable :as qb :refer [Queryable]]
+            [offcourse.protocols.available :as av :refer [Available]]
             [offcourse.models.checkpoint :as cp :refer [Checkpoint]]
             [medley.core :as medley]))
 
@@ -60,6 +60,6 @@
   (augment [course]
     (merge course {:tags (tb/get-tags course)
                    :resource-urls (lb/get-urls course)}))
-  Queryable
+  Available
   (has? [course selector field]
     (has-prop? selector course field)))

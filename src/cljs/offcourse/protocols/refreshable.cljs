@@ -1,4 +1,4 @@
 (ns offcourse.protocols.refreshable)
 
 (defprotocol Refreshable
-  (refresh [viewmodel store]))
+  (refresh [model store] [store type field]))
