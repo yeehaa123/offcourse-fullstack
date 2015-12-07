@@ -1,4 +1,4 @@
-(ns offcourse.datastore.services.update
+(ns offcourse.datastore.services.modify
   (:require [offcourse.datastore.responder :as r]))
 
 (defn- update-and-respond! [store fn]

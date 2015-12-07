@@ -27,6 +27,19 @@
         course      (assoc course :checkpoints checkpoints)]
     (map->Course course)))
 
+(defmulti has-prop?
+  (fn [selector _ _] selector))
+
+(defmethod has-prop? :tag [_ course tag]
+  (let [tags (tb/get-tags course)]
+    (contains? tags (keyword tag))))
+
+(defmethod has-prop? :flag [_ {:keys [flags]} flag]
+  (contains? flags flag))
+
+(defmethod has-prop? :user [_ {:keys [curator]} user]
+  (= (keyword curator) user))
+
 (extend-type Course
   Validatable
   (check [course]
@@ -49,4 +62,4 @@
                    :resource-urls (lb/get-urls course)}))
   Queryable
   (has? [course selector field]
-    (qb/has-prop? selector course field)))
+    (has-prop? selector course field)))

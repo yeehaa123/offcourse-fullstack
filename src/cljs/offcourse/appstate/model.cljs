@@ -20,7 +20,7 @@
 (defn unknown-data [viewmodel]
   (let [errors (check viewmodel)
         unknown-field (unknown-field errors)]
-    (println "ERROR:" errors)
+    (println "AS ERROR:" errors)
     (when unknown-field
       [unknown-field viewmodel])))
 

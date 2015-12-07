@@ -1,6 +1,7 @@
 (ns offcourse.datastore.responder
   (:require-macros [cljs.core.async.macros :refer [go go-loop]])
   (:require [cljs.core.async :refer [chan mult tap merge timeout <! >!]]
+            [offcourse.protocols.validatable :refer [valid? check]]
             [offcourse.models.action :refer [respond]]))
 
 (defn init [channel]
@@ -10,8 +11,10 @@
       (>! channel  (apply respond response))))
 
   (defn respond-updated [store]
-    (-respond :updated-data
-              :store @store))
+    (if (valid? @store)
+      (-respond :updated-data
+                :store @store)
+      (println "DS ERRORS " (check @store))))
 
   (defn respond-added [store course-id]
     (-respond :added-checkpoint

@@ -1,5 +1,5 @@
-(ns offcourse.datastore.services.query
-  (:require [offcourse.datastore.model :as model :refer [missing? present?]]
+(ns offcourse.datastore.services.check
+  (:require [offcourse.protocols.queryable :as qb]
             [offcourse.datastore.responder :as r]))
 
 (defmulti check
@@ -7,19 +7,19 @@
 
 (defmethod check :collection [store _ {:keys [collection-type collection-name]
                                           :as collection}]
-  (let [present-ids (present? @store :collection-ids collection)]
+  (let [present-ids (qb/available @store :collection-ids collection)]
     (if present-ids
       (check store :courses {:course-ids present-ids})
       (r/respond-not-found :collection collection))))
 
 (defmethod check :courses [store _ {:keys [course-ids]}]
-  (let [missing-ids (missing? @store :course-ids course-ids)]
+  (let [missing-ids (qb/unavailable @store :course-ids course-ids)]
     (if-not missing-ids
       (r/respond-checked store)
       (r/respond-not-found :courses {:course-ids missing-ids}))))
 
 (defmethod check :course [store _ {:keys [course-id] :as course}]
-  (let [present-course (present? @store :course course-id)]
+  (let [present-course (qb/available @store :course course-id)]
     (if present-course
       (r/respond-checked store)
       (r/respond-not-found :course course))))

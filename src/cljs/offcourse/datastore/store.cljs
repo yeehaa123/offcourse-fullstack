@@ -1,10 +1,10 @@
 (ns offcourse.datastore.store
   (:require [offcourse.datastore.model :as model]
-            [offcourse.datastore.services.query :refer [check]]
+            [offcourse.datastore.services.check :refer [check]]
             [offcourse.datastore.services.refresh :refer [refresh]]
-            [offcourse.datastore.services.update :refer [modify]]))
+            [offcourse.datastore.services.modify :refer [modify]]))
 
-(defonce store (atom (model/new-datastore)))
+(defonce store (atom (model/->datastore)))
 
 (defn refresh-store [payload]
   (let [type (:type payload)

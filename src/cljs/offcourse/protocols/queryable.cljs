@@ -15,7 +15,9 @@
   (= (keyword curator) user))
 
 (defprotocol Queryable
-  (has? [this selector field]))
+  (has? [this selector field])
+  (available [this selector field])
+  (unavailable [this selector field]))
 
 (extend-protocol Queryable
   PersistentArrayMap
