@@ -10,15 +10,6 @@
             [offcourse.models.resources :as rss]
             [offcourse.api.responder :as r]))
 
-(defn create-resource [resource-url]
-  {:resource-url resource-url
-   :resource-type "markdown"
-   :title "TEST 1 2 3"
-   :authors nil
-   :tags ["Algorithm"
-          "Benchmarking"
-          "Back-end"]
-   :content "BLA BLA BLA"})
 
 (defmulti fetch
   (fn [{:keys [type]}] type))
@@ -52,10 +43,11 @@
 
 (defmethod fetch :resources [{:keys [type resources]}]
   (let [resources (->> (:resource-urls resources)
-                       (map #(rs/coerce-from-map (create-resource %1)))
+                       (api/fetch type)
+                       (map #(rs/coerce-from-map %1))
                        (rss/->resources))]
     (check-and-respond type resources)))
 
 (defmethod fetch :resource [{:keys [type resource] :as payload}]
-  (let [resource (rs/coerce-from-map (create-resource (:resource-url resource)))]
+  (let [resource (rs/coerce-from-map (api/fetch type (:resource-url resource)))]
     (check-and-respond type resource)))

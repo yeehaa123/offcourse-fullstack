@@ -101,3 +101,12 @@
 
 (defn named-collection [collection-name]
   (collection-name named-collections))
+
+(defn create-resource [url]
+  (let [{:keys [title text]} (generate-content)]
+    {:resource-url url
+     :resource-type "markdown"
+     :title title
+     :authors nil
+     :tags (set-of-buzzwords 1 5)
+     :content text}))

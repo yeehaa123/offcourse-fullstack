@@ -40,5 +40,10 @@
 (defmethod fetch :course [_ course-id]
   (get-in fake-data/courses [course-id]))
 
+
+(defmethod fetch :resource [_ url]
+  (fake-data/create-resource url))
+
 (defmethod fetch :resources [_ urls]
-  (println urls))
+  (->> urls
+       (map #(fake-data/create-resource %1))))
