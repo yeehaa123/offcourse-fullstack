@@ -25,6 +25,7 @@
                  [prismatic/schema "1.0.3"]
                  [com.cognitect/transit-cljs "0.8.232"]
                  [clj-http "0.7.8"]
+                 [org.clojure/test.check "0.9.0"]
                  [com.calvinfroedge/clutch "0.4.0" :exclusions [clj-http]]
                  [cljsjs/pouchdb "3.5.0-1"]
                  [devcards "0.2.0-8"]]

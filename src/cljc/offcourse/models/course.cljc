@@ -24,9 +24,11 @@
 (defn ->course
   ([course-id] (->Course course-id nil nil nil nil)))
 
-(defn coerce-from-map [{:keys [curator checkpoints] :as course}]
+(defn coerce-from-map [{:keys [curator flags checkpoints] :as course}]
   (let [checkpoints (medley/map-vals cp/coerce-from-map checkpoints)
-        course      (assoc course :checkpoints checkpoints)]
+        flags (into #{} flags)
+        course      (assoc course :checkpoints checkpoints
+                                  :flags flags)]
     (map->Course course)))
 
 (defmulti has-prop?

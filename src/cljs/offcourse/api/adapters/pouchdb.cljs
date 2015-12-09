@@ -6,9 +6,9 @@
 (def channel (chan))
 
 (def db (js/PouchDB. "sample"))
-#_(def remote-db (js/PouchDB. "http://localhost:5984/sample"))
+(def remote-db (js/PouchDB. "http://localhost:5984/sample"))
 
-#_(-> db
+(-> db
     (.sync remote-db (clj->js {:live true,
                                :retry true})))
 

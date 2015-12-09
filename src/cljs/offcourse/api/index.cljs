@@ -21,4 +21,6 @@
   (let [inputs (map #(tap %1 (chan)) inputs)
         input (merge inputs)]
     (responder/init channel)
+    (go
+      (println (<! (p/get-all))))
     (listen-for-actions input)))
