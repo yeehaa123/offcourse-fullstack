@@ -11,6 +11,7 @@
             [offcourse.history.service :as history]))
 
 (defn init! []
+
   (actions/init)
 
   (router/init)

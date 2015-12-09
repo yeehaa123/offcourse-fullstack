@@ -23,6 +23,8 @@
                  [env/faker "0.4.0"]
                  [org.clojure/core.match "0.3.0-alpha4"]
                  [prismatic/schema "1.0.3"]
+                 [com.cognitect/transit-cljs "0.8.232"]
+                 [cljsjs/pouchdb "3.5.0-1"]
                  [devcards "0.2.0-8"]]
 
   :plugins [[lein-environ "1.0.1"]
