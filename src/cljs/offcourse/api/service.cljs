@@ -16,6 +16,7 @@
 
 (defn check-and-respond [type data]
   (let [invalid? (check data)]
+    (println invalid?)
     (when-not invalid?
       (r/respond-fetched type data))))
 

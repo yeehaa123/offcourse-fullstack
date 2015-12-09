@@ -25,7 +25,6 @@
         :checked-datastore              (store/refresh-viewmodel payload)
         :added-checkpoint               (responder/return-to-course payload)
         :authenticated-user             (store/set-user payload)
-
         nil))
         (recur)))
 

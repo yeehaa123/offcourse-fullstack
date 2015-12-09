@@ -1,7 +1,7 @@
 (ns offcourse.models.resources
   (:require [schema.core :as schema :include-macros true]
             [offcourse.protocols.validatable :refer [Validatable]]
-            [offcourse.models.resource :as co :refer [Resource]]))
+            [offcourse.models.resource :refer [Resource]]))
 
 (def ResourcesSchema
   [Resource])

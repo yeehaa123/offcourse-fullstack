@@ -12,20 +12,13 @@
   (go-loop []
     (let [{type :type payload :payload :as val} (<! input)]
       (case type
-        :not-found-data (go
-                          #_(<! (timeout (rand-int 1000)))
-                          (service/fetch payload))
+        :not-found-data (service/fetch payload)
         :updated-data nil
-        (println val)))
+        nil))
     (recur)))
 
 (defn init [inputs]
   (let [inputs (map #(tap %1 (chan)) inputs)
         input (merge inputs)]
-    (go
-      (let [doc (-> (<! (p/get "123-2"))
-                    (js->clj :keywordize-keys true))]
-        (p/put (assoc doc :version (inc (:version doc))))
-        (println (<! (p/get-all)))))
     (responder/init channel)
     (listen-for-actions input)))

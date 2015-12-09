@@ -1,11 +1,13 @@
 (ns offcourse.models.course
+  #?(:clj (:import [offcourse.models.checkpoint Checkpoint]))
   (:require [schema.core :as schema :include-macros true]
             [offcourse.protocols.validatable :refer [Validatable]]
             [offcourse.protocols.augmentable :refer [Augmentable]]
             [offcourse.protocols.linkable :as lb :refer [Linkable]]
             [offcourse.protocols.taggable :as tb :refer [Taggable]]
             [offcourse.protocols.available :as av :refer [Available]]
-            [offcourse.models.checkpoint :as cp :refer [Checkpoint]]
+            #?(:cljs [offcourse.models.checkpoint :as cp :refer [Checkpoint]]
+               :clj [offcourse.models.checkpoint :as cp])
             [medley.core :as medley]))
 
 (schema/defrecord Course

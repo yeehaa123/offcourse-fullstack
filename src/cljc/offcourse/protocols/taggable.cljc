@@ -4,7 +4,8 @@
   (get-tags [this]))
 
 (extend-protocol Taggable
-  PersistentArrayMap
+  #?(:clj clojure.lang.PersistentArrayMap
+     :cljs PersistentArrayMap)
   (get-tags [{:keys [checkpoints]}]
     (->> checkpoints
          (reduce (fn [acc [_ {:keys [tags]}]]
