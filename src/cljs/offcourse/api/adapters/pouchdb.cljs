@@ -8,9 +8,7 @@
 (def db (js/PouchDB. "sample"))
 (def remote-db (js/PouchDB. "http://localhost:5984/sample"))
 
-(-> db
-    (.sync remote-db (clj->js {:live true,
-                               :retry true})))
+(.. db -replicate (from remote-db (clj->js {:live true})))
 
 (defn -respond [channel message]
   (go
@@ -19,7 +17,7 @@
 (defn respond [promise]
   (let [channel (chan)]
     (-> promise
-        (.then #(-respond channel %1)))
+        (.then #(-respond channel (js->clj %1 :keywordize-keys true))))
     channel))
 
 (defn info []
@@ -40,4 +38,4 @@
   (respond (.get db id)))
 
 (defn get-all []
-  (respond (.allDocs db (clj->js {:include_docs true}))))
+  (respond  (.allDocs db (clj->js {:include_docs true}))))

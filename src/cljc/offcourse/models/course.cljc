@@ -1,32 +1,33 @@
 (ns offcourse.models.course
-  #?(:clj (:import [offcourse.models.checkpoint Checkpoint]))
   (:require [schema.core :as schema :include-macros true]
             [offcourse.protocols.validatable :refer [Validatable]]
             [offcourse.protocols.augmentable :refer [Augmentable]]
             [offcourse.protocols.linkable :as lb :refer [Linkable]]
             [offcourse.protocols.taggable :as tb :refer [Taggable]]
             [offcourse.protocols.available :as av :refer [Available]]
-            #?(:cljs [offcourse.models.checkpoint :as cp :refer [Checkpoint]]
-               :clj [offcourse.models.checkpoint :as cp])
+            [offcourse.models.checkpoint :as cp :refer [CheckpointSchema]]
             [medley.core :as medley]))
 
 (schema/defrecord Course
-    [course-id :- schema/Num
+    [course-id :- (schema/cond-pre schema/Num schema/Str)
      curator :- schema/Str
      goal :- schema/Str
+     version :- schema/Num
      flags :- #{schema/Keyword}
-     checkpoints :- {schema/Int Checkpoint}]
+     checkpoints :- {schema/Int CheckpointSchema}]
   {(schema/optional-key :tags) #{schema/Keyword}
    (schema/optional-key :resource-urls) #{schema/Str}})
 
 (def check (schema/checker Course))
 
 (defn ->course
-  ([course-id] (->Course course-id nil nil nil nil)))
+  ([course-id] (->Course course-id nil nil nil nil nil)))
 
 (defn coerce-from-map [{:keys [curator flags checkpoints] :as course}]
-  (let [checkpoints (medley/map-vals cp/coerce-from-map checkpoints)
-        flags (into #{} flags)
+  (let [checkpoints (->> checkpoints
+                         #?(:cljs (medley/map-keys #(js/parseInt (name %1))))
+                         (medley/map-vals cp/coerce-from-map))
+        flags (into #{} (keyword flags))
         course      (assoc course :checkpoints checkpoints
                                   :flags flags)]
     (map->Course course)))

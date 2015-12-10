@@ -28,6 +28,7 @@
                  [org.clojure/test.check "0.9.0"]
                  [com.calvinfroedge/clutch "0.4.0" :exclusions [clj-http]]
                  [cljsjs/pouchdb "3.5.0-1"]
+                 [danlentz/clj-uuid "0.1.6"]
                  [devcards "0.2.0-8"]]
 
   :plugins [[lein-environ "1.0.1"]

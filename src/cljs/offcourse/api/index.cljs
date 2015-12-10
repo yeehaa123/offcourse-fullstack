@@ -1,7 +1,6 @@
 (ns offcourse.api.index
   (:require-macros [cljs.core.async.macros :refer [go go-loop]])
   (:require [cljs.core.async :refer [chan alts! mult tap merge timeout <! >!]]
-            [offcourse.api.adapters.pouchdb :as p]
             [offcourse.api.service :as service]
             [offcourse.api.responder :as responder]))
 
@@ -21,6 +20,4 @@
   (let [inputs (map #(tap %1 (chan)) inputs)
         input (merge inputs)]
     (responder/init channel)
-    (go
-      (println (<! (p/get-all))))
     (listen-for-actions input)))

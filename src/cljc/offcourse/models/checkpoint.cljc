@@ -28,3 +28,5 @@
   (valid? [course]
     (if-not (check course) true false)))
 
+
+(def CheckpointSchema Checkpoint)

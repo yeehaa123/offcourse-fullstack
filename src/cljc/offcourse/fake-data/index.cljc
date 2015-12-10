@@ -77,6 +77,7 @@
 (defn generate-course [id curator]
   (-> (course)
       (assoc :course-id id)
+      (assoc :version 0)
       (assoc :curator curator)
       (assoc :flags (generate-flags))
       (update-in [:checkpoints] index-checkpoints)))
