@@ -25,7 +25,7 @@
 
 (defn coerce-from-map [{:keys [curator flags checkpoints] :as course}]
   (let [checkpoints (->> checkpoints
-                         #?(:cljs (medley/map-keys #(js/parseInt (name %1))))
+                         #_#?(:cljs (medley/map-keys #(js/parseInt (name %1))))
                          (medley/map-vals cp/coerce-from-map))
         flags (into #{} (keyword flags))
         course      (assoc course :checkpoints checkpoints
