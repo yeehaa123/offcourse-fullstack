@@ -14,7 +14,7 @@
 (def Collection
     {:collection-type schema/Keyword
      :collection-name schema/Keyword
-     :collection-ids (schema/maybe #{schema/Num})})
+     :collection-ids (schema/maybe #{schema/Str})})
 
 (def CollectionSet
   {schema/Keyword Collection})
@@ -22,7 +22,7 @@
 (schema/defrecord DataStore
     [collections :- (schema/maybe
                      {(schema/enum :flags :tags :users) CollectionSet})
-     courses :- (schema/maybe {schema/Int Course})
+     courses :- (schema/maybe {schema/Str Course})
      resources :- (schema/maybe {schema/Str Resource})])
 
 (def check (schema/checker DataStore))

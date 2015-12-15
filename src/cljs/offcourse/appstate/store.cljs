@@ -16,18 +16,18 @@
       (cond
         (and valid? unknown-field)
         (do
-          (println "valid and missing field")
+          #_(println "valid and missing field")
           (swap! appstate model/unlock-state)
           (res/respond-resource-required unknown-field)
           (res/respond-update @appstate))
         (= valid? true)
         (do
-          (println "valid")
+          #_(println "valid")
           (swap! appstate model/unlock-state)
           (res/respond-update @appstate))
         (not valid?)
         (do
-          (println "invalid")
+          #_(println "invalid")
           (swap! appstate model/lock-state)
           (res/respond-resource-required unknown-field))))))
 

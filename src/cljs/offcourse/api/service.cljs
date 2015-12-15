@@ -10,7 +10,7 @@
             [offcourse.models.courses :as cs]
             [offcourse.models.resource :as rs]
             [offcourse.models.resources :as rss]
-            [offcourse.api.adapters.pouchdb :as pouch]
+            [offcourse.api.adapters.pouchdb.wrapper :as pouch]
             [offcourse.api.responder :as r]))
 
 (defmulti fetch
@@ -18,42 +18,24 @@
 
 (defn check-and-respond [type data]
   (let [invalid? (check data)]
-    (println "VALID?" invalid?)
+    (println "API" invalid?)
     (when-not invalid?
       (r/respond-fetched type data))))
 
 (defmethod fetch :collection-names [{:keys [type]}]
-  (let  [collections (-> (api/fetch type)
-                         (cls/coerce-from-map))]
-
-    #_(go
-      (let [output {:tags (<! (pouch/fetch-collection-names :tags))
-                    :flags (<! (pouch/fetch-collection-names :flags))
-                    :users (<! (pouch/fetch-collection-names :curators))}]
-        (println (check (cls/coerce-from-map output)))))
-  (check-and-respond type collections)))
+  (go
+    (let [collections  (<! (pouch/fetch :collection-names))]
+      (check-and-respond type collections))))
 
 (defmethod fetch :collection [{:keys [type collection]}]
-  (let [{:keys [:collection-type collection-name]} collection
-        collection (->> (api/fetch type collection-type collection-name)
-                        (cl/coerce-from-map))]
-    (check-and-respond type collection)))
-
-(defn extract-course [{:keys [doc]}]
-  (-> doc
-      (dissoc :_id :_rev)
-      (co/coerce-from-map)))
+  (go
+    (let [collection (<! (pouch/fetch :collection collection))]
+      (check-and-respond type collection))))
 
 (defmethod fetch :courses [{:keys [type courses]}]
-  (let [courses (->> (api/fetch type (:course-ids courses))
-                     (map #(co/coerce-from-map %1))
-                     cs/->courses)]
-    (go
-      (let [courses (->> (<! (pouch/get-all))
-                         (map extract-course)
-                         cs/->courses)]
-        (println (check courses))))
-    (check-and-respond type courses)))
+  (go
+    (let [courses (<! (pouch/fetch :courses courses))]
+      (check-and-respond type courses))))
 
 (defmethod fetch :course [{:keys [type course]}]
   (let [course (->> (api/fetch type (:course-id course))

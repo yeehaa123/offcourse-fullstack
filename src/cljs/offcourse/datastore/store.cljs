@@ -18,6 +18,7 @@
   (let [type (:type data)
         data (type data)
         missing-data (check @store type data)]
+    (println "DS" missing-data)
     (if missing-data
       (apply r/respond-not-found missing-data)
       (r/respond-checked store))))

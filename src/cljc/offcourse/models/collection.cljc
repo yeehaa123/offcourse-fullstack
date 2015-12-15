@@ -5,7 +5,7 @@
 (schema/defrecord Collection
     [collection-type :- schema/Keyword
      collection-name :- schema/Keyword
-     collection-ids :- #{schema/Num}])
+     collection-ids :- #{schema/Str}])
 
 (def check (schema/checker Collection))
 
