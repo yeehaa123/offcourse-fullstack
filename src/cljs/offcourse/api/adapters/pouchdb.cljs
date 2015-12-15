@@ -20,6 +20,12 @@
         (.then #(-respond channel (js->clj %1 :keywordize-keys true))))
     channel))
 
+(defn respond2 [promise cb]
+  (let [channel (chan)]
+    (-> promise
+        (.then #(-respond channel (cb %1))))
+    channel))
+
 (defn info []
   (respond (.info db)))
 
@@ -37,5 +43,32 @@
 (defn get [id]
   (respond (.get db id)))
 
+(defn handle-response [res]
+  (-> res
+      (js->clj :keywordize-keys true)
+      :rows))
+
+(defn extract-collection-names [res]
+  (->> res
+       handle-response
+       (map #(keyword (:key %1)))
+       (into #{})))
+
+(defn remove-design-docs [res]
+  (->> res
+       handle-response
+       (remove #(re-find #"_design" (:id %1)))))
+
+(defn query [viewname cb]
+  (let  [options (clj->js {:group true})
+         view    (str "query/" (name viewname))]
+    (respond2 (.query db view options) cb)))
+
+(defn fetch-collection-names [viewname]
+  (query viewname extract-collection-names))
+
 (defn get-all []
-  (respond  (.allDocs db (clj->js {:include_docs true}))))
+  (let  [options (clj->js {:group true
+                           :include_docs true})]
+    (respond2 (.allDocs db options)
+              remove-design-docs)))

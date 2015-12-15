@@ -13,7 +13,6 @@
             [offcourse.api.adapters.pouchdb :as pouch]
             [offcourse.api.responder :as r]))
 
-
 (defmulti fetch
   (fn [{:keys [type]}] type))
 
@@ -26,7 +25,13 @@
 (defmethod fetch :collection-names [{:keys [type]}]
   (let  [collections (-> (api/fetch type)
                          (cls/coerce-from-map))]
-    (check-and-respond type collections)))
+
+    #_(go
+      (let [output {:tags (<! (pouch/fetch-collection-names :tags))
+                    :flags (<! (pouch/fetch-collection-names :flags))
+                    :users (<! (pouch/fetch-collection-names :curators))}]
+        (println (check (cls/coerce-from-map output)))))
+  (check-and-respond type collections)))
 
 (defmethod fetch :collection [{:keys [type collection]}]
   (let [{:keys [:collection-type collection-name]} collection
@@ -39,21 +44,15 @@
       (dissoc :_id :_rev)
       (co/coerce-from-map)))
 
-(defn extract-courses [{:keys [rows]}]
-  (->> rows
-       (map extract-course)
-       cs/->courses
-       #_check
-       #_count
-       #_first))
-
 (defmethod fetch :courses [{:keys [type courses]}]
   (let [courses (->> (api/fetch type (:course-ids courses))
                      (map #(co/coerce-from-map %1))
                      cs/->courses)]
     (go
-      (println "database docs:" (->> (<! (pouch/get-all))
-                                     extract-courses)))
+      (let [courses (->> (<! (pouch/get-all))
+                         (map extract-course)
+                         cs/->courses)]
+        (println (check courses))))
     (check-and-respond type courses)))
 
 (defmethod fetch :course [{:keys [type course]}]
