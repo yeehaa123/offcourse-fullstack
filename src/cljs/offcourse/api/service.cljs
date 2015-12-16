@@ -4,10 +4,6 @@
             [offcourse.fake-data.api :as api]
             [schema.core :as schema :include-macros true]
             [offcourse.protocols.validatable :refer [check]]
-            [offcourse.models.collection :as cl]
-            [offcourse.models.collections :as cls]
-            [offcourse.models.course :as co]
-            [offcourse.models.courses :as cs]
             [offcourse.models.resource :as rs]
             [offcourse.models.resources :as rss]
             [offcourse.api.adapters.pouchdb.wrapper :as pouch]
@@ -24,23 +20,23 @@
 
 (defmethod fetch :collection-names [{:keys [type]}]
   (go
-    (let [collections  (<! (pouch/fetch :collection-names))]
+    (let [collections  (<! (pouch/fetch type))]
       (check-and-respond type collections))))
 
 (defmethod fetch :collection [{:keys [type collection]}]
   (go
-    (let [collection (<! (pouch/fetch :collection collection))]
+    (let [collection (<! (pouch/fetch type collection))]
       (check-and-respond type collection))))
 
 (defmethod fetch :courses [{:keys [type courses]}]
   (go
-    (let [courses (<! (pouch/fetch :courses courses))]
+    (let [courses (<! (pouch/fetch type courses))]
       (check-and-respond type courses))))
 
 (defmethod fetch :course [{:keys [type course]}]
-  (let [course (->> (api/fetch type (:course-id course))
-                    (co/coerce-from-map))]
-    (check-and-respond type course)))
+  (go
+    (let [course (<! (pouch/fetch type course))]
+      (check-and-respond type course))))
 
 (defmethod fetch :resources [{:keys [type resources]}]
   (let [resources (->> (:resource-urls resources)

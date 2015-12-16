@@ -26,11 +26,9 @@
 (extend-type CollectionViewmodel
   Highlightable
   (highlight-checkpoint [viewmodel {:keys [course-id checkpoint-id highlight]}]
-    viewmodel
-    #_(assoc-in viewmodel [:courses course-id :checkpoints checkpoint-id :highlighted] highlight))
+    (assoc-in viewmodel [:courses course-id :checkpoints checkpoint-id :highlighted] highlight))
   (highlight-label [viewmodel {:keys [label-name label-type highlight]}]
-    viewmodel
-    #_(assoc-in viewmodel [:labels label-type label-name :highlighted?] highlight))
+    (assoc-in viewmodel [:labels label-type label-name :highlighted?] highlight))
   Validatable
   (check [viewmodel]
     (check viewmodel))

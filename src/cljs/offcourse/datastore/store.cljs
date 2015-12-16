@@ -14,7 +14,8 @@
       (swap! store #(refresh %1 type data))
       (r/respond-updated store))))
 
-(defn check-store [{:keys [type data]}]
+(defn check-store [{:keys [_ data]}]
+  (println "CS " data)
   (let [type (:type data)
         data (type data)
         missing-data (check @store type data)]

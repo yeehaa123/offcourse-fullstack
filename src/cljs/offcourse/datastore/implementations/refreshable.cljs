@@ -11,8 +11,8 @@
                              (into {}))]))
        (into {})))
 
-(defn add-course [store {:keys [course-id version] :as course}]
-  (assoc-in store [:courses (str course-id "-v" version)] course))
+(defn add-course [store {:keys [course-id] :as course}]
+  (assoc-in store [:courses course-id] course))
 
 (defmulti refresh
   (fn [_ type _] type))

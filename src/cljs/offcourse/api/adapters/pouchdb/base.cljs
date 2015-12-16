@@ -21,8 +21,16 @@
       (js->clj :keywordize-keys true)
       :rows))
 
+(defn handle-single-response [res]
+  (-> res
+      (js->clj :keywordize-keys true)))
+
 (defn remove-design-docs [res]
   (remove #(re-find #"_design" (:id %1)) res))
+
+(defn get-doc [id cb]
+  (let [cb (comp cb handle-single-response)]
+    (handle-promise (.get db id) cb)))
 
 (defn query
   ([options viewname] (query identity options viewname))
@@ -35,5 +43,5 @@
 (defn get-all
   ([options] (get-all options identity))
   ([options cb]
-   (let  [cb      (comp cb remove-design-docs handle-response)]
+   (let  [cb (comp cb remove-design-docs handle-response)]
      (handle-promise (.allDocs db options) cb))))

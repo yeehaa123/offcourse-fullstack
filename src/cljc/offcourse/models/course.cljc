@@ -10,26 +10,29 @@
 
 (schema/defrecord Course
     [course-id :- schema/Str
+     base-id :- schema/Str
+     version :- schema/Num
      curator :- schema/Str
      goal :- schema/Str
-     version :- schema/Num
      flags :- #{schema/Keyword}
      checkpoints :- {schema/Int CheckpointSchema}]
   {(schema/optional-key :tags) #{schema/Keyword}
+   (schema/optional-key :_rev) schema/Str
    (schema/optional-key :resource-urls) #{schema/Str}})
 
 (def check (schema/checker Course))
 
 (defn ->course
-  ([course-id] (->Course course-id nil nil nil nil nil)))
+  ([course-id] (->Course course-id nil nil nil nil nil nil)))
 
 (defn coerce-from-map [{:keys [curator flags checkpoints] :as course}]
   (let [checkpoints (->> checkpoints
                          #?(:cljs (medley/map-keys #(js/parseInt (name %1))))
                          (medley/map-vals cp/coerce-from-map))
         flags (into #{} (keyword flags))
+        course      (dissoc course :_id)
         course      (assoc course :checkpoints checkpoints
-                                  :flags flags)]
+                           :flags flags)]
     (map->Course course)))
 
 (defmulti has-prop?

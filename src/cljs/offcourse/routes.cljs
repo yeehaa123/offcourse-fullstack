@@ -21,7 +21,7 @@
   (cond
     (= "new" id) (keyword id)
     (= nil id) nil
-    :default (js/parseInt id)))
+    :default id))
 
 (defn response [type & args]
   (let [payload (assoc (apply hash-map args) :level type)]

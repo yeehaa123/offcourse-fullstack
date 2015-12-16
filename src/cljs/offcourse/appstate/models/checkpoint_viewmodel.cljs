@@ -39,8 +39,10 @@
   Refreshable
   (refresh [{:keys [course checkpoint]} {:keys [courses resources]}]
     (let [course (get-in courses [(:course-id course)])
-          checkpoint (get-in course [:checkpoints (:checkpoint-id checkpoint)])
+          checkpoint-id (js/parseInt (:checkpoint-id checkpoint))
+          checkpoint (get-in course [:checkpoints checkpoint-id])
           labels {:tags (label/->labelCollection (:tags checkpoint))}
           resource-url (get-in course [:checkpoints (:checkpoint-id checkpoint) :resource-url])
           resource (or (get resources resource-url) (rs/->resource resource-url))]
+      (println "CI " checkpoint)
       (->viewmodel course checkpoint resource labels))))

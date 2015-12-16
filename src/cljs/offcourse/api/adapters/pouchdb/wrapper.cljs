@@ -54,3 +54,6 @@
     (pouch/get-all options (comp
                             cs/->courses
                             (partial map extract-course)))))
+
+(defmethod fetch :course [_ {:keys [course-id]}]
+  (pouch/get-doc course-id co/coerce-from-map))

@@ -10,8 +10,11 @@
 (defn reset []
   (clutch/delete-database db))
 
-(defn add-db-id [{:keys [course-id version] :as course}]
-  (assoc course :_id (str course-id "-v" version)))
+(defn add-db-id [{:keys [base-id version] :as course}]
+  (let [course-id (str base-id "-v" version)]
+    (assoc course :_id course-id
+                  :course-id course-id)))
+
 
 (defn generate-course []
   (let [course-id (uuid/v1)]
@@ -22,7 +25,7 @@
     (clutch/put-document db (generate-course)))
 
 (defn seed-db []
-  (let [courses (->> (repeatedly 30 generate-course))]
+  (let [courses (->> (repeatedly 3 generate-course))]
     (clutch/bulk-update db courses)))
 
 (defn all-courses []

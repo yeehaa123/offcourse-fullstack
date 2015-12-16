@@ -21,7 +21,7 @@
                                                           :course-id (:course-id data))}
                           {:type field
                            field (field data)})]
-      (when (> @counter -1)
+      (when (< @counter 100)
         (-respond :requested-data
                   :data resource-data))))
 
