@@ -1,16 +1,14 @@
 (ns offcourse.api.service
   (:require-macros [cljs.core.async.macros :refer [go go-loop]])
   (:require [cljs.core.async :refer [chan alts! mult tap merge timeout <! >!]]
-            [offcourse.fake-data.api :as api]
-            [schema.core :as schema :include-macros true]
             [offcourse.protocols.validatable :refer [check]]
-            [offcourse.models.resource :as rs]
-            [offcourse.models.resources :as rss]
-            [offcourse.api.adapters.pouchdb.wrapper :as pouch]
+            [offcourse.protocols.fetchable :as fa]
+            [offcourse.api.adapters.pouchdb.index :as pouchdb]
+            [offcourse.api.adapters.fakedb.index :as fakedb]
             [offcourse.api.responder :as r]))
 
-(defmulti fetch
-  (fn [{:keys [type]}] type))
+(def courses-db (pouchdb/init "sample" "http://localhost:5984"))
+(def resources-db (fakedb/init "sample"))
 
 (defn check-and-respond [type data]
   (let [invalid? (check data)]
@@ -18,33 +16,24 @@
     (when-not invalid?
       (r/respond-fetched type data))))
 
-(defmethod fetch :collection-names [{:keys [type]}]
+(def db-hierarchy (-> (make-hierarchy)
+                      (derive :collection-names :courses-db)
+                      (derive :collection :courses-db)
+                      (derive :courses :courses-db)
+                      (derive :course :courses-db)
+                      (derive :resources :resources-db)
+                      (derive :resource :resources-db)))
+
+(defmulti fetch
+  (fn [{:keys [type]}] type)
+  :hierarchy #'db-hierarchy)
+
+(defmethod fetch :courses-db [{:keys [type] :as payload}]
   (go
-    (let [collections  (<! (pouch/fetch type))]
-      (check-and-respond type collections))))
+    (let [response (<! (fa/fetch courses-db payload))]
+      (check-and-respond type response))))
 
-(defmethod fetch :collection [{:keys [type collection]}]
+(defmethod fetch :resources-db [{:keys [type] :as payload}]
   (go
-    (let [collection (<! (pouch/fetch type collection))]
-      (check-and-respond type collection))))
-
-(defmethod fetch :courses [{:keys [type courses]}]
-  (go
-    (let [courses (<! (pouch/fetch type courses))]
-      (check-and-respond type courses))))
-
-(defmethod fetch :course [{:keys [type course]}]
-  (go
-    (let [course (<! (pouch/fetch type course))]
-      (check-and-respond type course))))
-
-(defmethod fetch :resources [{:keys [type resources]}]
-  (let [resources (->> (:resource-urls resources)
-                       (api/fetch type)
-                       (map #(rs/coerce-from-map %1))
-                       (rss/->resources))]
-    (check-and-respond type resources)))
-
-(defmethod fetch :resource [{:keys [type resource] :as payload}]
-  (let [resource (rs/coerce-from-map (api/fetch type (:resource-url resource)))]
-    (check-and-respond type resource)))
+    (let [response (<! (fa/fetch resources-db payload))]
+      (check-and-respond type response))))

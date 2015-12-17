@@ -1,59 +1,56 @@
 (ns offcourse.api.adapters.pouchdb.wrapper
   (:require-macros [cljs.core.async.macros :refer [go go-loop]])
   (:require [cljs.core.async :refer [chan mult tap merge timeout <! >!]]
-            [offcourse.models.course :as co]
-            [offcourse.models.courses :as cs]
-            [offcourse.models.collection :as cl]
-            [offcourse.models.collections :as cls]
-            [offcourse.api.adapters.pouchdb.base :as pouch]))
+            [cljsjs.pouchdb]))
 
-(defn extract-collection-names [res]
-  (->> res
-       (map #(keyword (:key %1)))
-       (into #{})))
+(def channel (chan))
 
-(defn extract-course [{:keys [doc]}]
-  (-> doc
-      (dissoc :_id :_rev)
-      (co/coerce-from-map)))
+(def db (js/PouchDB. "sample"))
+(def remote-db (js/PouchDB. "http://localhost:5984/sample"))
 
-(defn extract-ids [res]
-  (->> res
-       (map :id)
-       (into #{})))
+(.. db -replicate (from remote-db (clj->js {:live true})))
 
-(defmulti fetch
-  (fn [collection-type _ _] collection-type))
+(defn init-db [str]
+  (js/PouchDB. str))
 
-(defmethod fetch :collection [_ {:keys [collection-type collection-name]}]
-  (let [channel (chan)
-        options {:reduce false :key collection-name}
-        collection-type (if (= collection-type :users) :curators collection-type)]
-    (go
-      (let [collection-ids (<! (pouch/query extract-ids options collection-type))
-            collection {:collection-type collection-type
-                        :collection-name collection-name
-                        :collection-ids  collection-ids}]
-      (>! channel  (cl/coerce-from-map collection))))
+(defn sync [db remote-db]
+  (.replicate js/PouchDB db remote-db (clj->js {:live true})))
+
+(defn destroy-db [db]
+  (.destroy js/PouchDB db))
+
+(defn handle-promise [promise cb]
+  (let [channel (chan)]
+    (-> promise
+        (.then #(go (>! channel (cb %1)))))
     channel))
 
-(defmethod fetch :collection-names [_]
-  (let [channel (chan)
-        fetch-names (partial pouch/query extract-collection-names {:group true})]
-    (go
-      (let [output  {:tags (<! (fetch-names :tags))
-                     :flags (<! (fetch-names :flags))
-                     :curators (<! (fetch-names :curators))}]
-        (>! channel (cls/coerce-from-map output))))
-    channel))
+(defn handle-response [res]
+  (-> res
+      (js->clj :keywordize-keys true)
+      :rows))
 
-(defmethod fetch :courses [_ {:keys [course-ids]}]
-  (let  [options (clj->js {:group true
-                           :keys (clj->js course-ids)
-                           :include_docs true})]
-    (pouch/get-all options (comp
-                            cs/->courses
-                            (partial map extract-course)))))
+(defn handle-single-response [res]
+  (-> res
+      (js->clj :keywordize-keys true)))
 
-(defmethod fetch :course [_ {:keys [course-id]}]
-  (pouch/get-doc course-id co/coerce-from-map))
+(defn remove-design-docs [res]
+  (remove #(re-find #"_design" (:id %1)) res))
+
+(defn get-doc [id cb]
+  (let [cb (comp cb handle-single-response)]
+    (handle-promise (.get db id) cb)))
+
+(defn query
+  ([options viewname] (query identity options viewname))
+  ([cb options viewname]
+   (let  [options (clj->js options)
+          view    (str "query/" (name viewname))
+          cb      (comp cb handle-response)]
+     (handle-promise (.query db view options) cb))))
+
+(defn get-all
+  ([options] (get-all options identity))
+  ([options cb]
+   (let  [cb (comp cb remove-design-docs handle-response)]
+     (handle-promise (.allDocs db options) cb))))

@@ -44,5 +44,4 @@
           labels {:tags (label/->labelCollection (:tags checkpoint))}
           resource-url (get-in course [:checkpoints (:checkpoint-id checkpoint) :resource-url])
           resource (or (get resources resource-url) (rs/->resource resource-url))]
-      (println "CI " checkpoint)
       (->viewmodel course checkpoint resource labels))))

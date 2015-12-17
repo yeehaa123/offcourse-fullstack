@@ -36,7 +36,6 @@
       (if (or (=  unknown-field :resources) (not errors)) true false)))
   Refreshable
   (refresh [{:keys [level course]} {:keys [courses resources collections]}]
-    (println (:course-id course))
     (let [course (-> courses
                      (get (:course-id course))
                      (ab/augment))
