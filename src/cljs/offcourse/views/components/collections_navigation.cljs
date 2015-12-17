@@ -12,7 +12,7 @@
                (Labels labels {:onClick onClick
                                :highlight highlight}))))
 
-(defn Collections-Navigation [{:keys [flags tags users]}
+(defn Collections-Navigation [{:keys [flags tags curators]}
                               {:keys [highlight-label
                                       go-to-collection]}]
   (d/section {:className "dashboard"}
@@ -22,6 +22,6 @@
              (Collection-Panel :tags "Tags"
                                tags {:go-to-collection go-to-collection
                                      :highlight-label highlight-label})
-             (Collection-Panel :users "Users"
-                               users {:go-to-collection go-to-collection
+             (Collection-Panel :curators "curators"
+                               curators {:go-to-collection go-to-collection
                                       :highlight-label highlight-label})))

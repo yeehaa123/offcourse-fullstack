@@ -3,7 +3,7 @@
             [schema.core :as schema :include-macros true]))
 
 (schema/defrecord Collections
-    [users :- #{schema/Keyword}
+    [curators :- #{schema/Keyword}
      flags :- #{schema/Keyword}
      tags :- #{schema/Keyword}])
 

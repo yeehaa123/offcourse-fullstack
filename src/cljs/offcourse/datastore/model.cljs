@@ -21,7 +21,7 @@
 
 (schema/defrecord DataStore
     [collections :- (schema/maybe
-                     {(schema/enum :flags :tags :users) CollectionSet})
+                     {(schema/enum :flags :tags :curators) CollectionSet})
      courses :- (schema/maybe {schema/Str Course})
      resources :- (schema/maybe {schema/Str Resource})])
 
@@ -32,8 +32,11 @@
 
 (extend-type DataStore
   Validatable
-  (check [store type data]
-    (va-impl/check store type data))
+  ;; distinguish between check and available
+  (check
+    ([store] (check store))
+    ([store type data]
+     (va-impl/check store type data)))
   (valid? [store]
     (if-not (check store) true false))
   Available

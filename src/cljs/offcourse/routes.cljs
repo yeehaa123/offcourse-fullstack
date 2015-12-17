@@ -13,8 +13,8 @@
 (def route-names {:home       "/"
                   :checkpoint "/courses/:course-id/checkpoints/:checkpoint-id"
                   :course     "/courses/:course-id"
-                  :collection "/:collection-name"
-                  :user-collection "/users/:user-name"
+                  :flag-collection "/:collection-name"
+                  :curator-collection "/curators/:curator-name"
                   :tag-collection "/tags/:tag"})
 
 (defn to-id [id]
@@ -39,15 +39,15 @@
     (response :course
               :course-id (to-id course-id)))
 
-  (defroute (:collection route-names) {collection-name :collection-name}
+  (defroute (:flag-collection route-names) {collection-name :collection-name}
     (response :collection
               :collection-type :flags
               :collection-name (keyword collection-name)))
 
-  (defroute (:user-collection route-names) {user-name :user-name}
+  (defroute (:curator-collection route-names) {curator-name :curator-name}
     (response :collection
-              :collection-type :users
-              :collection-name (keyword user-name)))
+              :collection-type :curators
+              :collection-name (keyword curator-name)))
 
   (defroute (:tag-collection route-names) {tag :tag}
     (response :collection

@@ -43,7 +43,7 @@
     (go
       (let [output  {:tags (<! (fetch-names :tags))
                      :flags (<! (fetch-names :flags))
-                     :users (<! (fetch-names :curators))}]
+                     :curators (<! (fetch-names :curators))}]
         (>! channel (cls/coerce-from-map output))))
     channel))
 
