@@ -37,9 +37,29 @@
 (defn remove-design-docs [res]
   (remove #(re-find #"_design" (:id %1)) res))
 
-(defn get-doc [id cb]
-  (let [cb (comp cb handle-single-response)]
-    (handle-promise (.get db id) cb)))
+(defn put-doc
+  ([doc] (put-doc doc identity))
+  ([doc cb]
+   (let [doc (clj->js doc)]
+     (handle-promise (.put db doc) cb))))
+
+(defn get-doc
+  ([id] (get-doc id identity))
+  ([id cb]
+   (let [cb (comp cb handle-single-response)]
+     (handle-promise (.get db id) cb))))
+
+(defn delete-doc
+  ([doc] (delete-doc doc identity))
+  ([doc cb]
+   (let [doc (clj->js doc)
+         cb (comp cb handle-single-response)]
+     (handle-promise (.remove db doc) cb))))
+
+(defn update-design-doc [doc]
+  (go
+    (let [response (<! (put-doc doc handle-single-response))]
+      (println response))))
 
 (defn query
   ([options viewname] (query identity options viewname))

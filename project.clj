@@ -55,6 +55,7 @@
 
   :cljsbuild {:builds {:app {:source-paths ["src/cljs" "src/cljc"]
                              :compiler {:output-to     "resources/public/js/app.js"
+                                        :libs          ["db/coursesdesign.js"]
                                         :output-dir    "resources/public/js/out"
                                         :asset-path   "/js/out"
                                         :optimizations :none

@@ -7,7 +7,7 @@
             [offcourse.api.adapters.fakedb.index :as fakedb]
             [offcourse.api.responder :as r]))
 
-(def courses-db (pouchdb/init "sample" "http://localhost:5984"))
+(def courses-db   (pouchdb/init "sample" "http://localhost:5984"))
 (def resources-db (fakedb/init "sample"))
 
 (defn check-and-respond [type data]

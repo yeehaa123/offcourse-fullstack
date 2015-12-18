@@ -1,5 +1,7 @@
 (ns offcourse.api.adapters.pouchdb.index
+  (:require-macros [offcourse.macros :as macro])
   (:require [schema.core :as schema :include-macros true]
+            [dd]
             [offcourse.protocols.fetchable :as proto :refer [Fetchable]]
             [offcourse.api.adapters.pouchdb.implementations.fetchable :as fa]
             [offcourse.api.adapters.pouchdb.wrapper :as pouch]))
@@ -13,6 +15,9 @@
     (do
       (pouch/sync local-db remote-db)
       (->DB local-db))))
+
+(defn update-design-doc []
+  (pouch/update-design-doc (.-doc js/dd)))
 
 (extend-type DB
   Fetchable
